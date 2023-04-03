@@ -31,7 +31,7 @@ public class SpigotMain extends JavaPlugin {
         instance = this;
 
         // Start AMPAPAI Server Manager
-        ampServerManager = new SpigotAMPServerManager(this, config);
+        ampServerManager = new SpigotAMPServerManager(config, getLogger());
 
         new BukkitRunnable() {
             @Override

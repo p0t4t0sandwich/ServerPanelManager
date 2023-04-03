@@ -3,15 +3,17 @@ package ca.sperrer.p0t4t0sandwich.ampservermanager.spigot;
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
 import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
 import dev.dejvokep.boostedyaml.YamlDocument;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
-class SpigotAMPServerManager extends AMPServerManager<JavaPlugin> {
+class SpigotAMPServerManager extends AMPServerManager {
+    private final Logger logger;
 
     // Constructor
-    public SpigotAMPServerManager(JavaPlugin plugin, YamlDocument config)  {
-        super(plugin, config);
+    public SpigotAMPServerManager(YamlDocument config, Logger logger)  {
+        super(config);
+        this.logger = logger;
     }
 
     @Override
@@ -30,9 +32,9 @@ class SpigotAMPServerManager extends AMPServerManager<JavaPlugin> {
             Instance instance = new Instance(name, id, null);
             boolean status = instanceLogin(instance);
             if (status) {
-                plugin.getLogger().info("Instance " + instance.name + " is online!");
+                logger.info("Instance " + instance.name + " is online!");
             } else {
-                plugin.getLogger().info("Instance " + instance.name + " is offline!");
+                logger.info("Instance " + instance.name + " is offline!");
             }
         }
     }

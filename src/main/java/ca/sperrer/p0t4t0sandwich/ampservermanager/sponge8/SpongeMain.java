@@ -51,9 +51,6 @@ public class SpongeMain {
     public static SpongeMain getInstance() {
         return instance;
     }
-    public Logger getLogger() {
-        return logger;
-    }
 
     @Listener
     public void onConstructPlugin(final ConstructPluginEvent event) {
@@ -69,13 +66,13 @@ public class SpongeMain {
         instance = this;
 
         // Start AMPAPAI Server Manager
-        ampServerManager = new SpongeAMPServerManager(this, config, getLogger());
+        ampServerManager = new SpongeAMPServerManager(config, logger);
 
         Task.builder().execute(
                 () -> ampServerManager.start()
         );
 
-        getLogger().info("Constructing AMPServerManager");
+        logger.info("Constructing AMPServerManager");
     }
 
     @Listener

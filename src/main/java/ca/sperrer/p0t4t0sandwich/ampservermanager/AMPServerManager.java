@@ -6,8 +6,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import java.util.*;
 import java.util.function.Function;
 
-public class AMPServerManager<T> {
-    public final T plugin;
+public class AMPServerManager {
     public final YamlDocument config;
     public final String host;
     public final String username;
@@ -18,9 +17,8 @@ public class AMPServerManager<T> {
     }
 
     // Constructor
-    public AMPServerManager(T plugin, YamlDocument config) {
+    public AMPServerManager(YamlDocument config) {
         singleton = this;
-        this.plugin = plugin;
         this.config = config;
         this.host = config.getString("amp.host");
         this.username = config.getString("amp.username");

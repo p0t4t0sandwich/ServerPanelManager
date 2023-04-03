@@ -4,13 +4,17 @@ package ca.sperrer.p0t4t0sandwich.ampservermanager.bungee;
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
 import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
 import dev.dejvokep.boostedyaml.YamlDocument;
-import net.md_5.bungee.api.plugin.Plugin;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
-class BungeeAMPServerManager extends AMPServerManager<Plugin> {
-    public BungeeAMPServerManager(Plugin plugin, YamlDocument config) {
-        super(plugin, config);
+class BungeeAMPServerManager extends AMPServerManager {
+    private final Logger logger;
+
+    // Constructor
+    public BungeeAMPServerManager(YamlDocument config, Logger logger) {
+        super(config);
+        this.logger = logger;
     }
 
     @Override
@@ -29,9 +33,9 @@ class BungeeAMPServerManager extends AMPServerManager<Plugin> {
             Instance instance = new Instance(name, id, null);
             boolean status = instanceLogin(instance);
             if (status) {
-                plugin.getLogger().info("Instance " + instance.name + " is online!");
+                logger.info("Instance " + instance.name + " is online!");
             } else {
-                plugin.getLogger().info("Instance " + instance.name + " is offline!");
+                logger.info("Instance " + instance.name + " is offline!");
             }
         }
     }

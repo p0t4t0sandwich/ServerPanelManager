@@ -31,7 +31,7 @@ public class BungeeMain extends Plugin {
         instance = this;
 
         // Start AMPAPAI Server Manager
-        ampServerManager = new BungeeAMPServerManager(this, config);
+        ampServerManager = new BungeeAMPServerManager(config, getLogger());
 
         ScheduledTask scheduledTask = getProxy().getScheduler().schedule(this, () ->
                 ampServerManager.start(), 0, TimeUnit.SECONDS

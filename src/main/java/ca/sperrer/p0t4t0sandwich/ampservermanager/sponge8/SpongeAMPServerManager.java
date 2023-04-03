@@ -7,11 +7,12 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-class SpongeAMPServerManager extends AMPServerManager<SpongeMain> {
+class SpongeAMPServerManager extends AMPServerManager {
     private Logger logger;
+
     // Constructor
-    public SpongeAMPServerManager(SpongeMain plugin, YamlDocument config, Logger logger) {
-        super(plugin, config);
+    public SpongeAMPServerManager(YamlDocument config, Logger logger) {
+        super(config);
         this.logger = logger;
 
     }
