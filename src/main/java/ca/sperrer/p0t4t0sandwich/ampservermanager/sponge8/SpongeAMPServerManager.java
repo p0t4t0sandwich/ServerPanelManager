@@ -2,17 +2,16 @@ package ca.sperrer.p0t4t0sandwich.ampservermanager.sponge8;
 
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
 import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
-import dev.dejvokep.boostedyaml.YamlDocument;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
+import org.apache.logging.log4j.Logger;
 
 class SpongeAMPServerManager extends AMPServerManager {
-    private Logger logger;
+    private final Logger logger;
 
     // Constructor
-    public SpongeAMPServerManager(YamlDocument config, Logger logger) {
-        super(config);
+    public SpongeAMPServerManager(String configPath, Logger logger) {
+        super(configPath);
         this.logger = logger;
 
     }

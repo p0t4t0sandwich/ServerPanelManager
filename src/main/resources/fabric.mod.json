@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "ampservermanager",
+  "version": "${version}",
+  "name": "AMPServerManager",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/p0t4t0sandwich/AMPServerManagerPlugin"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/AMPServerManager/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "ca.sperrer.p0t4t0sandwich.ampservermanager.fabric.client.FabricAMPServerManagerClient"
+    ],
+    "main": [
+      "ca.sperrer.p0t4t0sandwich.ampservermanager.fabric.FabricAMPServerManager"
+    ]
+  },
+  "mixins": [
+    "AMPServerManager.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

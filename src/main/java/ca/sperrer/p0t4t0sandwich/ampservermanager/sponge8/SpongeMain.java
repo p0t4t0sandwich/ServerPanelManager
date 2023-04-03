@@ -1,7 +1,6 @@
 package ca.sperrer.p0t4t0sandwich.ampservermanager.sponge8;
 
 import com.google.inject.Inject;
-import dev.dejvokep.boostedyaml.YamlDocument;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.LinearComponents;
@@ -12,16 +11,12 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.command.Command;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.parameter.Parameter;
-import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.lifecycle.ConstructPluginEvent;
 import org.spongepowered.api.event.lifecycle.RegisterCommandEvent;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 /**
  * The main class of your Sponge plugin.
@@ -40,10 +35,6 @@ public class SpongeMain {
         this.logger = logger;
     }
 
-    @Inject
-    @DefaultConfig(sharedRoot = true)
-    private Path defaultConfig;
-    public static YamlDocument config;
     public static SpongeAMPServerManager ampServerManager;
 
     // Singleton instance
@@ -54,19 +45,11 @@ public class SpongeMain {
 
     @Listener
     public void onConstructPlugin(final ConstructPluginEvent event) {
-        // Config
-        try {
-            config = YamlDocument.create(defaultConfig.toFile());
-            config.reload();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         // Singleton instance
         instance = this;
 
         // Start AMPAPAI Server Manager
-        ampServerManager = new SpongeAMPServerManager(config, logger);
+        ampServerManager = new SpongeAMPServerManager("configs", logger);
 
         Task.builder().execute(
                 () -> ampServerManager.start()

@@ -3,26 +3,38 @@ package ca.sperrer.p0t4t0sandwich.ampservermanager;
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
 import dev.dejvokep.boostedyaml.YamlDocument;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
 public class AMPServerManager {
-    public final YamlDocument config;
-    public final String host;
-    public final String username;
-    public final String password;
+    public YamlDocument config;
+    public String host;
+    public String username;
+    public String password;
     private static AMPServerManager singleton;
     public static AMPServerManager getInstance() {
         return singleton;
     }
 
     // Constructor
-    public AMPServerManager(YamlDocument config) {
+    public AMPServerManager(String configPath) {
         singleton = this;
-        this.config = config;
-        this.host = config.getString("amp.host");
-        this.username = config.getString("amp.username");
-        this.password = config.getString("amp.password");
+        // Config
+        try {
+            config = YamlDocument.create(new File("./" + configPath + "/AMPServerManager", "config.yml"),
+                    Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("config.yml"))
+            );
+            config.reload();
+
+            // Get AMP host, username, and password
+            host = config.getString("amp.host");
+            username = config.getString("amp.username");
+            password = config.getString("amp.password");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static AMPAPIHandler ADS;

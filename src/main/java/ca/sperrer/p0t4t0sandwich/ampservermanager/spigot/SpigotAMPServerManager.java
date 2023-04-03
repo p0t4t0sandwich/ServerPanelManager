@@ -2,7 +2,6 @@ package ca.sperrer.p0t4t0sandwich.ampservermanager.spigot;
 
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
 import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
-import dev.dejvokep.boostedyaml.YamlDocument;
 
 import java.util.Map;
 import java.util.logging.Logger;
@@ -11,8 +10,8 @@ class SpigotAMPServerManager extends AMPServerManager {
     private final Logger logger;
 
     // Constructor
-    public SpigotAMPServerManager(YamlDocument config, Logger logger)  {
-        super(config);
+    public SpigotAMPServerManager(String configPath, Logger logger)  {
+        super(configPath);
         this.logger = logger;
     }
 
