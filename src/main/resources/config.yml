@@ -1,0 +1,9 @@
+version: 1
+amp:
+  host: http://localhost:8080
+  username: admin
+  password: admin
+servers:
+  server1:
+    name: Minecraft01
+    id: 1ty3j38u

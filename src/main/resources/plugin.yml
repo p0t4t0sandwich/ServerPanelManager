@@ -1,0 +1,8 @@
+name: AMPServerManager
+version: '${version}'
+main: ca.sperrer.p0t4t0sandwich.ampservermanager.spigot.SpigotMain
+commands:
+  amp:
+    description: "AMPServerManager is a plugin that allows you to manage your AMP servers from within Minecraft."
+    usage: /amp <command> [args]
+    permission: ampservermanager.amp
