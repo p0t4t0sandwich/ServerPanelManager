@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 public class AMPServerManager {
     public YamlDocument config;
+    public Object logger;
     public String host;
     public String username;
     public String password;
@@ -19,8 +20,10 @@ public class AMPServerManager {
     }
 
     // Constructor
-    public AMPServerManager(String configPath) {
+    public AMPServerManager(String configPath, Object logger) {
         singleton = this;
+        this.logger = logger;
+
         // Config
         try {
             config = YamlDocument.create(new File("./" + configPath + "/AMPServerManager", "config.yml"),
@@ -53,8 +56,39 @@ public class AMPServerManager {
         }
     }
 
+    // Variable Logger handler
+    public void useLogger(Object logger, String message) {
+        if (logger instanceof java.util.logging.Logger) {
+            ((java.util.logging.Logger) logger).info(message);
+        } else if (logger instanceof org.slf4j.Logger) {
+            ((org.slf4j.Logger) logger).info(message);
+        } else if (logger instanceof org.apache.logging.log4j.Logger) {
+            ((org.apache.logging.log4j.Logger) logger).info(message);
+        }
+    }
+
     // Start AMPAPIHandler
-    public void start() {}
+    public void start() {
+        ADS = new AMPAPIHandler(host, username, password, "", "");
+        ADS.Login();
+
+        // Get instances
+        Map<String, ?> serverConfig = (Map<String, ?>) config.getBlock("servers").getStoredValue();
+        for (Map.Entry<String, ?> entry: serverConfig.entrySet()) {
+            // Get instance name and id
+            String serverName = entry.getKey();
+            String name = config.getString("servers." + serverName + ".name");
+            String id = config.getString("servers." + serverName + ".id");
+
+            Instance instance = new Instance(name, id, null);
+            boolean status = instanceLogin(instance);
+            if (status) {
+                useLogger(logger, "Instance " + instance.name + " is online!");
+            } else {
+                useLogger(logger, "Instance " + instance.name + " is offline!");
+            }
+        }
+    }
 
     // Add instance to instances
     public boolean instanceLogin(Instance instance) {

@@ -12,15 +12,12 @@
   "icon": "assets/AMPServerManager/icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": [
-      "ca.sperrer.p0t4t0sandwich.ampservermanager.fabric.client.FabricAMPServerManagerClient"
-    ],
     "main": [
-      "ca.sperrer.p0t4t0sandwich.ampservermanager.fabric.FabricAMPServerManager"
+      "ca.sperrer.p0t4t0sandwich.ampservermanager.fabric.FabricMain"
     ]
   },
   "mixins": [
-    "AMPServerManager.mixins.json"
+    "ampservermanager.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

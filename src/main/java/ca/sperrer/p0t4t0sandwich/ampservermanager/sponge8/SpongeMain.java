@@ -1,5 +1,6 @@
 package ca.sperrer.p0t4t0sandwich.ampservermanager.sponge8;
 
+import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
 import com.google.inject.Inject;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
@@ -35,7 +36,7 @@ public class SpongeMain {
         this.logger = logger;
     }
 
-    public static SpongeAMPServerManager ampServerManager;
+    public AMPServerManager ampServerManager;
 
     // Singleton instance
     private static SpongeMain instance;
@@ -49,7 +50,7 @@ public class SpongeMain {
         instance = this;
 
         // Start AMPAPAI Server Manager
-        ampServerManager = new SpongeAMPServerManager("configs", logger);
+        ampServerManager = new AMPServerManager("configs", logger);
 
         Task.builder().execute(
                 () -> ampServerManager.start()

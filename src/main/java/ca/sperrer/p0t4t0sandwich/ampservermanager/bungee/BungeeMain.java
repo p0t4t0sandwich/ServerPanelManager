@@ -1,11 +1,12 @@
 package ca.sperrer.p0t4t0sandwich.ampservermanager.bungee;
 
+import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.util.concurrent.TimeUnit;
 
 public class BungeeMain extends Plugin {
-    public static BungeeAMPServerManager ampServerManager;
+    public AMPServerManager ampServerManager;
 
     // Singleton instance
     private static BungeeMain instance;
@@ -18,7 +19,7 @@ public class BungeeMain extends Plugin {
         instance = this;
 
         // Start AMPAPAI Server Manager
-        ampServerManager = new BungeeAMPServerManager("plugins", getLogger());
+        ampServerManager = new AMPServerManager("plugins", getLogger());
 
         getProxy().getScheduler().schedule(this, () ->
                 ampServerManager.start(), 0, TimeUnit.SECONDS
