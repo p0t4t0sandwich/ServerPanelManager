@@ -1,17 +1,15 @@
-package ca.sperrer.p0t4t0sandwich.ampservermanager.spigot;
+package ca.sperrer.p0t4t0sandwich.ampservermanager.bukkit;
 
 import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
+
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.concurrent.*;
-
-public class SpigotMain extends JavaPlugin {
+public class BukkitMain extends JavaPlugin {
     public AMPServerManager ampServerManager;
 
     // Singleton instance
-    private static SpigotMain instance;
-    public static SpigotMain getInstance() {
+    private static BukkitMain instance;
+    public static BukkitMain getInstance() {
         return instance;
     }
 
@@ -34,7 +32,7 @@ public class SpigotMain extends JavaPlugin {
 //        }.runTask(this);
 
         // Register commands
-        getCommand("amp").setExecutor(new SpigotAMPCommands());
+        getCommand("amp").setExecutor(new BukkitAMPCommands());
 
         // Plugin enable message
         getLogger().info("AMPAPAI Server Manager has been enabled!");

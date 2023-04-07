@@ -1,6 +1,6 @@
 name: AMPServerManager
 version: '${version}'
-main: ca.sperrer.p0t4t0sandwich.ampservermanager.spigot.SpigotMain
+main: ca.sperrer.p0t4t0sandwich.ampservermanager.bukkit.BukkitMain
 folia-supported: true
 commands:
   amp:
