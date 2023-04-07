@@ -17,6 +17,7 @@ import java.util.concurrent.*;
 public final class FabricAMPCommands {
     private static final FabricMain mod = FabricMain.getInstance();
 
+    // TODO: Consolidate this with Forge, input the environment as a parameter
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, RegistrationEnvironment environment) {
         String commandName = environment.dedicated ? "amp" : "camp";
         int permissionLevel = environment.dedicated ? 4 : 0;
@@ -25,10 +26,7 @@ public final class FabricAMPCommands {
             .then(argument("command", StringArgumentType.greedyString())
             .executes(context -> {
                 try {
-                    ExecutorService executorService =
-                        new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
-                            new LinkedBlockingQueue<Runnable>());
-                    Callable<String> callableTask = () -> {
+                    (new Thread(() -> {
                         // Get arguments and send to commandMessenger
                         String[] args = context.getInput().split(" ");
                         args = Arrays.copyOfRange(args, 1, args.length);
@@ -46,9 +44,7 @@ public final class FabricAMPCommands {
                         } else {
                             mod.logger.info(message.replaceAll("§.", ""));
                         }
-                        return "null";
-                    };
-                    Future<String> future = executorService.submit(callableTask);
+                    })).start();
                 }
                 catch (Exception e) {
                     e.printStackTrace();

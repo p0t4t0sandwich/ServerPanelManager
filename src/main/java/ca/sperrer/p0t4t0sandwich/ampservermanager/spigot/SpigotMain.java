@@ -4,6 +4,8 @@ import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.concurrent.*;
+
 public class SpigotMain extends JavaPlugin {
     public AMPServerManager ampServerManager;
 
@@ -21,12 +23,15 @@ public class SpigotMain extends JavaPlugin {
         // Start AMPAPAI Server Manager
         ampServerManager = new AMPServerManager("plugins", getLogger());
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ampServerManager.start();
-            }
-        }.runTask(this);
+        // TODO: Set up methods to utilize different API's schedulers based on the server type
+
+
+//        new BukkitRunnable() {
+//            @Override
+//            public void run() {
+        (new Thread(() -> ampServerManager.start())).start();
+//            }
+//        }.runTask(this);
 
         // Register commands
         getCommand("amp").setExecutor(new SpigotAMPCommands());

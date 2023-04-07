@@ -1,6 +1,7 @@
 name: AMPServerManager
 version: '${version}'
 main: ca.sperrer.p0t4t0sandwich.ampservermanager.spigot.SpigotMain
+folia-supported: true
 commands:
   amp:
     description: "AMPServerManager is a plugin that allows you to manage your AMP servers from within Minecraft."

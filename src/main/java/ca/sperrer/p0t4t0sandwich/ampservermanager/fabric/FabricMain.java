@@ -26,22 +26,7 @@ public class FabricMain implements ModInitializer,ClientModInitializer {
 
         // Start AMPAPAI Server Manager
         ampServerManager = new AMPServerManager("config", logger);
-        try {
-            ExecutorService executorService =
-                    new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
-                            new LinkedBlockingQueue<Runnable>());
-            Callable<String> callableTask = () -> {
-                ampServerManager.start();
-                return "null";
-            };
-            Future<String> future = executorService.submit(callableTask);
-            if (future.isDone()) {
-                logger.info("[AMPServerManager]: AMPAPAI Server Manager has been Started!");
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        (new Thread(() -> ampServerManager.start())).start();
 
         // Register commands
         CommandRegistrationCallback.EVENT.register(FabricAMPCommands::register);

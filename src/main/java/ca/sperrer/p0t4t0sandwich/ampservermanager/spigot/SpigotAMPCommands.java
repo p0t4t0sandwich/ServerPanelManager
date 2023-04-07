@@ -6,24 +6,28 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.concurrent.*;
+
 public class SpigotAMPCommands implements CommandExecutor {
     private final SpigotMain plugin = SpigotMain.getInstance();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                String message;
-                // Player and permission check
-                if (sender instanceof Player && !sender.hasPermission("ampservermanager.amp")) {
-                    message = "§cYou do not have permission to use this command!";
-                } else {
-                    message = args.length == 0 ? "§cUsage: /amp <command>" : plugin.ampServerManager.commandMessenger(args);
-                }
-                sender.sendMessage(message);
+//        new BukkitRunnable() {
+//            @Override
+//            public void run() {
+        (new Thread(() -> {
+            String message;
+            // Player and permission check
+            if (sender instanceof Player && !sender.hasPermission("ampservermanager.amp")) {
+                message = "§cYou do not have permission to use this command!";
+            } else {
+                message = args.length == 0 ? "§cUsage: /amp <command>" : plugin.ampServerManager.commandMessenger(args);
             }
-        }.runTask(plugin);
+            sender.sendMessage(message);
+        })).start();
+//            }
+//        }.runTask(this);
         return true;
     }
 }
