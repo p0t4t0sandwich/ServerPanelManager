@@ -24,6 +24,10 @@ repositories {
         name = 'sponge-repo'
         url = 'https://repo.spongepowered.org/repository/maven-public/'
     }
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
 }
 
 dependencies {
@@ -33,6 +37,12 @@ dependencies {
 
     // Spigot
     compileOnly "org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT"
+
+    // Folia
+    compileOnly "dev.folia:folia-api:1.19.4-R0.1-SNAPSHOT"
+
+    // Paper
+    compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
 
     // BungeeCord
     compileOnly "net.md-5:bungeecord-api:1.12-SNAPSHOT"
@@ -76,6 +86,8 @@ java {
     // If you remove this line, sources will not be generated.
     withSourcesJar()
 }
+
+java.disableAutoTargetJvm()
 
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"

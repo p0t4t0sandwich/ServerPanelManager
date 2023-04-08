@@ -10,10 +10,7 @@ public class BukkitAMPCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-//        new BukkitRunnable() {
-//            @Override
-//            public void run() {
-        (new Thread(() -> {
+        BukkitMain.runTaskAsync(plugin, () -> {
             String message;
             // Player and permission check
             if (sender instanceof Player && !sender.hasPermission("ampservermanager.amp")) {
@@ -22,9 +19,7 @@ public class BukkitAMPCommands implements CommandExecutor {
                 message = args.length == 0 ? "§cUsage: /amp <command>" : plugin.ampServerManager.commandMessenger(args);
             }
             sender.sendMessage(message);
-        })).start();
-//            }
-//        }.runTask(this);
+        });
         return true;
     }
 }

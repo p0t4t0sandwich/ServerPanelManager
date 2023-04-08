@@ -1,6 +1,8 @@
 package ca.sperrer.p0t4t0sandwich.ampservermanager.sponge8;
 
 import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.VersionUtils.*;
+
 import com.google.inject.Inject;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
@@ -46,6 +48,12 @@ public class SpongeMain {
 
     @Listener
     public void onConstructPlugin(final ConstructPluginEvent event) {
+        // Check to see if the server is Magma, Mohist, or Arclight, then disable plugin
+        if (isMagma() || isMohist() || isArclight()) {
+            logger.info("Sponge does not run on Hybrid Servers, disabling plugin.\n Please use the Bukkit or Forge version of this plugin instead.");
+            return;
+        }
+
         // Singleton instance
         instance = this;
 

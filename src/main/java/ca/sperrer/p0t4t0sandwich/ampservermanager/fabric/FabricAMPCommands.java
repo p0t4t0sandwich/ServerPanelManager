@@ -26,7 +26,7 @@ public final class FabricAMPCommands {
             .then(argument("command", StringArgumentType.greedyString())
             .executes(context -> {
                 try {
-                    (new Thread(() -> {
+                    ForkJoinPool.commonPool().submit(() -> {
                         // Get arguments and send to commandMessenger
                         String[] args = context.getInput().split(" ");
                         args = Arrays.copyOfRange(args, 1, args.length);
@@ -44,7 +44,7 @@ public final class FabricAMPCommands {
                         } else {
                             mod.logger.info(message.replaceAll("§.", ""));
                         }
-                    })).start();
+                    });
                 }
                 catch (Exception e) {
                     e.printStackTrace();

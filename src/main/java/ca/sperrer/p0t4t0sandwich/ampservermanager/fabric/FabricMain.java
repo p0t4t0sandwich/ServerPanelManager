@@ -26,7 +26,7 @@ public class FabricMain implements ModInitializer,ClientModInitializer {
 
         // Start AMPAPAI Server Manager
         ampServerManager = new AMPServerManager("config", logger);
-        (new Thread(() -> ampServerManager.start())).start();
+        ForkJoinPool.commonPool().submit(() -> ampServerManager.start());
 
         // Register commands
         CommandRegistrationCallback.EVENT.register(FabricAMPCommands::register);
