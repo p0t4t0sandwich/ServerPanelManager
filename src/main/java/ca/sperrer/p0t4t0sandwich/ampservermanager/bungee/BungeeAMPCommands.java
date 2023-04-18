@@ -1,9 +1,7 @@
 package ca.sperrer.p0t4t0sandwich.ampservermanager.bungee;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
@@ -27,14 +25,7 @@ public class BungeeAMPCommands extends Command {
                 message = args.length == 0 ? "§cUsage: /bamp <command>" : plugin.ampServerManager.commandMessenger(args);
             }
 
-            // New Adventure API
-            final TextComponent textComponent = Component.text()
-                    .append(Component.text(message))
-                    .build();
-            BungeeComponentSerializer bungeeComponentSerializer = BungeeComponentSerializer.get();
-
-            // Send message
-            sender.sendMessage(bungeeComponentSerializer.serialize(textComponent));
+            sender.sendMessage(new ComponentBuilder(message).create());
 
         }, 0, TimeUnit.SECONDS);
     }
