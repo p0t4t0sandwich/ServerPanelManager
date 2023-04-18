@@ -73,8 +73,8 @@ public class AMPServerManager {
         ADS.Login();
 
         // Get instances
-        Map<String, ?> serverConfig = (Map<String, ?>) config.getBlock("servers").getStoredValue();
-        for (Map.Entry<String, ?> entry: serverConfig.entrySet()) {
+        Map<String, Object> serverConfig = (Map<String, Object>) config.getBlock("servers").getStoredValue();
+        for (Map.Entry<String, Object> entry: serverConfig.entrySet()) {
             // Get instance name and id
             String serverName = entry.getKey();
             String name = config.getString("servers." + serverName + ".name");
@@ -141,7 +141,7 @@ public class AMPServerManager {
     }
 
     // General Instance Method Wrapper
-    public Map instanceMethod(String serverName, Function<String[], Map> method) {
+    public Map<String, Object> instanceMethod(String serverName, Function<String[], Map<String, Object>> method) {
         try {
             if (!instances.containsKey(serverName)) {
                 // Get instance name and id
@@ -162,66 +162,66 @@ public class AMPServerManager {
     }
 
     // Start Server
-    public Map startServer(String serverName) {
-        return instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_Start());
+    public void startServer(String serverName) {
+        instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_Start());
     }
 
     // Stop Server
-    public Map stopServer(String serverName) {
-        return instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_Stop());
+    public void stopServer(String serverName) {
+        instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_Stop());
     }
 
     // Restart Server
-    public Map restartServer(String serverName) {
-        return instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_Restart());
+    public void restartServer(String serverName) {
+        instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_Restart());
     }
 
     // Kill Server
-    public Map killServer(String serverName) {
-        return instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_Kill());
+    public void killServer(String serverName) {
+        instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_Kill());
     }
 
     // Sleep Server
-    public Map sleepServer(String serverName) {
-        return instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_Sleep());
+    public void sleepServer(String serverName) {
+        instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_Sleep());
     }
 
     // Send Command
-    public Map sendCommand(String serverName, String command) {
-        return instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_SendConsoleMessage(command));
+    public void sendCommand(String serverName, String command) {
+        instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_SendConsoleMessage(command));
     }
 
     // Get Status
-    public Map getStatus(String serverName) {
+    public Map<String, Object> getStatus(String serverName) {
         return instanceMethod(serverName, (args) -> instances.get(serverName).API.Core_GetStatus());
     }
 
     // Parse Status
-    private Map parseStatus(String serverName) {
-        Map status = getStatus(serverName);
+    private Map<String, Object> parseStatus(String serverName) {
+        Map<String, Object> status = getStatus(serverName);
         if (status == null) {
             return null;
         }
 
-        Map newStatus = new HashMap();
+        Map<String, Object> newStatus = new HashMap<>();
 
-        Map Metrics = (Map) status.get("Metrics");
-        double CPU = (double) ((Map) Metrics.get("CPU Usage")).get("Percent");
+        Map<String, Object> Metrics = (Map<String, Object>) status.get("Metrics");
+        double CPU = (double) ((Map<String, Object>) Metrics.get("CPU Usage")).get("Percent");
         newStatus.put("CPU", CPU);
 
-        Map Memory = (Map) Metrics.get("Memory Usage");
+        Map<String, Object> Memory = (Map<String, Object>) Metrics.get("Memory Usage");
         int MemoryValue = (int) Math.round((double) Memory.get("RawValue"));
         int MemoryMax = (int) Math.round((double) Memory.get("MaxValue"));
         newStatus.put("MemoryValue", MemoryValue);
         newStatus.put("MemoryMax", MemoryMax);
 
-        Map Players = (Map) Metrics.get("Active Users");
+        Map<String, Object> Players = (Map<String, Object>) Metrics.get("Active Users");
         int PlayersValue = (int) Math.round((double) Players.get("RawValue"));
         int PlayersMax = (int) Math.round((double) Players.get("MaxValue"));
         newStatus.put("PlayersValue", PlayersValue);
         newStatus.put("PlayersMax", PlayersMax);
 
-        Map TPS = (Map) Metrics.get("TPS");
+        Map<String, Object> TPS = (Map<String, Object>) Metrics.get("TPS");
         double TPSValue = (double) TPS.get("RawValue");
         newStatus.put("TPSValue", TPSValue);
 
@@ -297,7 +297,7 @@ public class AMPServerManager {
         if (args.length == 2) {
             String serverName = args[1];
             if (instances.containsKey(serverName)) {
-                Map status = getStatus(serverName);
+                Map<String, Object> status = getStatus(serverName);
                 int state = (int) Math.round((double) status.get("State"));
                 if (!Objects.equals(state, 10) && !Objects.equals(state, 20)) {
                     startServer(serverName);
@@ -322,7 +322,7 @@ public class AMPServerManager {
         if (args.length == 2) {
             String serverName = args[1];
             if (instances.containsKey(serverName)) {
-                Map status = getStatus(serverName);
+                Map<String, Object> status = getStatus(serverName);
                 int state = (int) Math.round((double) status.get("State"));
                 if (!Objects.equals(state, 0) && !Objects.equals(state, 40)) {
                     stopServer(serverName);
@@ -347,7 +347,7 @@ public class AMPServerManager {
         if (args.length == 2) {
             String serverName = args[1];
             if (instances.containsKey(serverName)) {
-                Map status = getStatus(serverName);
+                Map<String, Object> status = getStatus(serverName);
                 int state = (int) Math.round((double) status.get("State"));
                 if (!Objects.equals(state, 0) && !Objects.equals(state, 40) && !Objects.equals(state, 45) && !Objects.equals(state, 50) ) {
                     restartServer(serverName);
@@ -391,7 +391,7 @@ public class AMPServerManager {
         if (args.length == 2) {
             String serverName = args[1];
             if (instances.containsKey(serverName)) {
-                Map status = getStatus(serverName);
+                Map<String, Object> status = getStatus(serverName);
                 int state = (int) Math.round((double) status.get("State"));
                 if (!Objects.equals(state, 0) && !Objects.equals(state, 30) && !Objects.equals(state, 40)) {
                     sleepServer(serverName);
@@ -416,7 +416,7 @@ public class AMPServerManager {
         if (args.length >= 3) {
             String serverName = args[1];
             if (instances.containsKey(serverName)) {
-                Map status = getStatus(serverName);
+                Map<String, Object> status = getStatus(serverName);
                 int state = (int) Math.round((double) status.get("State"));
                 if (Objects.equals(state, 20)) {
                     String command = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
@@ -442,7 +442,7 @@ public class AMPServerManager {
         if (args.length == 2) {
             String serverName = args[1];
             if (instances.containsKey(serverName)) {
-                Map status = parseStatus(serverName);
+                Map<String, Object> status = parseStatus(serverName);
                 if (status == null) {
                     return "§cServer " + serverName + " is not responding!";
                 }

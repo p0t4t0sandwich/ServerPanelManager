@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 
 public class FabricMain implements ModInitializer,ClientModInitializer {
     // Logger
-    public static final Logger logger = LoggerFactory.getLogger("ampservermanager");
+    public final Logger logger = LoggerFactory.getLogger("ampservermanager");
     public AMPServerManager ampServerManager;
 
     // Singleton instance
