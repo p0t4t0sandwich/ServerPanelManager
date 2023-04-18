@@ -1,6 +1,39 @@
 package ca.sperrer.p0t4t0sandwich.ampservermanager;
 
 public class VersionUtils {
+    // Check if the server is running CraftBukkit
+    public static boolean isCraftBukkit() {
+        try {
+            Class.forName("org.bukkit.craftbukkit.Main");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    // Check if the server is running Spigot
+    public static boolean isSpigot() {
+        try {
+            Class.forName("org.spigotmc.CustomTimingsHandler");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    // Check if the server is running Paper
+    public static boolean isPaper() {
+        try {
+            Class.forName("com.destroystokyo.paper.PaperConfig");
+            return true;
+        } catch (ClassNotFoundException ignored) {}
+        try {
+            Class.forName("io.papermc.paperclip.Paperclip");
+            return true;
+        } catch (ClassNotFoundException ignored) {}
+        return false;
+    }
+
     // Check if the server is running Folia
     public static boolean isFolia() {
         try {

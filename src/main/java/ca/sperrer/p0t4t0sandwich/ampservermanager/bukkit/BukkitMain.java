@@ -21,6 +21,20 @@ public class BukkitMain extends JavaPlugin {
 
     public static boolean FOLIA = isFolia();
 
+    public String getServerType() {
+        if (isFolia()) {
+            return "Folia";
+        } else if (isPaper()) {
+            return "Paper";
+        } else if (isSpigot()) {
+            return "Spigot";
+        } else if (isCraftBukkit()) {
+            return "CraftBukkit";
+        } else {
+            return "Unknown";
+        }
+    }
+
     public static void runTaskAsync(Plugin plugin, Runnable run) {
         if (!FOLIA) {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, run);
@@ -38,7 +52,7 @@ public class BukkitMain extends JavaPlugin {
         if (FOLIA) {
             getLogger().info("Folia detected, using our own scheduler");
         } else {
-            getLogger().info("Using the Bukkit scheduler");
+            getLogger().info(getServerType() + " detected, using the Bukkit scheduler");
         }
 
         // Start AMPAPAI Server Manager
