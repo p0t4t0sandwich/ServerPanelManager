@@ -20,6 +20,25 @@ public class FabricMain implements ModInitializer,ClientModInitializer {
         return instance;
     }
 
+    // Repeat async task
+    public static void repeatTaskAsync(Runnable run, Long delay, Long period) {
+        ForkJoinPool.commonPool().submit(() -> {
+            try {
+                Thread.sleep(delay*1000/20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            while (true) {
+                try {
+                    Thread.sleep(period*1000/20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                run.run();
+            }
+        });
+    }
+
     public void init() {
         // Singleton instance
         instance = this;

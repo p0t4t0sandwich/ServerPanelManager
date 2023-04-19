@@ -43,6 +43,28 @@ public class BukkitMain extends JavaPlugin {
         ForkJoinPool.commonPool().submit(run);
     }
 
+    public static void repeatTaskAsync(Plugin plugin, Runnable run, Long delay, Long period) {
+        if (!FOLIA) {
+            Bukkit.getScheduler().runTaskTimer(plugin, run, delay, period);
+            return;
+        }
+        ForkJoinPool.commonPool().submit(() -> {
+            try {
+                Thread.sleep(delay*1000/20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            while (true) {
+                try {
+                    Thread.sleep(period*1000/20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                run.run();
+            }
+        });
+    }
+
     @Override
     public void onEnable() {
         // Singleton instance
