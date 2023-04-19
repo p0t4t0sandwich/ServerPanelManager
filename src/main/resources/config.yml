@@ -27,7 +27,11 @@ groups:
     tasks:
       - name: Restart
         command: restart
-        interval: 1h
+        interval: 60 # in seconds
+        conditions:
+          playercount:
+            operator: ==
+            value: 0
 
   community:
     name: Community
