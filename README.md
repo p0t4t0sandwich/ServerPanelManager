@@ -36,7 +36,7 @@ ampservermanager.amp -- Allows access to all commands
 amp:
   # The URL to your main AMP controller/ADS
   host: http://localhost:8080
-    # The username to use for authentication -- recommended to use a service account with limited permissions
+  # The username to use for authentication -- recommended to use a service account with limited permissions
   username: admin
   password: admin
 ```
