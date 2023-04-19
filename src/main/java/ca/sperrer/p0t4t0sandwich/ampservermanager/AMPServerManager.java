@@ -14,6 +14,8 @@ public class AMPServerManager {
     public String host;
     public String username;
     public String password;
+    public static AMPAPIHandler ADS;
+    public static HashMap<String, Instance> instances = new HashMap<>();
     private static AMPServerManager singleton;
     public static AMPServerManager getInstance() {
         return singleton;
@@ -39,9 +41,6 @@ public class AMPServerManager {
             e.printStackTrace();
         }
     }
-
-    public static AMPAPIHandler ADS;
-    public static HashMap<String, Instance> instances = new HashMap<>();
 
     // Instance type
     public static class Instance {
@@ -72,7 +71,7 @@ public class AMPServerManager {
         ADS = new AMPAPIHandler(host, username, password, "", "");
         ADS.Login();
 
-        // Get instances
+        // Get and initialize instances
         Map<String, Object> serverConfig = (Map<String, Object>) config.getBlock("servers").getStoredValue();
         for (Map.Entry<String, Object> entry: serverConfig.entrySet()) {
             // Get instance name and id
@@ -87,6 +86,16 @@ public class AMPServerManager {
             } else {
                 useLogger(logger, "Instance " + instance.name + " is offline!");
             }
+        }
+
+        // Initialize groups
+        Map<String, Object> groupConfig = (Map<String, Object>) config.getBlock("groups").getStoredValue();
+        for (Map.Entry<String, Object> entry: groupConfig.entrySet()) {
+            // Get group name and servers
+            String groupName = entry.getKey();
+            ArrayList<String> servers = (ArrayList<String>) config.getBlock("groups." + groupName + ".servers").getStoredValue();
+
+            // Loop through tasks
         }
     }
 
@@ -130,7 +139,7 @@ public class AMPServerManager {
 
             instance.API = ADS.InstanceLogin(instance.id);
             if (instance.API != null) {
-                Map status = instance.API.Login();
+                Map<? extends Object, ? extends Object> status = instance.API.Login();
                 if (status.get("success").equals(true)) {
                     instances.put(instance.name, instance);
                     return true;
