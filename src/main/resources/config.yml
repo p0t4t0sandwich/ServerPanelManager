@@ -7,3 +7,30 @@ servers:
   server1:
     name: Minecraft01
     id: 1ty3j38u
+  server2:
+    name: Minecraft02
+    id: h9kl6f4j
+  server3:
+    name: Minecraft03
+    id: l4g7kd98
+  server4:
+    name: Minecraft04
+    id: 9d5hjd7i
+
+# Experimental feature, still a work in progress
+groups:
+  minigames:
+    name: Minigames
+    servers:
+      - server1
+      - server3
+    tasks:
+      - name: Restart
+        command: restart
+        interval: 1h
+
+  community:
+    name: Community
+    servers:
+      - server2
+      - server4
