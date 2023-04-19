@@ -88,3 +88,21 @@ groups:
 - [ ] Set up group commands -- `/amp group <group> <command>`
 - [ ] Add a command to reload the config
 - [ ] Design an API for other plugins to use -- that way this plugin doesn't become a spaghetti mess
+- [ ] Add commands to manage/add to the config from within the game
+  - [ ] Add a command to list all servers -- `/amp server list`
+  - [ ] Add commands to add/remove servers
+    - [ ] `/amp server add <server name> <instance name> [instance id]`
+    - [ ] `/amp server remove <server name>`
+
+  - [ ] Add a command to list all groups -- `/amp group list`
+  - [ ] Add commands to add/remove servers from groups
+    - [ ] `/amp group <group> server add <server name>`
+    - [ ] `/amp group <group> server remove <server name>`
+
+  - [ ] Add a command to list all tasks in a group -- `/amp group <group> task list`
+  - [ ] Add commands to add/remove tasks from groups
+    - [ ] `/amp group <group> task add <task name> <command> <interval> <conditions>`
+    - [ ] ^A parser to make that possible
+    - [ ] `/amp group <group> task remove <task name>`
+
+  - [ ] Add a command to list all conditionals in a task -- `/amp group <group> task <task> condition list`
