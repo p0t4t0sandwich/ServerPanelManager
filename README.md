@@ -107,4 +107,10 @@ groups:
 
   - [ ] Add a command to list all conditionals in a task -- `/amp group <group> task <task> condition list`
 
-  - [ ] Make AMPServerManagerPlugin function as a standalone terminal program, since it's all Java 8 anyway.
+- [x] Make AMPServerManagerPlugin function as a standalone terminal program, since it's all Java 8 anyway.
+  - [x] Format the log properly
+  - [ ] Add pretty terminal colors
+  - [ ] Wonder how hard tab completion and command history would be to implement
+
+- [ ] Add the ability to sync the config with a database? -- would need one AMPServerManager process to act as a main process and handle all the group tasks.
+  - [ ] hot reload the config when it changes -- how? -- LuckPerms does it, maybe subscribe to database changes?
