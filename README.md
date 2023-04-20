@@ -78,16 +78,34 @@ groups:
 - playercount -- the number of players on the server
 
 ## TODO:
-- [ ] Add permissions for each command -- `ampservermanager.amp.command.<command>`
-- [ ] Add permissions for each command for each server -- `ampservermanager.amp.command.<command>.<server>`
-- [ ] Finalize configuration for groups
-  - [ ] Add timed tasks
-  - [ ] Add conditionals
-  - [ ] think of a placeholder spec for conditionals
-  - [ ] Build a parser for conditionals and placeholders
-- [ ] Set up group commands -- `/amp group <group> <command>`
+
+Contributions and suggestions are welcome! Just open an issue or a pull request, and I'll get to it as soon as I can.
+
+### General
+
 - [ ] Add a command to reload the config
 - [ ] Design an API for other plugins to use -- that way this plugin doesn't become a spaghetti mess
+- [ ] Forge support -- try and generalize the fabric command and see if I can get it to work with forge, as both use brigadier
+- [ ] Multi-Fabric version support -- some gradle project voodoo required
+- [ ] Quilt support
+- [ ] Sponge support
+- [ ] Velocity support
+- [ ] Set up proper gradle projects for each platform -- need help with this
+
+### Permissions
+
+- [ ] Add permissions for each command -- `ampservermanager.amp.command.<command>`
+- [ ] Add permissions for each command for each server -- `ampservermanager.amp.<command>.<server>`
+- [ ] Add permissions for each command for each group -- `ampservermanager.amp.<command>.<group>`
+
+- [ ] Set up dynamic permissions checks
+  - [ ] Bukkit and BungeeCord will be easy, just use the `hasPermission` method
+  - [ ] Fabric will be more fun to implement -- either look into how Fabric does it, or require LuckPerms to doll out specific permissions
+  - [ ] Similar dealio for Forge
+
+### Commands
+
+- [ ] Set up group commands -- `/amp group <group> <command>`
 - [ ] Add commands to manage/add to the config from within the game
   - [ ] Add a command to list all servers -- `/amp server list`
   - [ ] Add commands to add/remove servers
@@ -107,10 +125,23 @@ groups:
 
   - [ ] Add a command to list all conditionals in a task -- `/amp group <group> task <task> condition list`
 
-- [x] Make AMPServerManagerPlugin function as a standalone terminal program, since it's all Java 8 anyway.
+### Groups
+
+- [ ] Finalize configuration for groups
+  - [ ] Add timed tasks
+  - [ ] Add conditionals
+  - [ ] think of a placeholder spec for conditionals
+  - [ ] Build a parser for conditionals and placeholders
+
+### Misc
+
+- [x] Make AMPServerManagerPlugin function as a standalone terminal program, since it's all compiled to Java 8 anyway.
   - [x] Format the log properly
   - [x] Add pretty terminal colors
   - [ ] Wonder how hard tab completion and command history would be to implement
 
 - [ ] Add the ability to sync the config with a database? -- would need one AMPServerManager process to act as a main process and handle all the group tasks.
   - [ ] hot reload the config when it changes -- how? -- LuckPerms does it, maybe subscribe to database changes?
+
+- [ ] WatchFerret?
+  - [ ] Should be able to hook into the Groups system and run the checks on a timer -- maybe add a `watch` command to the group system? -- Would be nice to generalize the Groups system to save some variable state -- hard maybe
