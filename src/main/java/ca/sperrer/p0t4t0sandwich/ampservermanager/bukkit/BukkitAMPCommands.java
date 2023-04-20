@@ -1,5 +1,6 @@
 package ca.sperrer.p0t4t0sandwich.ampservermanager.bukkit;
 
+import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,7 +12,7 @@ public class BukkitAMPCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        BukkitMain.runTaskAsync(plugin, () -> {
+        AMPServerManager.runTaskAsync(() -> {
             String message;
             // Player and permission check
             if (sender instanceof Player && !sender.hasPermission("ampservermanager.amp")) {
