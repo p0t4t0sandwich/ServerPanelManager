@@ -8,6 +8,11 @@ import java.util.concurrent.TimeUnit;
 public class BungeeMain extends Plugin {
     public AMPServerManager ampServerManager;
 
+    // Get server type
+    public String getServerType() {
+        return "BungeeCord";
+    }
+
     // Singleton instance
     private static BungeeMain instance;
     public static BungeeMain getInstance() {
@@ -18,12 +23,11 @@ public class BungeeMain extends Plugin {
         // Singleton instance
         instance = this;
 
+        getLogger().info("AMPAPAI Server Manager is running on " + getServerType() + ".");
+
         // Start AMPAPAI Server Manager
         ampServerManager = new AMPServerManager("plugins", getLogger());
-
-        getProxy().getScheduler().schedule(this, () ->
-                ampServerManager.start(), 0, TimeUnit.SECONDS
-        );
+        ampServerManager.start();
 
         // Register commands
         getProxy().getPluginManager().registerCommand(this, new BungeeAMPCommands());

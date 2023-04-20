@@ -6,6 +6,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 
 public class AMPServerManager {
@@ -19,6 +20,30 @@ public class AMPServerManager {
     private static AMPServerManager singleton;
     public static AMPServerManager getInstance() {
         return singleton;
+    }
+
+    // Run async task
+    public static void runTaskAsync(Runnable run) {
+        ForkJoinPool.commonPool().submit(run);
+    }
+
+    // Repeat async task
+    public static void repeatTaskAsync(Runnable run, Long delay, Long period) {
+        ForkJoinPool.commonPool().submit(() -> {
+            try {
+                Thread.sleep(delay*1000/20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            while (true) {
+                try {
+                    Thread.sleep(period*1000/20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                run.run();
+            }
+        });
     }
 
     // Constructor
@@ -68,35 +93,37 @@ public class AMPServerManager {
 
     // Start AMPAPIHandler
     public void start() {
-        ADS = new AMPAPIHandler(host, username, password, "", "");
-        ADS.Login();
+        runTaskAsync(() -> {
+            ADS = new AMPAPIHandler(host, username, password, "", "");
+            ADS.Login();
 
-        // Get and initialize instances
-        Map<String, Object> serverConfig = (Map<String, Object>) config.getBlock("servers").getStoredValue();
-        for (Map.Entry<String, Object> entry: serverConfig.entrySet()) {
-            // Get instance name and id
-            String serverName = entry.getKey();
-            String name = config.getString("servers." + serverName + ".name");
-            String id = config.getString("servers." + serverName + ".id");
+            // Get and initialize instances
+            Map<String, Object> serverConfig = (Map<String, Object>) config.getBlock("servers").getStoredValue();
+            for (Map.Entry<String, Object> entry: serverConfig.entrySet()) {
+                // Get instance name and id
+                String serverName = entry.getKey();
+                String name = config.getString("servers." + serverName + ".name");
+                String id = config.getString("servers." + serverName + ".id");
 
-            Instance instance = new Instance(name, id, null);
-            boolean status = instanceLogin(instance);
-            if (status) {
-                useLogger(logger, "Instance " + instance.name + " is online!");
-            } else {
-                useLogger(logger, "Instance " + instance.name + " is offline!");
+                Instance instance = new Instance(name, id, null);
+                boolean status = instanceLogin(instance);
+                if (status) {
+                    useLogger(logger, "Instance " + instance.name + " is online!");
+                } else {
+                    useLogger(logger, "Instance " + instance.name + " is offline!");
+                }
             }
-        }
 
-        // Initialize groups
-        Map<String, Object> groupConfig = (Map<String, Object>) config.getBlock("groups").getStoredValue();
-        for (Map.Entry<String, Object> entry: groupConfig.entrySet()) {
-            // Get group name and servers
-            String groupName = entry.getKey();
-            ArrayList<String> servers = (ArrayList<String>) config.getBlock("groups." + groupName + ".servers").getStoredValue();
+            // Initialize groups
+            Map<String, Object> groupConfig = (Map<String, Object>) config.getBlock("groups").getStoredValue();
+            for (Map.Entry<String, Object> entry: groupConfig.entrySet()) {
+                // Get group name and servers
+                String groupName = entry.getKey();
+                ArrayList<String> servers = (ArrayList<String>) config.getBlock("groups." + groupName + ".servers").getStoredValue();
 
-            // Loop through tasks
-        }
+                // Loop through tasks
+            }
+        });
     }
 
     // Add instance to instances

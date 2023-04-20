@@ -7,12 +7,15 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.*;
-
 public class FabricMain implements ModInitializer,ClientModInitializer {
     // Logger
     public final Logger logger = LoggerFactory.getLogger("ampservermanager");
     public AMPServerManager ampServerManager;
+
+    // Get server type
+    public String getServerType() {
+        return "Fabric";
+    }
 
     // Singleton instance
     private static FabricMain instance;
@@ -20,32 +23,15 @@ public class FabricMain implements ModInitializer,ClientModInitializer {
         return instance;
     }
 
-    // Repeat async task
-    public static void repeatTaskAsync(Runnable run, Long delay, Long period) {
-        ForkJoinPool.commonPool().submit(() -> {
-            try {
-                Thread.sleep(delay*1000/20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            while (true) {
-                try {
-                    Thread.sleep(period*1000/20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                run.run();
-            }
-        });
-    }
-
     public void init() {
         // Singleton instance
         instance = this;
 
+        logger.info("AMPAPAI Server Manager is running on " + getServerType() + ".");
+
         // Start AMPAPAI Server Manager
         ampServerManager = new AMPServerManager("config", logger);
-        ForkJoinPool.commonPool().submit(() -> ampServerManager.start());
+        ampServerManager.start();
 
         // Register commands
         CommandRegistrationCallback.EVENT.register(FabricAMPCommands::register);

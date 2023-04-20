@@ -68,7 +68,7 @@ groups:
         command: restart
         interval: 60 # in seconds
         conditions:
-          playercount:
+          - placeholder: playercount
             operator: ==
             value: 0
 ```
@@ -106,3 +106,5 @@ groups:
     - [ ] `/amp group <group> task remove <task name>`
 
   - [ ] Add a command to list all conditionals in a task -- `/amp group <group> task <task> condition list`
+
+  - [ ] Make AMPServerManagerPlugin function as a standalone terminal program, since it's all Java 8 anyway.

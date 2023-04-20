@@ -1,14 +1,14 @@
 package ca.sperrer.p0t4t0sandwich.ampservermanager.bukkit;
 
 import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.VersionUtils.*;
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.VersionUtils.isFolia;
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.VersionUtils.isPaper;
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.VersionUtils.isSpigot;
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.VersionUtils.isCraftBukkit;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
-import java.util.concurrent.ForkJoinPool;
 
 public class BukkitMain extends JavaPlugin {
     public AMPServerManager ampServerManager;
@@ -18,8 +18,6 @@ public class BukkitMain extends JavaPlugin {
     public static BukkitMain getInstance() {
         return instance;
     }
-
-    public static boolean FOLIA = isFolia();
 
     public String getServerType() {
         if (isFolia()) {
@@ -35,51 +33,16 @@ public class BukkitMain extends JavaPlugin {
         }
     }
 
-    public static void runTaskAsync(Plugin plugin, Runnable run) {
-        if (!FOLIA) {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, run);
-            return;
-        }
-        ForkJoinPool.commonPool().submit(run);
-    }
-
-    public static void repeatTaskAsync(Plugin plugin, Runnable run, Long delay, Long period) {
-        if (!FOLIA) {
-            Bukkit.getScheduler().runTaskTimer(plugin, run, delay, period);
-            return;
-        }
-        ForkJoinPool.commonPool().submit(() -> {
-            try {
-                Thread.sleep(delay*1000/20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            while (true) {
-                try {
-                    Thread.sleep(period*1000/20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                run.run();
-            }
-        });
-    }
-
     @Override
     public void onEnable() {
         // Singleton instance
         instance = this;
 
-        // Folia check
-        if (FOLIA) {
-            getLogger().info("Folia detected, using our own scheduler");
-        } else {
-            getLogger().info(getServerType() + " detected, using the Bukkit scheduler");
-        }
+        getLogger().info("AMPAPAI Server Manager is running on " + getServerType() + ".");
 
         // Start AMPAPAI Server Manager
         ampServerManager = new AMPServerManager("plugins", getLogger());
-        runTaskAsync(this, ampServerManager::start);
+        ampServerManager.start();
 
         // Register commands
         Objects.requireNonNull(getCommand("amp")).setExecutor(new BukkitAMPCommands());
