@@ -1,21 +1,20 @@
 package ca.sperrer.p0t4t0sandwich.ampservermanager;
 
-import java.awt.*;
+import java.awt.GraphicsEnvironment;
 import java.io.Console;
-import java.io.IOException;
 import java.util.Date;
 import java.util.logging.*;
 
 import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.ansiiParser;
 
 public class Main {
-    public static void main (String [] args) throws IOException {
+    public static void main (String [] args) {
         Console console = System.console();
 
         // Check if console is null and if the system is headless
-        if (console == null && !GraphicsEnvironment.isHeadless()) {
-            String filename = Main.class.getProtectionDomain().getCodeSource().getLocation().toString().substring(6);
-            Runtime.getRuntime().exec(new String[]{"cmd","/c","start","cmd","/k","java -jar \"" + filename + "\""});
+        if (console == null || !GraphicsEnvironment.isHeadless()) {
+            // Kill the application -- There be no GUI
+            System.exit(1);
 
         // Normal execution
         } else {
@@ -45,7 +44,7 @@ public class Main {
             ampServerManager.init();
 
             // Start terminal application
-            while(true){
+            while (true) {
                 String[] input = console.readLine().split(" ");
 
                 if (input[0].equals("exit")) {
