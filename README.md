@@ -109,7 +109,7 @@ groups:
 
 - [x] Make AMPServerManagerPlugin function as a standalone terminal program, since it's all Java 8 anyway.
   - [x] Format the log properly
-  - [ ] Add pretty terminal colors
+  - [x] Add pretty terminal colors
   - [ ] Wonder how hard tab completion and command history would be to implement
 
 - [ ] Add the ability to sync the config with a database? -- would need one AMPServerManager process to act as a main process and handle all the group tasks.

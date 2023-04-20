@@ -5,6 +5,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.CommandManager.RegistrationEnvironment;
+
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.ansiiParser;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import net.minecraft.server.command.ServerCommandSource;
@@ -42,7 +44,7 @@ public final class FabricAMPCommands {
                         if (entity instanceof ServerPlayerEntity) {
                             entity.sendMessage(Text.literal(message));
                         } else {
-                            mod.logger.info(message.replaceAll("§.", ""));
+                            mod.logger.info(ansiiParser(message));
                         }
                     });
                 }

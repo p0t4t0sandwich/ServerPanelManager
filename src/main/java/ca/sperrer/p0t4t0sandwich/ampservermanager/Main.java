@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.logging.*;
 
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.ansiiParser;
+
 public class Main {
     public static void main (String [] args) throws IOException {
         Console console = System.console();
@@ -63,14 +65,12 @@ public class Main {
                     logger.info("status <server> - Get the status of a server");
 
                 } else {
-                    String response = ampServerManager.commandMessenger(input).replaceAll("§.", "");
+                    String response = ansiiParser(ampServerManager.commandMessenger(input));
                     if (response.equals("")) {
                         response = "Use 'help' to see a list of commands.";
                     }
 
-                    for (String s : response.split("\n")) {
-                        logger.info(s);
-                    }
+                    logger.info(response);
                 }
             }
         }
