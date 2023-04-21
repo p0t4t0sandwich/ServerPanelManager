@@ -307,6 +307,13 @@ public class AMPServerManager {
         return newStatus;
     }
 
+    // Backup Server
+    public void backupServer(String serverName, String backupTitle, String backupDescription, boolean isSticky) {
+        instanceMethod(serverName, (args) -> instances.get(serverName).API.LocalFileBackupPlugin_TakeBackup(
+                backupTitle, backupDescription, isSticky
+        ));
+    }
+
     // Start Server Handler
     private String startServerHandler(String[] args) {
         // Usage
@@ -479,6 +486,31 @@ public class AMPServerManager {
         return null;
     }
 
+    // Backup Server Handler
+    private String backupServerHandler(String[] args) {
+        // Usage
+        if (args.length == 1) {
+            return "§cUsage: /amp backup <instance>";
+        }
+        // Backup server
+        if (args.length >= 2) {
+            String serverName = args[1];
+
+            if (instances.containsKey(serverName)) {
+                // Parse Backup details
+                String backupName = args.length >= 3 ? args[2] : "";
+                String backupDescription = args.length >= 4 ? args[3] : "";
+                boolean isSticky = args.length >= 5 && args[4].equalsIgnoreCase("true");
+
+                backupServer(serverName, backupName, backupDescription, isSticky);
+                return "§aBacking up server " + serverName + "...";
+            } else {
+                return "§cServer " + serverName + " does not exist!";
+            }
+        }
+        return null;
+    }
+
     // Server Command
     private String serverCommand(String[] args, Function<String[], String> method) {
         return method.apply(args);
@@ -494,7 +526,8 @@ public class AMPServerManager {
             "\n§6kill <server> - Kill server" +
             "\n§6sleep <server> - Put server to sleep" +
             "\n§6send <server> <command> - Send command to server" +
-            "\n§6status <server> - Get server status";
+            "\n§6status <server> - Get server status" +
+            "\n§6backup <server> [name] [description] [sticky <- true or false] - Backup server";
     }
 
     // Command Messenger
@@ -544,6 +577,10 @@ public class AMPServerManager {
                 // Get Status
                 case "status":
                     message = serverCommand(args, this::getStatusHandler);
+                    break;
+                // Backup Server
+                case "backup":
+                    message = serverCommand(args, this::backupServerHandler);
                     break;
                 // Help
                 default:
