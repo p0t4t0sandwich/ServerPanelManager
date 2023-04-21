@@ -5,7 +5,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-import java.util.concurrent.TimeUnit;
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.runTaskAsync;
 
 public class BungeeAMPCommands extends Command {
     private final BungeeMain plugin = BungeeMain.getInstance();
@@ -16,7 +16,7 @@ public class BungeeAMPCommands extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        plugin.getProxy().getScheduler().schedule(plugin, () -> {
+        runTaskAsync(() -> {
             String message;
             // Player and permission check
             if (sender instanceof ProxiedPlayer && !sender.hasPermission("ampservermanager.amp")) {
@@ -27,6 +27,6 @@ public class BungeeAMPCommands extends Command {
 
             sender.sendMessage(new ComponentBuilder(message).create());
 
-        }, 0, TimeUnit.SECONDS);
+        });
     }
 }
