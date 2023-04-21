@@ -4,6 +4,8 @@
 
 A plugin that allows you to manage your AMP game servers from within minecraft. This plugin is still in development and is not quite ready for production use. Feel free to mess around with it and report any bugs you find, or any features you would like to see.
 
+Note: If you need to port this mod/plugin to an unsupported platform/version, feel free to create an issue, and I'll see what I can do. Older MC implementations are built on an as-needed basis.
+
 ## Commands
 
 ### /amp
