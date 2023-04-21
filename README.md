@@ -89,6 +89,7 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 
 ### General
 
+- [ ] Refactor everything -- this is a monolithic mess
 - [ ] Add a command to reload the config
 - [ ] Design an API for other plugins to use -- that way this plugin doesn't become a spaghetti mess
 - [ ] Forge support -- try and generalize the fabric command and see if I can get it to work with forge, as both use brigadier
