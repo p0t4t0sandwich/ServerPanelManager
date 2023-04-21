@@ -91,6 +91,7 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 - [ ] Design an API for other plugins to use -- that way this plugin doesn't become a spaghetti mess
 - [ ] Forge support -- try and generalize the fabric command and see if I can get it to work with forge, as both use brigadier
 - [ ] Multi-Fabric version support -- some gradle project voodoo required
+- [ ] Fabric client side chat listener -- do it like this? https://www.reddit.com/r/fabricmc/comments/wg7jrx/onchat/
 - [ ] Quilt support
 - [ ] Sponge support
 - [ ] Velocity support
@@ -136,10 +137,19 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
   - [ ] Add conditionals
   - [ ] think of a placeholder spec for conditionals
   - [ ] Build a parser for conditionals and placeholders
+  - [ ] Webhook task
+- [ ] Send commands to all servers in a group
+- [ ] Group playerlist interface -- Some readout of the playerlist for all servers in a group -- good for Proxy setups
 
 ### Misc
 
 - [ ] Add multi-ADS/Controller logic -- similar to old WatchFerret
+
+- [ ] Update mods/plugins from url? -- maybe add a `update` command to the group system?
+
+- [ ] Server console regex task -- maybe add a `regex` command to the group system?
+
+- [ ] No-start status fix -- plop a proper `server started` message in the console -- Fix for Forge 1.12.2 v14.23.5.2858 and FTB Revelation
 
 - [x] Make AMPServerManagerPlugin function as a standalone terminal program, since it's all compiled to Java 8 anyway.
   - [x] Format the log properly
