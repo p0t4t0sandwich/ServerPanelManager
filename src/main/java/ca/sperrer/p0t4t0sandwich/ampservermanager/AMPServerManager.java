@@ -5,9 +5,14 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ForkJoinPool;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
+
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.runTaskAsync;
 
 public class AMPServerManager {
     public YamlDocument config;
@@ -20,30 +25,6 @@ public class AMPServerManager {
     private static AMPServerManager singleton;
     public static AMPServerManager getInstance() {
         return singleton;
-    }
-
-    // Run async task
-    public static void runTaskAsync(Runnable run) {
-        ForkJoinPool.commonPool().submit(run);
-    }
-
-    // Repeat async task
-    public static void repeatTaskAsync(Runnable run, Long delay, Long period) {
-        ForkJoinPool.commonPool().submit(() -> {
-            try {
-                Thread.sleep(delay*1000/20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            while (true) {
-                try {
-                    Thread.sleep(period*1000/20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                run.run();
-            }
-        });
     }
 
     // Constructor
@@ -503,11 +484,39 @@ public class AMPServerManager {
         return method.apply(args);
     }
 
+    private String helpHandler() {
+        return "§6Available commands:" +
+            "\n§6help - Show this message" +
+            "\n§6exit - Exit the application (CLI only)" +
+            "\n§6start <server> - Start server" +
+            "\n§6stop <server> - Stop server" +
+            "\n§6restart <server> - Restart server" +
+            "\n§6kill <server> - Kill server" +
+            "\n§6sleep <server> - Put server to sleep" +
+            "\n§6send <server> <command> - Send command to server" +
+            "\n§6status <server> - Get server status";
+    }
+
     // Command Messenger
     public String commandMessenger(String[] args) {
-        String message = "";
+        String message;
         try {
             switch (args[0].toLowerCase()) {
+                // Server Command Tree
+                case "server":
+                    switch (args[1].toLowerCase()) {
+                        // List
+                        case "list":
+                            // Get server list from config "servers" object keys
+                            message = "§6Available servers: §5" + String.join("§6, §5", instances.keySet());
+                            break;
+                        default:
+                            // TODO: Need specific help handler
+                            message = helpHandler();
+                            break;
+                    }
+                    break;
+
                 // Start Server
                 case "start":
                     message = serverCommand(args, this::startServerHandler);
@@ -535,6 +544,10 @@ public class AMPServerManager {
                 // Get Status
                 case "status":
                     message = serverCommand(args, this::getStatusHandler);
+                    break;
+                // Help
+                default:
+                    message = helpHandler();
                     break;
             }
         } catch (Exception e) {
