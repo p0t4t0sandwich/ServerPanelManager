@@ -48,19 +48,6 @@ public class AMPServerManager {
         }
     }
 
-    // Instance type
-    public static class Instance {
-        public String name;
-        public String id;
-        public AMPAPIHandler API;
-
-        public Instance(String name, String id, AMPAPIHandler API) {
-            this.name = name;
-            this.id = id;
-            this.API = API;
-        }
-    }
-
     // Variable Logger handler
     public void useLogger(Object logger, String message) {
         if (logger instanceof java.util.logging.Logger) {
@@ -150,7 +137,7 @@ public class AMPServerManager {
 
             instance.API = ADS.InstanceLogin(instance.id);
             if (instance.API != null) {
-                Map<? extends Object, ? extends Object> status = instance.API.Login();
+                Map<?, ?> status = instance.API.Login();
                 if (status.get("success").equals(true)) {
                     instances.put(instance.name, instance);
                     return true;
@@ -602,7 +589,7 @@ public class AMPServerManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            AMPServerManager.Instance instance = instances.get(args[1]);
+            Instance instance = instances.get(args[1]);
             boolean result = instanceLogin(instance);
             if (result) {
                 message = "§cAn error occurred while executing the command!";
