@@ -3,7 +3,11 @@ package ca.sperrer.p0t4t0sandwich.ampservermanager;
 import java.awt.GraphicsEnvironment;
 import java.io.Console;
 import java.util.Date;
-import java.util.logging.*;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.ansiiParser;
 
@@ -12,12 +16,13 @@ public class Main {
         Console console = System.console();
 
         // Check if console is null and if the system is headless
-        if (console == null || !GraphicsEnvironment.isHeadless()) {
+        if (console == null && !GraphicsEnvironment.isHeadless()) {
             // Kill the application -- There be no GUI
+            System.err.println("No console.");
             System.exit(1);
 
         // Normal execution
-        } else {
+        } else if (console != null) {
             // Logger
             Logger logger = Logger.getLogger("ampservermanager");
             logger.setLevel(Level.FINE);
@@ -49,20 +54,6 @@ public class Main {
 
                 if (input[0].equals("exit")) {
                     break;
-                } else if (input[0].equals("help")) {
-                    logger.info("Available commands:");
-                    logger.info("help - Show this message");
-                    logger.info("exit - Exit the application");
-//                    logger.info("list - List all servers");
-
-                    logger.info("start <server> - Start a server");
-                    logger.info("stop <server> - Stop a server");
-                    logger.info("restart <server> - Restart a server");
-                    logger.info("kill <server> - Kill a server");
-                    logger.info("sleep <server> - Put a server to sleep");
-                    logger.info("send <server> <command> - Send a command to a server");
-                    logger.info("status <server> - Get the status of a server");
-
                 } else {
                     String response = ansiiParser(ampServerManager.commandMessenger(input));
                     if (response.equals("")) {
