@@ -81,6 +81,10 @@ groups:
 
 Contributions and suggestions are welcome! Just open an issue or a pull request, and I'll get to it as soon as I can.
 
+### Bugs
+
+- [ ] Program doesn't time out if it can't connect to the AMP API -- is this a problem with ampapi-java? -- If so, then I'll have to fix it there
+
 ### General
 
 - [ ] Add a command to reload the config
@@ -134,6 +138,8 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
   - [ ] Build a parser for conditionals and placeholders
 
 ### Misc
+
+- [ ] Add multi-ADS/Controller logic -- similar to old WatchFerret
 
 - [x] Make AMPServerManagerPlugin function as a standalone terminal program, since it's all compiled to Java 8 anyway.
   - [x] Format the log properly
