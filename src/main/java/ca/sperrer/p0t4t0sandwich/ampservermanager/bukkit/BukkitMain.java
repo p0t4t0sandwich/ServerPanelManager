@@ -1,10 +1,10 @@
 package ca.sperrer.p0t4t0sandwich.ampservermanager.bukkit;
 
 import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.VersionUtils.isFolia;
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.VersionUtils.isPaper;
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.VersionUtils.isSpigot;
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.VersionUtils.isCraftBukkit;
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.isFolia;
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.isPaper;
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.isSpigot;
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.isCraftBukkit;
 
 import org.bukkit.plugin.java.JavaPlugin;
 

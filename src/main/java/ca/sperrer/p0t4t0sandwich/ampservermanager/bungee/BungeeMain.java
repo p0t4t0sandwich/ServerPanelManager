@@ -3,8 +3,6 @@ package ca.sperrer.p0t4t0sandwich.ampservermanager.bungee;
 import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
 import net.md_5.bungee.api.plugin.Plugin;
 
-import java.util.concurrent.TimeUnit;
-
 public class BungeeMain extends Plugin {
     public AMPServerManager ampServerManager;
 
