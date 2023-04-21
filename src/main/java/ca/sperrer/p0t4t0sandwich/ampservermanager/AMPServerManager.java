@@ -527,7 +527,10 @@ public class AMPServerManager {
             "\n§6sleep <server> - Put server to sleep" +
             "\n§6send <server> <command> - Send command to server" +
             "\n§6status <server> - Get server status" +
-            "\n§6backup <server> [name] [description] [sticky <- true or false] - Backup server";
+            "\n§6backup <server> [name] [description] [sticky <- true or false] - Backup server" +
+            "\n§6server list - List available servers" +
+            "\n§6server add <server> <instanceName> [instanceID] - Add server to config" +
+            "\n§6server remove <server> - Remove server from config";
     }
 
     // Command Messenger
@@ -542,6 +545,16 @@ public class AMPServerManager {
                         case "list":
                             // Get server list from config "servers" object keys
                             message = "§6Available servers: §5" + String.join("§6, §5", instances.keySet());
+                            break;
+                        // Add
+                        case "add":
+                            // Add server to config "servers" object
+                            message = "";
+                            break;
+                        // Remove
+                        case "remove":
+                            // Remove server from config "servers" object
+                            message = "";
                             break;
                         default:
                             // TODO: Need specific help handler
