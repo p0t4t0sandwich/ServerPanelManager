@@ -149,6 +149,7 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 - [ ] Add multi-ADS/Controller logic -- similar to old WatchFerret
 
 - [ ] Update mods/plugins from url? -- maybe add a `update` command to the group system?
+  - [ ] Optional: include regex to delete old files
 
 - [ ] Server console regex task -- maybe add a `regex` command to the group system?
 
