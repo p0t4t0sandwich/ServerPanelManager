@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.ansiiParser;
+import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.runTaskAsync;
 
 public class Main {
     public static void main (String [] args) {
@@ -46,21 +47,23 @@ public class Main {
 
             // Start AMPAPAI Server Manager
             AMPServerManager ampServerManager = new AMPServerManager("./", logger);
-            ampServerManager.init();
+            ampServerManager.start();
 
             // Start terminal application
             while (true) {
                 String[] input = console.readLine().split(" ");
 
-                if (input[0].equals("exit")) {
+                if (input[0].equals("exit") || input[0].equals("quit") || input[0].equals("stop") || input[0].equals("end")) {
                     break;
                 } else {
-                    String response = ansiiParser(ampServerManager.commandMessenger(input));
-                    if (response.equals("")) {
-                        response = "Use 'help' to see a list of commands.";
-                    }
+                    runTaskAsync(() -> {
+                        String response = ansiiParser(ampServerManager.commandMessenger(input));
+                        if (response.equals("")) {
+                            response = "Use 'help' to see a list of commands.";
+                        }
 
-                    logger.info(response);
+                        logger.info(response);
+                    });
                 }
             }
         }
