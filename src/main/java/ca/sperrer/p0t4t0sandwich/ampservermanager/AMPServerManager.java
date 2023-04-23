@@ -10,12 +10,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.runTaskAsync;
 
 public class AMPServerManager {
-    public YamlDocument config;
+    public static YamlDocument config;
     public Object logger;
     public String host;
     public String username;
@@ -59,43 +58,43 @@ public class AMPServerManager {
         }
     }
 
-    // Init AMPAPIHandler
-    public void init() {
-        ADS = new AMPAPIHandler(host, username, password, "", "");
-        ADS.Login();
-
-        // Get and initialize instances
-        Map<String, Object> serverConfig = (Map<String, Object>) config.getBlock("servers").getStoredValue();
-        for (Map.Entry<String, Object> entry: serverConfig.entrySet()) {
-            // Get instance name and id
-            String serverName = entry.getKey();
-            String name = config.getString("servers." + serverName + ".name");
-            String id = config.getString("servers." + serverName + ".id");
-
-            Instance instance = new Instance(host, username, password, true, name, id, null);
-
-            if (instance.APILogin()) {
-                instances.put(instance.name, instance);
-                useLogger(logger, "Instance " + instance.name + " is online!");
-            } else {
-                useLogger(logger, "Instance " + instance.name + " is offline!");
-            }
-        }
-
-        // Initialize groups
-        Map<String, Object> groupConfig = (Map<String, Object>) config.getBlock("groups").getStoredValue();
-        for (Map.Entry<String, Object> entry: groupConfig.entrySet()) {
-            // Get group name and servers
-            String groupName = entry.getKey();
-            ArrayList<String> servers = (ArrayList<String>) config.getBlock("groups." + groupName + ".servers").getStoredValue();
-
-            // Loop through tasks
-        }
-    }
-
     // Start AMPAPIHandler
     public void start() {
-        runTaskAsync(this::init);
+        runTaskAsync(() -> {
+            ADS = new AMPAPIHandler(host, username, password, "", "");
+            ADS.Login();
+
+            // Get and initialize instances
+            Map<String, Object> serverConfig = (Map<String, Object>) config.getBlock("servers").getStoredValue();
+            for (Map.Entry<String, Object> entry: serverConfig.entrySet()) {
+                // Get instance name and id
+                String serverName = entry.getKey();
+                String name = config.getString("servers." + serverName + ".name");
+                String id = config.getString("servers." + serverName + ".id");
+
+                Instance instance = new Instance(host, username, password, true, name, id, null);
+
+                // Check if instance is online
+                runTaskAsync(() -> {
+                    if (instance.APILogin()) {
+                        instances.put(instance.name, instance);
+                        useLogger(logger, "Instance " + instance.name + " is online!");
+                    } else {
+                        useLogger(logger, "Instance " + instance.name + " is offline!");
+                    }
+                });
+            }
+
+            // Initialize groups
+            Map<String, Object> groupConfig = (Map<String, Object>) config.getBlock("groups").getStoredValue();
+            for (Map.Entry<String, Object> entry: groupConfig.entrySet()) {
+                // Get group name and servers
+                String groupName = entry.getKey();
+                ArrayList<String> servers = (ArrayList<String>) config.getBlock("groups." + groupName + ".servers").getStoredValue();
+
+                // Loop through tasks
+            }
+        });
     }
 
     // Start Server Handler
