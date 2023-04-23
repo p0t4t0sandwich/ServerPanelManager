@@ -5,6 +5,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -227,5 +228,22 @@ public class Instance {
     // Backup Server
     public void backupServer(String backupTitle, String backupDescription, boolean isSticky) {
         runMethod((args) -> API.LocalFileBackupPlugin_TakeBackup(backupTitle, backupDescription, isSticky));
+    }
+
+    // Player List
+    public Map<String, Object> getPlayerList() {
+        return runMethod((args) -> (Map<String, Object>) API.Core_GetUserList().get("result"));
+    }
+
+    // Parse Player List
+    public List<String> parsePlayerList(Map<String, Object> playerList) {
+        if (playerList == null) {
+            return null;
+        }
+        List<String> players = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : playerList.entrySet()) {
+            players.add((String) entry.getValue());
+        }
+        return players;
     }
 }

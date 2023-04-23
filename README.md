@@ -133,6 +133,8 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 
   - [ ] Add a command to list all conditionals in a task -- `/amp group <group> task <task> condition list`
 
+- [x] playerlist command -- `/amp players <server>`
+
 ### Groups
 
 - [ ] Finalize configuration for groups

@@ -5,11 +5,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.runTaskAsync;
 
@@ -320,6 +316,49 @@ public class AMPServerManager {
         return null;
     }
 
+    // Player List Handler
+    private String playerListHandler(String[] args) {
+        // Usage
+        if (args.length == 1) {
+            return "§cUsage: /amp players <instance>";
+        }
+        // Get player list
+        if (args.length == 2) {
+            String serverName = args[1];
+            if (instances.containsKey(serverName)) {
+                Instance instance = instances.get(serverName);
+                Map<String, Object> status = instance.getStatus();
+                int state = (int) Math.round((double) status.get("State"));
+                if (Objects.equals(state, 20)) {
+                    String output = "§6" + serverName + ":\n";
+
+                    // Player count
+                    if (status.containsKey("Metrics")) {
+                        Map<String, Object> metrics = (Map<String, Object>) status.get("Metrics");
+                        if (metrics.containsKey("Active Users")) {
+                            Map<String, Object> Players = (Map<String, Object>) metrics.get("Active Users");
+                            int PlayersValue = (int) Math.round((double) Players.get("RawValue"));
+                            int PlayersMax = (int) Math.round((double) Players.get("MaxValue"));
+                            output += "§6Players: §9" + PlayersValue + "§6/§9" + PlayersMax + "\n";
+                        }
+                    }
+
+                    // Player list
+                    List<String> playerList = instance.parsePlayerList(instance.getPlayerList());
+                    if (playerList == null || playerList.isEmpty()) {
+                        return "§cServer " + serverName + " has no players online!";
+                    }
+                    return output + String.join("\n", playerList);
+                } else {
+                    return "§cServer " + serverName + " is not Ready!";
+                }
+            } else {
+                return "§cServer " + serverName + " does not exist!";
+            }
+        }
+        return null;
+    }
+
     private String helpHandler() {
         return "§6Available commands:" +
             "\n§6help - Show this message" +
@@ -332,6 +371,7 @@ public class AMPServerManager {
             "\n§6send <server> <command> - Send command to server" +
             "\n§6status <server> - Get server status" +
             "\n§6backup <server> [name] [description] [sticky <- true or false] - Backup server" +
+            "\n§6players <server> - Get server player list" +
             "\n§6server list - List available servers" +
             "\n§6server add <server> <instanceName> [instanceID] - Add server to config" +
             "\n§6server remove <server> - Remove server from config";
@@ -398,6 +438,10 @@ public class AMPServerManager {
                 // Backup Server
                 case "backup":
                     message = backupServerHandler(args);
+                    break;
+                // Player List
+                case "players":
+                    message = playerListHandler(args);
                     break;
                 // Help
                 default:
