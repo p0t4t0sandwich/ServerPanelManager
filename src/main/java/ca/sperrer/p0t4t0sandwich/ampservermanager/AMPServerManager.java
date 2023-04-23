@@ -305,7 +305,13 @@ public class AMPServerManager {
                 // Parse Backup details
                 String backupName = args.length >= 3 ? args[2] : "";
                 String backupDescription = args.length >= 4 ? args[3] : "";
-                boolean isSticky = args.length >= 5 && args[4].equalsIgnoreCase("true");
+                boolean isSticky = args.length >= 5 && (
+                        args[4].equalsIgnoreCase("true")
+                        || args[4].equalsIgnoreCase("t")
+                        || args[4].equalsIgnoreCase("1")
+                        || args[4].equalsIgnoreCase("yes")
+                        || args[4].equalsIgnoreCase("y")
+                );
 
                 instance.backupServer(backupName, backupDescription, isSticky);
                 return "§aBacking up server " + serverName + "...";
