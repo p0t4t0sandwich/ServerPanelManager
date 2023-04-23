@@ -166,4 +166,4 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
   - [ ] hot reload the config when it changes -- how? -- LuckPerms does it, maybe subscribe to database changes?
 
 - [ ] WatchFerret?
-  - [ ] Should be able to hook into the Groups system and run the checks on a timer -- maybe add a `watch` command to the group system? -- Would be nice to generalize the Groups system to save some variable state -- hard maybe
+  - [ ] Should be able to hook into the Groups system and run the checks on a timer -- maybe add a `watch` command to the group system? -- Store in Groups class in some sort of variables property
