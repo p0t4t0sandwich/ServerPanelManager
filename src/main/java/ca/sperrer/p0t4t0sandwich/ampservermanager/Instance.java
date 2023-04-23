@@ -1,6 +1,7 @@
 package ca.sperrer.p0t4t0sandwich.ampservermanager;
 
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
+import dev.dejvokep.boostedyaml.YamlDocument;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,25 +43,21 @@ public class Instance {
 
                         // Loop through the target instances
                         for (Map<String, Object> instance : (ArrayList<Map<String, Object>>) target.get("AvailableInstances")) {
-                            String instanceModule = (String) instance.get("Module");
 
-                            // Check if the instance is a Minecraft instance and grab the instance id
-                            if (instanceModule.equals("Minecraft")) {
-                                String instanceName = (String) instance.get("InstanceName");
-                                if (instanceName.equals(name)) {
-                                    id = (String) instance.get("InstanceID");
+                            // Grab the instance id
+                            String instanceName = (String) instance.get("InstanceName");
+                            if (instanceName.equals(name)) {
+                                id = (String) instance.get("InstanceID");
 
-                                    // TODO: Save the id to the config
-
-                                    // Save the id to the config
-//                                    config.set("servers." + instance.name + ".id", id);
-//                                    try {
-//                                        config.save();
-//                                    } catch (Exception e) {
-//                                        e.printStackTrace();
-//                                    }
-                                    break;
+                                // Save the id to the config
+                                YamlDocument config = AMPServerManager.config;
+                                config.set("servers." + name + ".id", id);
+                                try {
+                                    config.save();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
+                                break;
                             }
 
                             // Break if the instance id is found
