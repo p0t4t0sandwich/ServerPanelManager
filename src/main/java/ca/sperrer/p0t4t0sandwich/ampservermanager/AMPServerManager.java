@@ -259,7 +259,7 @@ public class AMPServerManager {
             String serverName = args[1];
             if (instances.containsKey(serverName)) {
                 Instance instance = instances.get(serverName);
-                Map<String, Object> status = instance.parseStatus();
+                Map<String, Object> status = instance.parseStatus(instance.getStatus());
                 if (status == null) {
                     return "§cServer " + serverName + " is not responding!";
                 }

@@ -124,8 +124,7 @@ public class Instance {
     }
 
     // Parse Status
-    public Map<String, Object> parseStatus() {
-        Map<String, Object> status = getStatus();
+    public Map<String, Object> parseStatus(Map<String, Object> status) {
         if (status == null) {
             return null;
         }
