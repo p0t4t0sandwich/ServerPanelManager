@@ -3,12 +3,20 @@ package ca.sperrer.p0t4t0sandwich.ampservermanager;
 import java.util.concurrent.ForkJoinPool;
 
 public class Utils {
-    // Run async task
+    /*
+    Run a task asynchronously.
+    @param run: The task to run asynchronously.
+     */
     public static void runTaskAsync(Runnable run) {
         ForkJoinPool.commonPool().submit(run);
     }
 
-    // Repeat async task
+    /*
+    Run a task asynchronously, repeating it every period seconds.
+    @param run: The task to run asynchronously.
+    @param delay: The delay in seconds to wait before running the task.
+    @param period: The period in seconds to repeat the task.
+     */
     public static void repeatTaskAsync(Runnable run, Long delay, Long period) {
         ForkJoinPool.commonPool().submit(() -> {
             try {
@@ -27,6 +35,11 @@ public class Utils {
         });
     }
 
+    /*
+    A parser to convert Minecraft's color codes to the terminal's ANSII color codes.
+    @param s: The string to parse.
+    @return: The parsed string.
+     */
     public static String ansiiParser(String s) {
         // Colors
 
@@ -80,7 +93,10 @@ public class Utils {
                 + "\u001b[0m";
     }
 
-    // Check if the server is running CraftBukkit
+    /*
+    Check if the server is running CraftBukkit.
+    @return: True if the server is running a fork of CraftBukkit, false otherwise.
+     */
     public static boolean isCraftBukkit() {
         try {
             Class.forName("org.bukkit.craftbukkit.Main");
@@ -90,7 +106,10 @@ public class Utils {
         }
     }
 
-    // Check if the server is running Spigot
+    /*
+    Check if the server is running Spigot.
+    @return: True if the server is running a fork of Spigot, false otherwise.
+     */
     public static boolean isSpigot() {
         try {
             Class.forName("org.spigotmc.CustomTimingsHandler");
@@ -100,7 +119,10 @@ public class Utils {
         }
     }
 
-    // Check if the server is running Paper
+    /*
+    Check if the server is running Paper.
+    @return: True if the server is running a fork of Paper, false otherwise.
+     */
     public static boolean isPaper() {
         try {
             Class.forName("com.destroystokyo.paper.PaperConfig");
@@ -113,7 +135,10 @@ public class Utils {
         return false;
     }
 
-    // Check if the server is running Folia
+    /*
+    Check if the server is running Folia.
+    @return: True if the server is running Folia, false otherwise.
+     */
     public static boolean isFolia() {
         try {
             Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
@@ -123,7 +148,10 @@ public class Utils {
         }
     }
 
-    // Check if the server is running Magma
+    /*
+    Check if the server is running Magma.
+    @return: True if the server is running Magma, false otherwise.
+     */
     public static boolean isMagma() {
         try {
             Class.forName("org.magmafoundation.magma.Magma");
@@ -133,7 +161,10 @@ public class Utils {
         }
     }
 
-    // Check if the server is running Mohist
+    /*
+    Check if the server is running Mohist.
+    @return: True if the server is running Mohist, false otherwise.
+     */
     public static boolean isMohist() {
         try {
             Class.forName("org.mohistmc.MohistMC");
@@ -143,7 +174,10 @@ public class Utils {
         }
     }
 
-    // Check if the server is running Arclight
+    /*
+    Check if the server is running Arclight.
+    @return: True if the server is running Arclight, false otherwise.
+     */
     public static boolean isArclight() {
         try {
             Class.forName("io.izzel.arclight.common.ArclightVersion");
