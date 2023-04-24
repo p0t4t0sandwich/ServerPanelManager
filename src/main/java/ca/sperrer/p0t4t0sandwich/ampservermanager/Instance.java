@@ -1,7 +1,6 @@
 package ca.sperrer.p0t4t0sandwich.ampservermanager;
 
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
-import dev.dejvokep.boostedyaml.YamlDocument;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,13 +50,7 @@ public class Instance {
                                 id = (String) instance.get("InstanceID");
 
                                 // Save the id to the config
-                                YamlDocument config = AMPServerManager.config;
-                                config.set("servers." + name + ".id", id);
-                                try {
-                                    config.save();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                AMPServerManager.getInstance().addInstanceID(name, id);
                                 break;
                             }
 

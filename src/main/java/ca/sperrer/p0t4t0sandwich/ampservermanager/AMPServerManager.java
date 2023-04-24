@@ -93,6 +93,16 @@ public class AMPServerManager {
         });
     }
 
+    // Add/update instance id in config
+    public void addInstanceID(String name, String id) {
+        config.set("servers." + name + ".id", id);
+        try {
+            config.save();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // Start Server Handler
     private String startServerHandler(String[] args) {
         // Usage
