@@ -86,6 +86,7 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 ### Bugs
 
 - [ ] Program doesn't time out if it can't connect to the AMP API -- is this a problem with ampapi-java? -- If so, then I'll have to fix it there
+- [ ] Another instance of this problem: occurs when the instance is offline, replicates the above behavior just at an instance level
 
 ### General
 
@@ -130,6 +131,7 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
     - [ ] `/amp group <group> task add <task name> <command> <interval> <conditions>`
     - [ ] ^A parser to make that possible
     - [ ] `/amp group <group> task remove <task name>`
+  - [ ] findplayer command -- `/amp group <group> findplayer <player>`
 
   - [ ] Add a command to list all conditionals in a task -- `/amp group <group> task <task> condition list`
 
