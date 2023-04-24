@@ -10,13 +10,30 @@ import java.util.*;
 import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.runTaskAsync;
 
 public class AMPServerManager {
-    public static YamlDocument config;
-    public Object logger;
-    public String host;
-    public String username;
-    public String password;
-    public static AMPAPIHandler ADS;
-    public static HashMap<String, Instance> instances = new HashMap<>();
+    private static YamlDocument config;
+    private final Object logger;
+    private String host;
+    private String username;
+    private String password;
+    private static AMPAPIHandler ADS;
+    private static final HashMap<String, Instance> instances = new HashMap<>();
+
+    // Get instance
+    public static Instance getServerInstance(String serverName) {
+        return instances.get(serverName);
+    }
+
+    // Set instance
+    private void setServerInstance(String serverName, Instance instance) {
+        instances.put(serverName, instance);
+    }
+
+    // Instance exists
+    public static boolean serverInstanceExists(String serverName) {
+        return instances.containsKey(serverName);
+    }
+
+    // Singleton
     private static AMPServerManager singleton;
     public static AMPServerManager getInstance() {
         return singleton;
@@ -65,18 +82,18 @@ public class AMPServerManager {
             for (Map.Entry<String, Object> entry: serverConfig.entrySet()) {
                 // Get instance name and id
                 String serverName = entry.getKey();
-                String name = config.getString("servers." + serverName + ".name");
-                String id = config.getString("servers." + serverName + ".id");
+                String instanceName = config.getString("servers." + serverName + ".name");
+                String instanceId = config.getString("servers." + serverName + ".id");
 
-                Instance instance = new Instance(host, username, password, true, name, id, null);
+                Instance instance = new Instance(host, username, password, true, serverName, instanceName, instanceId, null);
 
                 // Check if instance is online
                 runTaskAsync(() -> {
                     if (instance.APILogin()) {
-                        instances.put(instance.name, instance);
-                        useLogger(logger, "Instance " + instance.name + " is online!");
+                        setServerInstance(serverName, instance);
+                        useLogger(logger, "Instance " + instanceName + " is online!");
                     } else {
-                        useLogger(logger, "Instance " + instance.name + " is offline!");
+                        useLogger(logger, "Instance " + instanceName + " is offline!");
                     }
                 });
             }
@@ -103,128 +120,74 @@ public class AMPServerManager {
         }
     }
 
-    // Start Server Handler
-    private String startServerHandler(String[] args) {
+    // Generic handler
+    private String genericHandler(String[] args, String rootCommand, String usage, List<Integer> exemptStates, String message, String exemptStateMessage) {
         // Usage
         if (args.length == 1) {
-            return "§cUsage: /amp start <server>";
+            return "§cUsage: " + rootCommand +" " + usage;
         }
-        // Start server
+
+        // Check if there are enough arguments
         if (args.length == 2) {
             String serverName = args[1];
-            if (instances.containsKey(serverName)) {
-                Instance instance = instances.get(serverName);
+            if (serverInstanceExists(serverName)) {
+                Instance instance = getServerInstance(serverName);
                 Map<String, Object> status = instance.getStatus();
                 int state = (int) Math.round((double) status.get("State"));
-                if (!Objects.equals(state, 10) && !Objects.equals(state, 20)) {
-                    instance.startServer();
-                    return "§aStarting server " + serverName + "...";
+
+                // Check if server is in exempt state
+                if (exemptStates.isEmpty() || !exemptStates.contains(state)) {
+                    switch (args[0]) {
+                        case "start":
+                            instance.startServer();
+                            break;
+                        case "stop":
+                            instance.stopServer();
+                            break;
+                        case "restart":
+                            instance.restartServer();
+                            break;
+                        case "kill":
+                            instance.killServer();
+                            break;
+                        case "sleep":
+                            instance.sleepServer();
+                            break;
+                    }
+                    return message;
                 } else {
-                    return "§cServer " + serverName + " is already running!";
+                    return exemptStateMessage;
                 }
             } else {
                 return "§cServer " + serverName + " does not exist!";
             }
         }
         return null;
+    }
+
+    // Start Server Handler
+    private String startServerHandler(String[] args) {
+        return genericHandler(args, "/amp", "start <server>", Arrays.asList(10, 20), "§aStarting server...", "§cServer is already running!");
     }
 
     // Stop Server Handler
     private String stopServerHandler(String[] args) {
-        // Usage
-        if (args.length == 1) {
-            return "§cUsage: /amp stop <instance>";
-        }
-        // Stop server
-        if (args.length == 2) {
-            String serverName = args[1];
-            if (instances.containsKey(serverName)) {
-                Instance instance = instances.get(serverName);
-                Map<String, Object> status = instance.getStatus();
-                int state = (int) Math.round((double) status.get("State"));
-                if (!Objects.equals(state, 0) && !Objects.equals(state, 40)) {
-                    instance.stopServer();
-                    return "§aStopping server " + serverName + "...";
-                } else {
-                    return "§cServer " + serverName + " is already stopped!";
-                }
-            } else {
-                return "§cServer " + serverName + " does not exist!";
-            }
-        }
-        return null;
+        return genericHandler(args, "/amp", "stop <server>", Arrays.asList(0, 40), "§aStopping server...", "§cServer is already stopped!");
     }
 
     // Restart Server Handler
     private String restartServerHandler(String[] args) {
-        // Usage
-        if (args.length == 1) {
-            return "§cUsage: /amp restart <instance>";
-        }
-        // Restart server
-        if (args.length == 2) {
-            String serverName = args[1];
-            if (instances.containsKey(serverName)) {
-                Instance instance = instances.get(serverName);
-                Map<String, Object> status = instance.getStatus();
-                int state = (int) Math.round((double) status.get("State"));
-                if (!Objects.equals(state, 0) && !Objects.equals(state, 40) && !Objects.equals(state, 45) && !Objects.equals(state, 50) ) {
-                    instance.restartServer();
-                    return "§aRestarting server " + serverName + "...";
-                } else {
-                    return "§cServer " + serverName + " is stopped/sleeping!";
-                }
-            } else {
-                return "§cServer " + serverName + " does not exist!";
-            }
-        }
-        return null;
+        return genericHandler(args, "/amp", "restart <server>", Arrays.asList(0, 40), "§aRestarting server...", "§cServer is already stopped!");
     }
 
     // Kill Server Handler
     private String killServerHandler(String[] args) {
-        // Usage
-        if (args.length == 1) {
-            return "§cUsage: /amp kill <instance>";
-        }
-        // Kill server
-        if (args.length == 2) {
-            String serverName = args[1];
-            if (instances.containsKey(serverName)) {
-                Instance instance = instances.get(serverName);
-                instance.killServer();
-                return "§aKilling server " + serverName + "...";
-            } else {
-                return "§cServer " + serverName + " does not exist!";
-            }
-        }
-        return null;
+        return genericHandler(args, "/amp", "kill <server>", Collections.emptyList(), "§aKilling server...", "§cServer is already stopped!");
     }
 
     // Sleep Server Handler
     private String sleepServerHandler(String[] args) {
-        // Usage
-        if (args.length == 1) {
-            return "§cUsage: /amp sleep <instance>";
-        }
-        // Sleep server
-        if (args.length == 2) {
-            String serverName = args[1];
-            if (instances.containsKey(serverName)) {
-                Instance instance = instances.get(serverName);
-                Map<String, Object> status = instance.getStatus();
-                int state = (int) Math.round((double) status.get("State"));
-                if (!Objects.equals(state, 0) && !Objects.equals(state, 30) && !Objects.equals(state, 40)) {
-                    instance.sleepServer();
-                    return "§aPutting server " + serverName + " to sleep...";
-                } else {
-                    return "§cServer " + serverName + " is already stopped/sleeping!";
-                }
-            } else {
-                return "§cServer " + serverName + " does not exist!";
-            }
-        }
-        return null;
+        return genericHandler(args, "/amp", "sleep <server>", Arrays.asList(0, 30, 40), "§aPutting server to sleep...", "§cServer is already stopped/sleeping!");
     }
 
     // Send Command Handler

@@ -9,22 +9,24 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class Instance {
-    public String host;
-    public String username;
-    public String password;
-    public boolean isADS;
+    private final String host;
+    private final String username;
+    private final String password;
+    private final boolean isADS;
 
-    public String name;
-    public String id;
-    public AMPAPIHandler API;
+    private final String serverName;
+    private final String name;
+    private String id;
+    private AMPAPIHandler API;
 
-    public Instance(String host, String username, String password, boolean isADS, String name, String id, AMPAPIHandler API) {
+    public Instance(String host, String username, String password, boolean isADS, String serverName, String instanceName, String instanceId, AMPAPIHandler API) {
         this.host = host;
         this.username = username;
         this.password = password;
         this.isADS = isADS;
-        this.name = name;
-        this.id = id;
+        this.serverName = serverName;
+        this.name = instanceName;
+        this.id = instanceId;
         this.API = API;
     }
 
