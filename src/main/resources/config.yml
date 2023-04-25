@@ -29,7 +29,7 @@ groups:
         command: restart
         interval: 60 # in seconds
         conditions:
-          playercount:
+          - placeholder: playercount
             operator: ==
             value: 0
 
