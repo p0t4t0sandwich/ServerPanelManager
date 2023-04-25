@@ -47,6 +47,14 @@ public class AMPServerManager {
     }
 
     /*
+    Remove an instance from the HashMap.
+    @param serverName: The name of the server
+     */
+    private void removeServerInstance(String serverName) {
+        instances.remove(serverName);
+    }
+
+    /*
     Check if an instance exists.
     @param serverName: The name of the server
     @return: Whether the instance exists or not
