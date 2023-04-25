@@ -29,6 +29,40 @@ public class AMPServerManager {
     private static AMPServerManager singleton;
 
     /*
+    Getter for the singleton instance of the AMPServerManager class.
+    @return: The singleton instance
+     */
+    public static AMPServerManager getInstance() {
+        return singleton;
+    }
+
+    /*
+    Constructor for the AMPServerManager class.
+    @param configPath: The path to the config file
+    @param logger: The logger
+    @return: The singleton instance
+     */
+    public AMPServerManager(String configPath, Object logger) {
+        singleton = this;
+        this.logger = logger;
+
+        // Config
+        try {
+            config = YamlDocument.create(new File("./" + configPath + "/AMPServerManager", "config.yml"),
+                    Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("config.yml"))
+            );
+            config.reload();
+
+            // Get AMP host, username, and password
+            host = config.getString("amp.host");
+            username = config.getString("amp.username");
+            password = config.getString("amp.password");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
     Getter for the instance HashMap.
     @param serverName: The name of the server
     @return: The instance
@@ -61,40 +95,6 @@ public class AMPServerManager {
      */
     public static boolean serverInstanceExists(String serverName) {
         return instances.containsKey(serverName);
-    }
-
-    /*
-    Getter for the singleton instance of the AMPServerManager class.
-    @return: The singleton instance
-     */
-    public static AMPServerManager getInstance() {
-        return singleton;
-    }
-
-    /*
-    Constructor for the AMPServerManager class.
-    @param configPath: The path to the config file
-    @param logger: The logger
-    @return: The singleton instance
-     */
-    public AMPServerManager(String configPath, Object logger) {
-        singleton = this;
-        this.logger = logger;
-
-        // Config
-        try {
-            config = YamlDocument.create(new File("./" + configPath + "/AMPServerManager", "config.yml"),
-                    Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("config.yml"))
-            );
-            config.reload();
-
-            // Get AMP host, username, and password
-            host = config.getString("amp.host");
-            username = config.getString("amp.username");
-            password = config.getString("amp.password");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /*
