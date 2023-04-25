@@ -25,7 +25,7 @@ groups:
       - server1
       - server3
     tasks:
-      - name: Restart
+      restart:
         command: restart
         interval: 60 # in seconds
         conditions:

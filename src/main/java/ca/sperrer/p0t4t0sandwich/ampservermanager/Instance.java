@@ -27,7 +27,7 @@ public class Instance {
     public final String serverName;
     public final String name;
     private String id;
-    private AMPAPIHandler API = new AMPAPIHandler("", "", "", "", "");
+    private AMPAPIHandler API;
 
     /*
     Constructor for the Instance class.
@@ -56,12 +56,12 @@ public class Instance {
     Else, login directly to the AMP instance.
     @return: Whether the login was successful
      */
-    public boolean APILogin() {
+    public boolean APILogin(AMPAPIHandler ADS) {
         if (!isADS) {
             API = new AMPAPIHandler(host, username, password, "", "");
         } else {
-            AMPAPIHandler ADS = new AMPAPIHandler(host, username, password, "", "");
-            ADS.Login();
+//            AMPAPIHandler ADS = new AMPAPIHandler(host, username, password, "", "");
+//            ADS.Login();
 
             if (name != null) {
                 // Get instance ID
@@ -78,7 +78,7 @@ public class Instance {
                                 id = (String) instance.get("InstanceID");
 
                                 // Save the id to the config
-                                AMPServerManager.getInstance().addInstanceID(name, id);
+                                AMPServerManager.getInstance().addInstanceID(serverName, id);
                                 break;
                             }
 

@@ -6,6 +6,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.runTaskAsync;
 
@@ -36,6 +37,8 @@ public class AMPServerManager {
         return singleton;
     }
 
+    private static AMPAPIHandler ADS;
+
     /*
     Constructor for the AMPServerManager class.
     @param configPath: The path to the config file
@@ -60,6 +63,63 @@ public class AMPServerManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+    Use whatever logger is being used.
+    @param logger: The logger
+    @param message: The message to log
+     */
+    public void useLogger(Object logger, String message) {
+        if (logger instanceof java.util.logging.Logger) {
+            ((java.util.logging.Logger) logger).info(message);
+        } else if (logger instanceof org.slf4j.Logger) {
+            ((org.slf4j.Logger) logger).info(message);
+        } else if (logger instanceof org.apache.logging.log4j.Logger) {
+            ((org.apache.logging.log4j.Logger) logger).info(message);
+        }
+    }
+
+    /*
+    Start the AMPServerManager.
+     */
+    public void start() {
+        runTaskAsync(() -> {
+            AMPAPIHandler ADS = new AMPAPIHandler(host, username, password, "", "");
+            ADS.Login();
+
+            // Get and initialize instances
+            Map<String, Object> serverConfig = (Map<String, Object>) config.getBlock("servers").getStoredValue();
+            for (Map.Entry<String, Object> entry: serverConfig.entrySet()) {
+                // Get instance name and id
+
+                String serverName = entry.getKey();
+                String instanceName = config.getString("servers." + serverName + ".name");
+                String instanceId = config.getString("servers." + serverName + ".id");
+
+                Instance instance = new Instance(host, username, password, true, serverName, instanceName, instanceId);
+
+                // Check if instance is online
+                if (instance.APILogin(ADS)) {
+                    setServerInstance(serverName, instance);
+                    useLogger(logger, "Instance " + instanceName + " is online!");
+                } else {
+                    useLogger(logger, "Instance " + instanceName + " is offline!");
+                }
+            }
+
+            // Initialize groups
+            Map<String, Object> groupConfig = (Map<String, Object>) config.getBlock("groups").getStoredValue();
+            for (Map.Entry<String, Object> entry: groupConfig.entrySet()) {
+                // Get group name and servers
+                String groupName = entry.getKey();
+                ArrayList<String> servers = (ArrayList<String>) config.getBlock("groups." + groupName + ".servers").getStoredValue();
+
+                useLogger(logger, "Group " + servers.toString());
+
+                // Loop through tasks
+            }
+        });
     }
 
     /*
@@ -95,59 +155,6 @@ public class AMPServerManager {
      */
     public static boolean serverInstanceExists(String serverName) {
         return instances.containsKey(serverName);
-    }
-
-    /*
-    Use whatever logger is being used.
-    @param logger: The logger
-    @param message: The message to log
-     */
-    public void useLogger(Object logger, String message) {
-        if (logger instanceof java.util.logging.Logger) {
-            ((java.util.logging.Logger) logger).info(message);
-        } else if (logger instanceof org.slf4j.Logger) {
-            ((org.slf4j.Logger) logger).info(message);
-        } else if (logger instanceof org.apache.logging.log4j.Logger) {
-            ((org.apache.logging.log4j.Logger) logger).info(message);
-        }
-    }
-
-    /*
-    Start the AMPServerManager.
-     */
-    public void start() {
-        runTaskAsync(() -> {
-            // Get and initialize instances
-            Map<String, Object> serverConfig = (Map<String, Object>) config.getBlock("servers").getStoredValue();
-            for (Map.Entry<String, Object> entry: serverConfig.entrySet()) {
-                // Get instance name and id
-                String serverName = entry.getKey();
-                String instanceName = config.getString("servers." + serverName + ".name");
-                String instanceId = config.getString("servers." + serverName + ".id");
-
-                Instance instance = new Instance(host, username, password, true, serverName, instanceName, instanceId);
-
-                // Check if instance is online
-                runTaskAsync(() -> {
-                    if (instance.APILogin()) {
-                        setServerInstance(serverName, instance);
-                        useLogger(logger, "Instance " + instanceName + " is online!");
-                    } else {
-                        useLogger(logger, "Instance " + instanceName + " is offline!");
-                    }
-                });
-            }
-
-            // Initialize groups
-            Map<String, Object> groupConfig = (Map<String, Object>) config.getBlock("groups").getStoredValue();
-            for (Map.Entry<String, Object> entry: groupConfig.entrySet()) {
-                // Get group name and servers
-                String groupName = entry.getKey();
-                ArrayList<String> servers = (ArrayList<String>) config.getBlock("groups." + groupName + ".servers").getStoredValue();
-
-                // Loop through tasks
-            }
-        });
     }
 
     /*
@@ -460,7 +467,7 @@ public class AMPServerManager {
                         // List
                         case "list":
                             // Get server list from config "servers" object keys
-                            message = "§6Available servers: §5" + String.join("§6, §5", instances.keySet());
+                            message = "§6Available servers: §5\n" + String.join("\n", instances.keySet());
                             break;
                         // Add
                         case "add":
@@ -523,7 +530,7 @@ public class AMPServerManager {
         } catch (Exception e) {
             e.printStackTrace();
             Instance instance = instances.get(args[1]);
-            boolean result = instance.APILogin();
+            boolean result = instance.APILogin(ADS);
             if (result) {
                 message = "§cAn error occurred while executing the command!";
             } else {
