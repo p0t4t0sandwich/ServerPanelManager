@@ -60,16 +60,10 @@ servers:
 
   # Server using the instance's web port for authentication
   <server name 2>:
-    panel: standalone
+    panel: ampstandalone
     host: http://localhost:8081
     username: admin
     password: admin
-    
-    # Instance Name -- found in AMP
-    name: Minecraft01
-    # instance ID -- right click and manage in new tab, this will be the bit after the ?id= in the URL
-    # The plugin can also fetch this automatically if you leave it blank
-    id: 1ty3j38u
 ```
 
 ### Groups
