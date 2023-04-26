@@ -44,6 +44,7 @@ panels:
     host: http://localhost:8080
     username: admin
     password: admin
+```
 
 #### Servers
 
@@ -60,7 +61,7 @@ servers:
 
   # Server using the instance's web port for authentication
   <server name 2>:
-    panel: ampstandalone
+    panel: ampinstance
     host: http://localhost:8081
     username: admin
     password: admin
