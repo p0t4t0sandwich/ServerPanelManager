@@ -2,8 +2,8 @@ name: AMPServerManager
 version: '${version}'
 main: ca.sperrer.p0t4t0sandwich.panelservermanager.bungee.BungeeMain
 commands:
-  bpsm:
+  psmb:
     description: "PanelServerManager is a plugin that allows you to manage your Panel's servers from within Minecraft."
-    usage: /bpsm <command> [args]
-    aliases: [bamp]
+    usage: /psmb <command> [args]
+    aliases: [ampb]
     permission: psm

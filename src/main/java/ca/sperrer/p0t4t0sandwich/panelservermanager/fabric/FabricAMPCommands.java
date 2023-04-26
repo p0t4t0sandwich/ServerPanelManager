@@ -21,7 +21,7 @@ public final class FabricAMPCommands {
 
     // TODO: Consolidate this with Forge, input the environment as a parameter
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, RegistrationEnvironment environment) {
-        String commandName = environment.dedicated ? "psm" : "cpsm";
+        String commandName = environment.dedicated ? "psm" : "psmc";
         int permissionLevel = environment.dedicated ? 4 : 0;
         dispatcher.register(literal(commandName)
             .requires(source -> source.hasPermissionLevel(permissionLevel))
