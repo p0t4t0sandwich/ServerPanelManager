@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "ca.sperrer.p0t4t0sandwich.ampservermanager.fabric.mixin",
+  "package": "ca.sperrer.p0t4t0sandwich.panelservermanager.fabric.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
   ],

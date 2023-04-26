@@ -1,4 +1,6 @@
-package ca.sperrer.p0t4t0sandwich.ampservermanager;
+package ca.sperrer.p0t4t0sandwich.panelservermanager;
+
+import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.PanelServerManager;
 
 import java.awt.GraphicsEnvironment;
 import java.io.Console;
@@ -9,8 +11,8 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.ansiiParser;
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.runTaskAsync;
+import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.ansiiParser;
+import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.runTaskAsync;
 
 public class Main {
     public static void main (String [] args) {
@@ -46,8 +48,8 @@ public class Main {
             logger.addHandler(handler);
 
             // Start AMPAPAI Server Manager
-            AMPServerManager ampServerManager = new AMPServerManager("./", logger);
-            ampServerManager.start();
+            PanelServerManager panelServerManager = new PanelServerManager("./", logger);
+            panelServerManager.start();
 
             // Start terminal application
             while (true) {
@@ -57,7 +59,7 @@ public class Main {
                     break;
                 } else {
                     runTaskAsync(() -> {
-                        String response = ansiiParser(ampServerManager.commandMessenger(input));
+                        String response = ansiiParser(panelServerManager.commandMessenger(input));
                         if (response.equals("")) {
                             response = "Use 'help' to see a list of commands.";
                         }

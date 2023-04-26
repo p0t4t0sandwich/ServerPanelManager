@@ -1,23 +1,23 @@
 {
   "schemaVersion": 1,
-  "id": "ampservermanager",
+  "id": "panelservermanager",
   "version": "${version}",
   "name": "AMPServerManager",
   "description": "",
-  "authors": [],
+  "authors": ["p0t4t0sandwich"],
   "contact": {
-    "repo": "https://github.com/p0t4t0sandwich/AMPServerManagerPlugin"
+    "repo": "https://github.com/p0t4t0sandwich/PanelServerManagerPlugin"
   },
   "license": "All-Rights-Reserved",
-  "icon": "assets/AMPServerManager/icon.png",
+  "icon": "assets/PanelServerManager/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "ca.sperrer.p0t4t0sandwich.ampservermanager.fabric.FabricMain"
+      "ca.sperrer.p0t4t0sandwich.panelservermanager.fabric.FabricMain"
     ]
   },
   "mixins": [
-    "ampservermanager.mixins.json"
+    "panelservermanager.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

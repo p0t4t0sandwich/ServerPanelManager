@@ -1,4 +1,4 @@
-package ca.sperrer.p0t4t0sandwich.ampservermanager;
+package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class Task {
     // Check Player Count
     public boolean checkPlayerCount(String serverName, Condition condition) {
         // Get player count
-        Map<String, Object> status = AMPServerManager.getInstance().getServerInstance(serverName).getStatus();
+        Map<String, Object> status = PanelServerManager.getInstance().getServerInstance(serverName).getStatus();
         if (!status.containsKey("Metrics")) {
             return false;
         }

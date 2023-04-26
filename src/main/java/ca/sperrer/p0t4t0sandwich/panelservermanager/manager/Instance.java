@@ -1,4 +1,4 @@
-package ca.sperrer.p0t4t0sandwich.ampservermanager;
+package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
 
@@ -9,16 +9,16 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class Instance {
-    /*
-    Properties of the Instance class.
-    host: The host URL of the AMP instance
-    username: The AMP username
-    password: The AMP password
-    isADS: Whether the AMP instance is an ADS instance
-    serverName: The name that the server is referred to
-    name: The InstanceName of the AMP instance
-    id: The InstanceID of the AMP instance
-    API: The AMPAPIHandler object for the instance
+    /**
+     * Properties of the Instance class.
+     * host: The host URL of the AMP instance
+     * username: The AMP username
+     * password: The AMP password
+     * isADS: Whether the AMP instance is an ADS instance
+     * serverName: The name that the server is referred to
+     * name: The InstanceName of the AMP instance
+     * id: The InstanceID of the AMP instance
+     * API: The AMPAPIHandler object for the instance
      */
     private final String host;
     private final String username;
@@ -29,16 +29,16 @@ public class Instance {
     private String id;
     private AMPAPIHandler API;
 
-    /*
-    Constructor for the Instance class.
-    @param host: The host URL of the AMP instance
-    @param username: The AMP username
-    @param password: The AMP password
-    @param isADS: Whether the AMP instance is an ADS instance
-    @param serverName: The name that the server is referred to
-    @param instanceName: The InstanceName of the AMP instance
-    @param instanceId: The InstanceID of the AMP instance
-    @return: Instance object
+    /**
+     * Constructor for the Instance class.
+     * @param host: The host URL of the AMP instance
+     * @param username: The AMP username
+     * @param password: The AMP password
+     * @param isADS: Whether the AMP instance is an ADS instance
+     * @param serverName: The name that the server is referred to
+     * @param instanceName: The InstanceName of the AMP instance
+     * @param instanceId: The InstanceID of the AMP instance
+     * @return Instance object
      */
     public Instance(String host, String username, String password, boolean isADS, String serverName, String instanceName, String instanceId) {
         this.host = host;
@@ -50,11 +50,11 @@ public class Instance {
         this.id = instanceId;
     }
 
-    /*
-    Initialize the API object and login to the AMP instance.
-    If the instance is an ADS instance, get the instance id and proxy the login through the ADS instance.
-    Else, login directly to the AMP instance.
-    @return: Whether the login was successful
+    /**
+     * Initialize the API object and login to the AMP instance.
+     * If the instance is an ADS instance, get the instance id and proxy the login through the ADS instance.
+     * Else, login directly to the AMP instance.
+     * @return Whether the login was successful
      */
     public boolean APILogin(AMPAPIHandler ADS) {
         if (!isADS) {
@@ -75,10 +75,12 @@ public class Instance {
                             // Grab the instance id
                             String instanceName = (String) instance.get("InstanceName");
                             if (instanceName.equals(name)) {
-                                id = (String) instance.get("InstanceID");
+                                if (instance.containsKey("InstanceID")) {
+                                    id = ((String) instance.get("InstanceID")).split("-")[0];
+                                }
 
                                 // Save the id to the config
-                                AMPServerManager.getInstance().addInstanceID(serverName, id);
+                                PanelServerManager.getInstance().addInstanceID(serverName, id);
                                 break;
                             }
 
@@ -100,11 +102,10 @@ public class Instance {
         }
     }
 
-    /*
-    Run a method from the AMP API.
-    Acts as a wrapper for the Instance object to abstract the API.
-    @param method: The method to run
-    @return: The result of the method
+    /**
+     * Acts as a wrapper for the Instance object to abstract the API.
+     * @param method: The method to run
+     * @return The result of the method
      */
     public Map<String, Object> runMethod(Function<String[], Map<String, Object>> method) {
         try {
@@ -115,61 +116,61 @@ public class Instance {
         }
     }
 
-    /*
-    Abstraction for API.Core.Start
+    /**
+     * Abstraction for API.Core.Start
      */
     public void startServer() {
         runMethod((args) -> API.Core_Start());
     }
 
-    /*
-    Abstraction for API.Core.Stop
+    /**
+     * Abstraction for API.Core.Stop
      */
     public void stopServer() {
         runMethod((args) -> API.Core_Stop());
     }
 
-    /*
-    Abstraction for API.Core.Restart
+    /**
+     * Abstraction for API.Core.Restart
      */
     public void restartServer() {
         runMethod((args) -> API.Core_Restart());
     }
 
-    /*
-    Abstraction for API.Core.Kill
+    /**
+     * Abstraction for API.Core.Kill
      */
     public void killServer() {
         runMethod((args) -> API.Core_Kill());
     }
 
-    /*
-    Abstraction for API.Core.Sleep
+    /**
+     * Abstraction for API.Core.Sleep
      */
     public void sleepServer() {
         runMethod((args) -> API.Core_Sleep());
     }
 
-    /*
-    Abstraction for API.Core.SendConsoleMessage
-    @param message: The message/command to send
+    /**
+     * Abstraction for API.Core.SendConsoleMessage
+     * @param message: The message/command to send
      */
     public void sendCommand(String message) {
         runMethod((args) -> API.Core_SendConsoleMessage(message));
     }
 
-    /*
-    Abstraction for API.Core.GetStatus
-    @return: The status object from the API
+    /**
+     * Abstraction for API.Core.GetStatus
+     * @return The status object from the API
      */
     public Map<String, Object> getStatus() {
         return runMethod((args) -> API.Core_GetStatus());
     }
 
-    /*
-    A parser for this.getStatus()
-    @param status: The status object from the API
-    @return: A parsed status object
+    /**
+     * A parser for this.getStatus()
+     * @param status: The status object from the API
+     * @return A parsed status object
      */
     public Map<String, Object> parseStatus(Map<String, Object> status) {
         if (status == null) {
@@ -273,28 +274,28 @@ public class Instance {
         return newStatus;
     }
 
-    /*
-    Abstraction for API.LocalFileBackupPlugin.TakeBackup
-    @param backupTitle: The title of the backup
-    @param backupDescription: The description of the backup
-    @param isSticky: Whether the backup is sticky or not
+    /**
+     * Abstraction for API.LocalFileBackupPlugin.TakeBackup
+     * @param backupTitle: The title of the backup
+     * @param backupDescription: The description of the backup
+     * @param isSticky: Whether the backup is sticky or not
      */
     public void backupServer(String backupTitle, String backupDescription, boolean isSticky) {
         runMethod((args) -> API.LocalFileBackupPlugin_TakeBackup(backupTitle, backupDescription, isSticky));
     }
 
-    /*
-    Abstraction for API.Core.GetUserList
-    @return: The player list object from the API
+    /**
+     * Abstraction for API.Core.GetUserList
+     * @return The player list object from the API
      */
     public Map<String, Object> getPlayerList() {
         return runMethod((args) -> (Map<String, Object>) API.Core_GetUserList().get("result"));
     }
 
-    /*
-    A parser for this.getPlayerList()
-    @param playerList: The player list object from the API
-    @return: A parsed player list object
+    /**
+     * A parser for this.getPlayerList()
+     * @param playerList: The player list object from the API
+     * @return A parsed player list object
      */
     public List<String> parsePlayerList(Map<String, Object> playerList) {
         if (playerList == null) {

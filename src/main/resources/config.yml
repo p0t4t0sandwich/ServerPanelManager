@@ -1,5 +1,6 @@
 version: 1
-amp:
+panel:
+  type: cubecodersamp
   host: http://localhost:8080
   username: admin
   password: admin

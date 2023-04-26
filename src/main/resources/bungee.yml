@@ -1,8 +1,9 @@
 name: AMPServerManager
 version: '${version}'
-main: ca.sperrer.p0t4t0sandwich.ampservermanager.bungee.BungeeMain
+main: ca.sperrer.p0t4t0sandwich.panelservermanager.bungee.BungeeMain
 commands:
-  bamp:
-    description: "AMPServerManager is a plugin that allows you to manage your AMP servers from within Minecraft."
-    usage: /bamp <command> [args]
-    permission: ampservermanager.amp
+  bpsm:
+    description: "PanelServerManager is a plugin that allows you to manage your Panel's servers from within Minecraft."
+    usage: /bpsm <command> [args]
+    aliases: [bamp]
+    permission: psm

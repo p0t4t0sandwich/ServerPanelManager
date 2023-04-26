@@ -1,10 +1,10 @@
-package ca.sperrer.p0t4t0sandwich.ampservermanager.bungee;
+package ca.sperrer.p0t4t0sandwich.panelservermanager.bungee;
 
-import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
+import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.PanelServerManager;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class BungeeMain extends Plugin {
-    public AMPServerManager ampServerManager;
+    public PanelServerManager panelServerManager;
 
     // Get server type
     public String getServerType() {
@@ -21,22 +21,22 @@ public class BungeeMain extends Plugin {
         // Singleton instance
         instance = this;
 
-        getLogger().info("AMPAPAI Server Manager is running on " + getServerType() + ".");
+        getLogger().info("Panel Server Manager is running on " + getServerType() + ".");
 
-        // Start AMPAPAI Server Manager
-        ampServerManager = new AMPServerManager("plugins", getLogger());
-        ampServerManager.start();
+        // Start Panel Server Manager
+        panelServerManager = new PanelServerManager("plugins", getLogger());
+        panelServerManager.start();
 
         // Register commands
         getProxy().getPluginManager().registerCommand(this, new BungeeAMPCommands());
 
         // Plugin enable message
-        getLogger().info("AMPAPAI Server Manager has been enabled!");
+        getLogger().info("Panel Server Manager has been enabled!");
     }
 
     @Override
     public void onDisable() {
         // Plugin disable message
-        getLogger().info("AMPAPAI Server Manager has been disabled!");
+        getLogger().info("Panel Server Manager has been disabled!");
     }
 }

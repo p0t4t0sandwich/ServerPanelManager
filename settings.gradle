@@ -10,4 +10,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'AMPServerManager'
+rootProject.name = 'PanelServerManager'

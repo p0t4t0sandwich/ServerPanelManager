@@ -1,21 +1,21 @@
-package ca.sperrer.p0t4t0sandwich.ampservermanager;
+package ca.sperrer.p0t4t0sandwich.panelservermanager;
 
 import java.util.concurrent.ForkJoinPool;
 
 public class Utils {
-    /*
-    Run a task asynchronously.
-    @param run: The task to run asynchronously.
+    /**
+     * Run a task asynchronously.
+     * @param run: The task to run asynchronously.
      */
     public static void runTaskAsync(Runnable run) {
         ForkJoinPool.commonPool().submit(run);
     }
 
-    /*
-    Run a task asynchronously, repeating it every period seconds.
-    @param run: The task to run asynchronously.
-    @param delay: The delay in seconds to wait before running the task.
-    @param period: The period in seconds to repeat the task.
+    /**
+     * Run a task asynchronously, repeating it every period seconds.
+     * @param run: The task to run asynchronously.
+     * @param delay: The delay in seconds to wait before running the task.
+     * @param period: The period in seconds to repeat the task.
      */
     public static void repeatTaskAsync(Runnable run, Long delay, Long period) {
         ForkJoinPool.commonPool().submit(() -> {
@@ -35,10 +35,10 @@ public class Utils {
         });
     }
 
-    /*
-    A parser to convert Minecraft's color codes to the terminal's ANSII color codes.
-    @param s: The string to parse.
-    @return: The parsed string.
+    /**
+     * A parser to convert Minecraft's color codes to the terminal's ANSII color codes.
+     * @param s: The string to parse.
+     * @return The parsed string.
      */
     public static String ansiiParser(String s) {
         // Colors
@@ -93,9 +93,9 @@ public class Utils {
                 + "\u001b[0m";
     }
 
-    /*
-    Check if the server is running CraftBukkit.
-    @return: True if the server is running a fork of CraftBukkit, false otherwise.
+    /**
+     * Check if the server is running CraftBukkit.
+     * @return True if the server is running a fork of CraftBukkit, false otherwise.
      */
     public static boolean isCraftBukkit() {
         try {
@@ -106,9 +106,9 @@ public class Utils {
         }
     }
 
-    /*
-    Check if the server is running Spigot.
-    @return: True if the server is running a fork of Spigot, false otherwise.
+    /**
+     * Check if the server is running Spigot.
+     * @return True if the server is running a fork of Spigot, false otherwise.
      */
     public static boolean isSpigot() {
         try {
@@ -119,9 +119,9 @@ public class Utils {
         }
     }
 
-    /*
-    Check if the server is running Paper.
-    @return: True if the server is running a fork of Paper, false otherwise.
+    /**
+     * Check if the server is running Paper.
+     * @return True if the server is running a fork of Paper, false otherwise.
      */
     public static boolean isPaper() {
         try {
@@ -135,9 +135,9 @@ public class Utils {
         return false;
     }
 
-    /*
-    Check if the server is running Folia.
-    @return: True if the server is running Folia, false otherwise.
+    /**
+     * Check if the server is running Folia.
+     * @return True if the server is running Folia, false otherwise.
      */
     public static boolean isFolia() {
         try {
@@ -148,9 +148,9 @@ public class Utils {
         }
     }
 
-    /*
-    Check if the server is running Magma.
-    @return: True if the server is running Magma, false otherwise.
+    /**
+     * Check if the server is running Magma.
+     * @return True if the server is running Magma, false otherwise.
      */
     public static boolean isMagma() {
         try {
@@ -161,9 +161,9 @@ public class Utils {
         }
     }
 
-    /*
-    Check if the server is running Mohist.
-    @return: True if the server is running Mohist, false otherwise.
+    /**
+     * Check if the server is running Mohist.
+     * @return True if the server is running Mohist, false otherwise.
      */
     public static boolean isMohist() {
         try {
@@ -174,9 +174,9 @@ public class Utils {
         }
     }
 
-    /*
-    Check if the server is running Arclight.
-    @return: True if the server is running Arclight, false otherwise.
+    /**
+     * Check if the server is running Arclight.
+     * @return True if the server is running Arclight, false otherwise.
      */
     public static boolean isArclight() {
         try {

@@ -1,17 +1,17 @@
-package ca.sperrer.p0t4t0sandwich.ampservermanager.bukkit;
+package ca.sperrer.p0t4t0sandwich.panelservermanager.bukkit;
 
-import ca.sperrer.p0t4t0sandwich.ampservermanager.AMPServerManager;
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.isFolia;
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.isPaper;
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.isSpigot;
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.isCraftBukkit;
+import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.PanelServerManager;
+import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.isFolia;
+import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.isPaper;
+import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.isSpigot;
+import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.isCraftBukkit;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 
 public class BukkitMain extends JavaPlugin {
-    public AMPServerManager ampServerManager;
+    public PanelServerManager panelServerManager;
 
     // Singleton instance
     private static BukkitMain instance;
@@ -38,22 +38,22 @@ public class BukkitMain extends JavaPlugin {
         // Singleton instance
         instance = this;
 
-        getLogger().info("AMPAPAI Server Manager is running on " + getServerType() + ".");
+        getLogger().info("Panel Server Manager is running on " + getServerType() + ".");
 
-        // Start AMPAPAI Server Manager
-        ampServerManager = new AMPServerManager("plugins", getLogger());
-        ampServerManager.start();
+        // Start Panel Server Manager
+        panelServerManager = new PanelServerManager("plugins", getLogger());
+        panelServerManager.start();
 
         // Register commands
         Objects.requireNonNull(getCommand("amp")).setExecutor(new BukkitAMPCommands());
 
         // Plugin enable message
-        getLogger().info("AMPAPAI Server Manager has been enabled!");
+        getLogger().info("Panel Server Manager has been enabled!");
     }
 
     @Override
     public void onDisable() {
         // Plugin disable message
-        getLogger().info("AMPAPAI Server Manager has been disabled!");
+        getLogger().info("Panel Server Manager has been disabled!");
     }
 }

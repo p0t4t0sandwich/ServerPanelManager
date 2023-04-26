@@ -1,25 +1,25 @@
-package ca.sperrer.p0t4t0sandwich.ampservermanager;
+package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
+import ca.sperrer.p0t4t0sandwich.panelservermanager.api.PanelServerManagerProvider;
 import dev.dejvokep.boostedyaml.YamlDocument;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.runTaskAsync;
+import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.runTaskAsync;
 
-public class AMPServerManager {
-    /*
-    Properties of the AMPServerManager class.
-    config: The config file
-    logger: The logger
-    host: The host URL of the AMP instance
-    username: The AMP username
-    password: The AMP password
-    instances: A HashMap of instances
-    singleton: The singleton instance of the AMPServerManager class
+public class PanelServerManager {
+    /**
+     * Properties of the AMPServerManager class.
+     * config: The config file
+     * logger: The logger
+     * host: The host URL of the AMP instance
+     * username: The AMP username
+     * password: The AMP password
+     * instances: A HashMap of instances
+     * singleton: The singleton instance of the AMPServerManager class
      */
     private static YamlDocument config;
     private final Object logger;
@@ -27,27 +27,30 @@ public class AMPServerManager {
     private String username;
     private String password;
     private static final HashMap<String, Instance> instances = new HashMap<>();
-    private static AMPServerManager singleton;
+    private static PanelServerManager singleton = null;
 
-    /*
-    Getter for the singleton instance of the AMPServerManager class.
-    @return: The singleton instance
+    /**
+     * Getter for the singleton instance of the AMPServerManager class.
+     * @return The singleton instance
      */
-    public static AMPServerManager getInstance() {
+    public static PanelServerManager getInstance() {
         return singleton;
     }
 
     private static AMPAPIHandler ADS;
 
-    /*
-    Constructor for the AMPServerManager class.
-    @param configPath: The path to the config file
-    @param logger: The logger
-    @return: The singleton instance
+    /**
+     * Constructor for the AMPServerManager class.
+     * @param configPath: The path to the config file
+     * @param logger: The logger
+     * @return The singleton instance
      */
-    public AMPServerManager(String configPath, Object logger) {
+    public PanelServerManager(String configPath, Object logger) {
         singleton = this;
         this.logger = logger;
+
+        // Register the singleton instance in the AMPServerManagerProvider class
+        PanelServerManagerProvider.register(this);
 
         // Config
         try {
@@ -65,10 +68,10 @@ public class AMPServerManager {
         }
     }
 
-    /*
-    Use whatever logger is being used.
-    @param logger: The logger
-    @param message: The message to log
+    /**
+     * Use whatever logger is being used.
+     * @param logger: The logger
+     * @param message: The message to log
      */
     public void useLogger(Object logger, String message) {
         if (logger instanceof java.util.logging.Logger) {
@@ -80,12 +83,12 @@ public class AMPServerManager {
         }
     }
 
-    /*
-    Start the AMPServerManager.
+    /**
+     * Start the AMPServerManager.
      */
     public void start() {
         runTaskAsync(() -> {
-            AMPAPIHandler ADS = new AMPAPIHandler(host, username, password, "", "");
+            ADS = new AMPAPIHandler(host, username, password, "", "");
             ADS.Login();
 
             // Get and initialize instances
@@ -122,45 +125,45 @@ public class AMPServerManager {
         });
     }
 
-    /*
-    Getter for the instance HashMap.
-    @param serverName: The name of the server
-    @return: The instance
+    /**
+     * Getter for the instance HashMap.
+     * @param serverName: The name of the server
+     * @return The instance
      */
     public static Instance getServerInstance(String serverName) {
         return instances.get(serverName);
     }
 
-    /*
-    Setter for the instance HashMap.
-    @param serverName: The name of the server
-    @param instance: The instance
+    /**
+     * Setter for the instance HashMap.
+     * @param serverName: The name of the server
+     * @param instance: The instance
      */
     private void setServerInstance(String serverName, Instance instance) {
         instances.put(serverName, instance);
     }
 
-    /*
-    Remove an instance from the HashMap.
-    @param serverName: The name of the server
+    /**
+     * Remove an instance from the HashMap.
+     * @param serverName: The name of the server
      */
     private void removeServerInstance(String serverName) {
         instances.remove(serverName);
     }
 
-    /*
-    Check if an instance exists.
-    @param serverName: The name of the server
-    @return: Whether the instance exists or not
+    /**
+     * Check if an instance exists.
+     * @param serverName: The name of the server
+     * @return Whether the instance exists or not
      */
     public static boolean serverInstanceExists(String serverName) {
         return instances.containsKey(serverName);
     }
 
-    /*
-    Add/update instance id in config.
-    @param serverName: The name of the server
-    @param id: The InstanceID of the server
+    /**
+     * Add/update instance id in config.
+     * @param serverName: The name of the server
+     * @param id: The InstanceID of the server
      */
     public void addInstanceID(String serverName, String id) {
         config.set("servers." + serverName + ".id", id);
@@ -171,15 +174,15 @@ public class AMPServerManager {
         }
     }
 
-    /*
-    Generic handler for command responses.
-    @param args: The command arguments
-    @param rootCommand: The root command
-    @param usage: The usage of the command
-    @param exemptStates: Server states that are exempt from the command
-    @param message: The message to send if the command is successful
-    @param exemptStateMessage: The message to send if the server is in an exempt state
-    @return: The response
+    /**
+     * Generic handler for command responses.
+     * @param args: The command arguments
+     * @param rootCommand: The root command
+     * @param usage: The usage of the command
+     * @param exemptStates: Server states that are exempt from the command
+     * @param message: The message to send if the command is successful
+     * @param exemptStateMessage: The message to send if the server is in an exempt state
+     * @return The response
      */
     private String genericHandler(String[] args, String rootCommand, String usage, List<Integer> exemptStates, String message, String exemptStateMessage) {
         // Usage
@@ -225,55 +228,56 @@ public class AMPServerManager {
         return null;
     }
 
-    /*
-    Start Server Handler
-    @param args: The command arguments
-    @return: The response
+    /**
+     * Start Server Handler
+     * @param args: The command arguments
+     * @return The response
      */
     private String startServerHandler(String[] args) {
         return genericHandler(args, "/amp", "start <server>", Arrays.asList(10, 20), "§aStarting server...", "§cServer is already running!");
     }
 
-    /*
-    Stop Server Handler
-    @param args: The command arguments
-    @return: The response
+    /**
+     * Stop Server Handler
+     * @param args: The command arguments
+     * @return The response
      */
     private String stopServerHandler(String[] args) {
         return genericHandler(args, "/amp", "stop <server>", Arrays.asList(0, 40), "§aStopping server...", "§cServer is already stopped!");
     }
 
-    /*
-    Restart Server Handler
-    @param args: The command arguments
-    @return: The response
+    /**
+     * Restart Server Handler
+     * @param args: The command arguments
+     * @return The response
      */
     private String restartServerHandler(String[] args) {
         return genericHandler(args, "/amp", "restart <server>", Arrays.asList(0, 40), "§aRestarting server...", "§cServer is already stopped!");
     }
 
-    /*
-    Kill Server Handler
-    @param args: The command arguments
-    @return: The response
+    /**
+     * Kill Server Handler
+     * @param args: The command arguments
+     * @return The response
      */
     private String killServerHandler(String[] args) {
         return genericHandler(args, "/amp", "kill <server>", Collections.emptyList(), "§aKilling server...", "§cServer is already stopped!");
     }
 
-    /*
-    Sleep Server Handler
-    @param args: The command arguments
-    @return: The response
+
+    /**
+     * Sleep Server Handler
+     * @param args: The command arguments
+     * @return The response
      */
     private String sleepServerHandler(String[] args) {
         return genericHandler(args, "/amp", "sleep <server>", Arrays.asList(0, 30, 40), "§aPutting server to sleep...", "§cServer is already stopped/sleeping!");
     }
 
-    /*
-    Send Command Server Handler
-    @param args: The command arguments
-    @return: The response
+    /**
+     * Send Command Server Handler
+     * @param args: The command arguments
+     * @return The response
      */
     private String sendCommandHandler(String[] args) {
         // Usage
@@ -301,10 +305,10 @@ public class AMPServerManager {
         return null;
     }
 
-    /*
-    Get Status Handler
-    @param args: The command arguments
-    @return: The response
+    /**
+     * Get Status Handler
+     * @param args: The command arguments
+     * @return The response
      */
     private String getStatusHandler(String[] args) {
         // Usage
@@ -351,10 +355,10 @@ public class AMPServerManager {
         return null;
     }
 
-    /*
-    Backup Server Handler
-    @param args: The command arguments
-    @return: The response
+    /**
+     * Get Console Handler
+     * @param args: The command arguments
+     * @return The response
      */
     private String backupServerHandler(String[] args) {
         // Usage
@@ -387,10 +391,10 @@ public class AMPServerManager {
         return null;
     }
 
-    /*
-    Player List Handler
-    @param args: The command arguments
-    @return: The response
+    /**
+     * Player List Handler
+     * @param args: The command arguments
+     * @return The response
      */
     private String playerListHandler(String[] args) {
         // Usage
@@ -452,10 +456,36 @@ public class AMPServerManager {
             "\n§6server remove <server> - Remove server from config";
     }
 
-    /*
-    Command Messenger
-    @param args: The command arguments
-    @return: The response
+    private String serverCommand(String[] args) {
+        String message;
+        switch (args[1].toLowerCase()) {
+            // List
+            case "list":
+                // Get server list from config "servers" object keys
+                message = "§6Available servers: §5\n" + String.join("\n", instances.keySet());
+                break;
+            // Add
+            case "add":
+                // Add server to config "servers" object
+                message = "";
+                break;
+            // Remove
+            case "remove":
+                // Remove server from config "servers" object
+                message = "";
+                break;
+            default:
+                // TODO: Need specific help handler
+                message = helpHandler();
+                break;
+        }
+        return message;
+    }
+
+    /**
+     * Command Messenger
+     * @param args
+     * @return
      */
     public String commandMessenger(String[] args) {
         String message;
@@ -463,27 +493,7 @@ public class AMPServerManager {
             switch (args[0].toLowerCase()) {
                 // Server Command Tree
                 case "server":
-                    switch (args[1].toLowerCase()) {
-                        // List
-                        case "list":
-                            // Get server list from config "servers" object keys
-                            message = "§6Available servers: §5\n" + String.join("\n", instances.keySet());
-                            break;
-                        // Add
-                        case "add":
-                            // Add server to config "servers" object
-                            message = "";
-                            break;
-                        // Remove
-                        case "remove":
-                            // Remove server from config "servers" object
-                            message = "";
-                            break;
-                        default:
-                            // TODO: Need specific help handler
-                            message = helpHandler();
-                            break;
-                    }
+                    message = serverCommand(args);
                     break;
 
                 // Start Server

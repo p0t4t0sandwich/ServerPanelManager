@@ -1,53 +1,70 @@
-# AMPServerManagerPlugin
+# PanelServerManagerPlugin
 
 ## About
 
-A plugin that allows you to manage your AMP game servers from within minecraft. This plugin is still in development and is not quite ready for production use. Feel free to mess around with it and report any bugs you find, or any features you would like to see.
+A plugin that allows you to manage your Panel's game servers from within minecraft. This plugin is still in development and is not quite ready for production use. Feel free to mess around with it and report any bugs you find, or any features you would like to see.
 
-Note: If you need to port this mod/plugin to an unsupported platform/version, feel free to create an issue, and I'll see what I can do. Older MC implementations are built on an as-needed basis.
+If you need to port this mod/plugin to an unsupported platform/version, feel free to create an issue, and I'll see what I can do. Older MC implementations are built on an as-needed basis.
+If your panel isn't supported yet, create an issue and we can do some digging to see if it's possible.
 
 ## Commands
 
-### /amp
+### /psm
 
-`/bamp` for BungeeCord
+`/bpsm` for BungeeCord
 
-`/camp` for Client-side
+`/cpsm` for Client-side
 
 ```
-/amp start <server>
-/amp stop <server>
-/amp restart <server>
-/amp kill <server>
-/amp sleep <server>
-/amp send <server> <command>
-/amp status <server>
+start <server>
+stop <server>
+restart <server>
+kill <server>
+sleep <server>
+send <server> <command>
+status <server>
 ```
 
 ## Permissions
 
 ```
-ampservermanager.amp -- Allows access to all commands
+psm -- Allows access to all commands
 ```
 
 ## Configuration
 
-### AMP
+### CubeCoders AMP
 
+#### ADS
 ```yaml
-amp:
-  # The URL to your main AMP controller/ADS
-  host: http://localhost:8080/
-  # The username to use for authentication -- recommended to use a service account with limited permissions
-  username: admin
-  password: admin
-```
+---
+panels:
+  <panel name>:
+    type: cubecodersamp
+    host: http://localhost:8080
+    username: admin
+    password: admin
 
-### Servers
+#### Servers
 
 ```yaml
 servers:
+  # Server using the ADS for authentication
   <server name>:
+    panel: <panel name>
+    # Instance Name -- found in AMP
+    name: Minecraft01
+    # instance ID -- right click and manage in new tab, this will be the bit after the ?id= in the URL
+    # The plugin can also fetch this automatically if you leave it blank
+    id: 1ty3j38u
+
+  # Server using the instance's web port for authentication
+  <server name 2>:
+    panel: standalone
+    host: http://localhost:8081
+    username: admin
+    password: admin
+    
     # Instance Name -- found in AMP
     name: Minecraft01
     # instance ID -- right click and manage in new tab, this will be the bit after the ?id= in the URL
@@ -103,9 +120,10 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 
 ### Permissions
 
-- [ ] Add permissions for each command -- `ampservermanager.amp.command.<command>`
-- [ ] Add permissions for each command for each server -- `ampservermanager.amp.<command>.<server>`
-- [ ] Add permissions for each command for each group -- `ampservermanager.amp.<command>.<group>`
+- [ ] Design a permission scema -- `psm.<command>.<server>` - `psm.<command>.<group>`
+- [ ] Add permissions for each command -- `psm.command.<command>`
+- [ ] Add permissions for each command for each server -- `psm.<command>.<server>`
+- [ ] Add permissions for each command for each group -- `psm.<command>.<group>`
 
 - [ ] Set up dynamic permissions checks
   - [ ] Bukkit and BungeeCord will be easy, just use the `hasPermission` method
@@ -114,28 +132,28 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 
 ### Commands
 
-- [ ] Set up group commands -- `/amp group <group> <command>`
+- [ ] Set up group commands -- `/psm group <group> <command>`
 - [ ] Add commands to manage/add to the config from within the game
-  - [ ] Add a command to list all servers -- `/amp server list`
+  - [ ] Add a command to list all servers -- `/psm server list`
   - [ ] Add commands to add/remove servers
-    - [ ] `/amp server add <server name> <instance name> [instance id]`
-    - [ ] `/amp server remove <server name>`
+    - [ ] `/psm server add <server name> <instance name> [instance id]`
+    - [ ] `/psm server remove <server name>`
 
-  - [ ] Add a command to list all groups -- `/amp group list`
+  - [ ] Add a command to list all groups -- `/psm group list`
   - [ ] Add commands to add/remove servers from groups
-    - [ ] `/amp group <group> server add <server name>`
-    - [ ] `/amp group <group> server remove <server name>`
+    - [ ] `/psm group <group> server add <server name>`
+    - [ ] `/psm group <group> server remove <server name>`
 
-  - [ ] Add a command to list all tasks in a group -- `/amp group <group> task list`
+  - [ ] Add a command to list all tasks in a group -- `/psm group <group> task list`
   - [ ] Add commands to add/remove tasks from groups
-    - [ ] `/amp group <group> task add <task name> <command> <interval> <conditions>`
+    - [ ] `/psm group <group> task add <task name> <command> <interval> <conditions>`
     - [ ] ^A parser to make that possible
-    - [ ] `/amp group <group> task remove <task name>`
-  - [ ] findplayer command -- `/amp group <group> findplayer <player>`
+    - [ ] `/psm group <group> task remove <task name>`
+  - [ ] findplayer command -- `/psm group <group> findplayer <player>`
 
-  - [ ] Add a command to list all conditionals in a task -- `/amp group <group> task <task> condition list`
+  - [ ] Add a command to list all conditionals in a task -- `/psm group <group> task <task> condition list`
 
-- [x] playerlist command -- `/amp players <server>`
+- [x] playerlist command -- `/psm players <server>`
 
 ### Groups
 

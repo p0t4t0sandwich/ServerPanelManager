@@ -1,4 +1,4 @@
-package ca.sperrer.p0t4t0sandwich.ampservermanager.fabric;
+package ca.sperrer.p0t4t0sandwich.panelservermanager.fabric;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -6,7 +6,7 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.CommandManager.RegistrationEnvironment;
 
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.ansiiParser;
+import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.ansiiParser;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import net.minecraft.server.command.ServerCommandSource;
@@ -21,7 +21,7 @@ public final class FabricAMPCommands {
 
     // TODO: Consolidate this with Forge, input the environment as a parameter
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, RegistrationEnvironment environment) {
-        String commandName = environment.dedicated ? "amp" : "camp";
+        String commandName = environment.dedicated ? "psm" : "cpsm";
         int permissionLevel = environment.dedicated ? 4 : 0;
         dispatcher.register(literal(commandName)
             .requires(source -> source.hasPermissionLevel(permissionLevel))
@@ -32,7 +32,7 @@ public final class FabricAMPCommands {
                         // Get arguments and send to commandMessenger
                         String[] args = context.getInput().split(" ");
                         args = Arrays.copyOfRange(args, 1, args.length);
-                        String message = args.length == 0 ? "§cUsage: /amp <command>" : mod.ampServerManager.commandMessenger(args);
+                        String message = args.length == 0 ? "§cUsage: /psm <command>" : mod.panelServerManager.commandMessenger(args);
 
                         // Check if message is null or empty
                         if (message == null || message.equals("")) {

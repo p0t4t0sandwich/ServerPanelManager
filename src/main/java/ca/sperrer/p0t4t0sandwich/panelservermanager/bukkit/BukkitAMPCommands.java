@@ -1,4 +1,4 @@
-package ca.sperrer.p0t4t0sandwich.ampservermanager.bukkit;
+package ca.sperrer.p0t4t0sandwich.panelservermanager.bukkit;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import static ca.sperrer.p0t4t0sandwich.ampservermanager.Utils.runTaskAsync;
+import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.runTaskAsync;
 
 public class BukkitAMPCommands implements CommandExecutor {
     private final BukkitMain plugin = BukkitMain.getInstance();
@@ -16,10 +16,10 @@ public class BukkitAMPCommands implements CommandExecutor {
         runTaskAsync(() -> {
             String message;
             // Player and permission check
-            if (sender instanceof Player && !sender.hasPermission("ampservermanager.amp")) {
+            if (sender instanceof Player && !sender.hasPermission("psm")) {
                 message = "§cYou do not have permission to use this command!";
             } else {
-                message = args.length == 0 ? "§cUsage: /amp <command>" : plugin.ampServerManager.commandMessenger(args);
+                message = args.length == 0 ? "§cUsage: /psm <command>" : plugin.panelServerManager.commandMessenger(args);
             }
             sender.sendMessage(message);
         });

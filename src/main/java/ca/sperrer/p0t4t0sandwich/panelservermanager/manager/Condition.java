@@ -1,4 +1,4 @@
-package ca.sperrer.p0t4t0sandwich.ampservermanager;
+package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
 public class Condition {
     public final String placeholder;
