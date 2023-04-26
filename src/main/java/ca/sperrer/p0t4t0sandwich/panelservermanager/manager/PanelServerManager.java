@@ -2,6 +2,8 @@ package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
 import ca.sperrer.p0t4t0sandwich.panelservermanager.api.PanelServerManagerProvider;
+import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.cubecodersamp.AMPPanel;
+import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.cubecodersamp.AMPServer;
 import dev.dejvokep.boostedyaml.YamlDocument;
 
 import java.io.File;
@@ -12,57 +14,46 @@ import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.runTaskAsync;
 
 public class PanelServerManager {
     /**
-     * Properties of the AMPServerManager class.
+     * Properties of the PanelServerManager class.
      * config: The config file
      * logger: The logger
-     * host: The host URL of the AMP instance
-     * username: The AMP username
-     * password: The AMP password
-     * instances: A HashMap of instances
-     * singleton: The singleton instance of the AMPServerManager class
+     * panels: A HashMap of panels
+     * servers: A HashMap of instances
+     * groups: A HashMap of groups
+     * singleton: The singleton instance of the PanelServerManager class
      */
     private static YamlDocument config;
     private final Object logger;
-    private String host;
-    private String username;
-    private String password;
-    private static final HashMap<String, Instance> instances = new HashMap<>();
+    private static final HashMap<String, Panel> panels = new HashMap<>();
+    private static final HashMap<String, Server> servers = new HashMap<>();
     private static PanelServerManager singleton = null;
 
     /**
-     * Getter for the singleton instance of the AMPServerManager class.
+     * Getter for the singleton instance of the PanelServerManager class.
      * @return The singleton instance
      */
     public static PanelServerManager getInstance() {
         return singleton;
     }
 
-    private static AMPAPIHandler ADS;
-
     /**
-     * Constructor for the AMPServerManager class.
+     * Constructor for the PanelServerManager class.
      * @param configPath: The path to the config file
      * @param logger: The logger
-     * @return The singleton instance
      */
     public PanelServerManager(String configPath, Object logger) {
         singleton = this;
         this.logger = logger;
 
-        // Register the singleton instance in the AMPServerManagerProvider class
+        // Register the singleton instance in the PanelServerManagerProvider class
         PanelServerManagerProvider.register(this);
 
         // Config
         try {
-            config = YamlDocument.create(new File("./" + configPath + "/AMPServerManager", "config.yml"),
+            config = YamlDocument.create(new File("./" + configPath + "/PanelServerManager", "config.yml"),
                     Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("config.yml"))
             );
             config.reload();
-
-            // Get AMP host, username, and password
-            host = config.getString("amp.host");
-            username = config.getString("amp.username");
-            password = config.getString("amp.password");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,7 +64,7 @@ public class PanelServerManager {
      * @param logger: The logger
      * @param message: The message to log
      */
-    public void useLogger(Object logger, String message) {
+    private void useLogger(Object logger, String message) {
         if (logger instanceof java.util.logging.Logger) {
             ((java.util.logging.Logger) logger).info(message);
         } else if (logger instanceof org.slf4j.Logger) {
@@ -84,88 +75,124 @@ public class PanelServerManager {
     }
 
     /**
-     * Start the AMPServerManager.
+     * Start the PanelServerManager.
      */
     public void start() {
         runTaskAsync(() -> {
-            ADS = new AMPAPIHandler(host, username, password, "", "");
-            ADS.Login();
+            // Initialize Panels
+            Map<?, ?> panelConfig = (Map<?, ?>) config.getBlock("panels").getStoredValue();
+            for (Map.Entry<?, ?> entry: panelConfig.entrySet()) {
+                // Get panel name and type
+                String panelName = (String) entry.getKey();
+                String panelType = config.getString("panels." + panelName + ".type");
+                Panel panel = null;
 
-            // Get and initialize instances
-            Map<String, Object> serverConfig = (Map<String, Object>) config.getBlock("servers").getStoredValue();
-            for (Map.Entry<String, Object> entry: serverConfig.entrySet()) {
-                // Get instance name and id
+                switch (panelType) {
+                    case "cubecodersamp":
+                        String host = config.getString("panels." + panelName + ".host");
+                        String username = config.getString("panels." + panelName + ".username");
+                        String password = config.getString("panels." + panelName + ".password");
+                        panel = new AMPPanel(panelName, host, username, password);
+                        break;
+                }
 
-                String serverName = entry.getKey();
-                String instanceName = config.getString("servers." + serverName + ".name");
-                String instanceId = config.getString("servers." + serverName + ".id");
-
-                Instance instance = new Instance(host, username, password, true, serverName, instanceName, instanceId);
-
-                // Check if instance is online
-                if (instance.APILogin(ADS)) {
-                    setServerInstance(serverName, instance);
-                    useLogger(logger, "Instance " + instanceName + " is online!");
+                // Check if panel is online
+                if (panel != null && panel.isOnline()) {
+                    panels.put(panelName, panel);
+                    useLogger(logger, "Panel " + panelName + " is online!");
                 } else {
-                    useLogger(logger, "Instance " + instanceName + " is offline!");
+                    useLogger(logger, "Panel " + panelName + " is offline!");
                 }
             }
 
-            // Initialize groups
-            Map<String, Object> groupConfig = (Map<String, Object>) config.getBlock("groups").getStoredValue();
-            for (Map.Entry<String, Object> entry: groupConfig.entrySet()) {
-                // Get group name and servers
-                String groupName = entry.getKey();
-                ArrayList<String> servers = (ArrayList<String>) config.getBlock("groups." + groupName + ".servers").getStoredValue();
+            // Initialize servers
+            Map<?, ?> serverConfig = (Map<?, ?>) config.getBlock("servers").getStoredValue();
+            for (Map.Entry<?, ?> entry: serverConfig.entrySet()) {
+                // Get server and panel information
+                String serverName = (String) entry.getKey();
+                String panelName = config.getString("servers." + serverName + ".panel");
+                Panel panel = panels.get(panelName);
+                if (panel == null) {
+                    useLogger(logger, "Server " + serverName + "'s panel is offline or defined incorrectly!");
+                    continue;
+                }
+                String panelType = config.getString("panels." + panelName + ".type");
 
-                useLogger(logger, "Group " + servers.toString());
+                Server server = null;
+                switch (panelType) {
+                    case "cubecodersamp":
+                        String instanceName = config.getString("servers." + serverName + ".name");
+                        String instanceId = config.getString("servers." + serverName + ".id");
 
-                // Loop through tasks
+                        AMPAPIHandler instanceAPI = ((AMPPanel) panel).getInstanceAPI(serverName, instanceName, instanceId);
+                        server = new AMPServer(serverName, instanceName, instanceId, instanceAPI);
+                        break;
+                }
+
+                // Check if server is online
+                if (server != null && server.isOnline()) {
+                    setServer(serverName, server);
+                    useLogger(logger, "Server " + serverName + " is online!");
+                } else {
+                    useLogger(logger, "Server " + serverName + " is offline!");
+                }
             }
+
+//            // Initialize groups
+//            Map<String, Object> groupConfig = (Map<String, Object>) config.getBlock("groups").getStoredValue();
+//            for (Map.Entry<String, Object> entry: groupConfig.entrySet()) {
+//                // Get group name and servers
+//                String groupName = entry.getKey();
+//                ArrayList<String> servers = (ArrayList<String>) config.getBlock("groups." + groupName + ".servers").getStoredValue();
+//
+//                useLogger(logger, "Group " + servers.toString());
+//
+//                // Loop through tasks
+//            }
         });
     }
 
     /**
-     * Getter for the instance HashMap.
+     * Getter for the server HashMap.
      * @param serverName: The name of the server
      * @return The instance
      */
-    public static Instance getServerInstance(String serverName) {
-        return instances.get(serverName);
+    public static Server getServer(String serverName) {
+        return servers.get(serverName);
     }
 
     /**
-     * Setter for the instance HashMap.
+     * Setter for the server HashMap.
      * @param serverName: The name of the server
-     * @param instance: The instance
+     * @param server: The server instance
      */
-    private void setServerInstance(String serverName, Instance instance) {
-        instances.put(serverName, instance);
+    private void setServer(String serverName, Server server) {
+        servers.put(serverName, server);
     }
 
     /**
-     * Remove an instance from the HashMap.
+     * Remove a server from the HashMap.
      * @param serverName: The name of the server
      */
-    private void removeServerInstance(String serverName) {
-        instances.remove(serverName);
+    private void removeServer(String serverName) {
+        servers.remove(serverName);
     }
 
     /**
-     * Check if an instance exists.
+     * Check if a server exists.
      * @param serverName: The name of the server
-     * @return Whether the instance exists or not
+     * @return Whether the server exists or not
      */
     public static boolean serverInstanceExists(String serverName) {
-        return instances.containsKey(serverName);
+        return servers.containsKey(serverName);
     }
 
     /**
-     * Add/update instance id in config.
+     * Add/update server id in config.
      * @param serverName: The name of the server
      * @param id: The InstanceID of the server
      */
-    public void addInstanceID(String serverName, String id) {
+    public void addServerID(String serverName, String id) {
         config.set("servers." + serverName + ".id", id);
         try {
             config.save();
@@ -184,7 +211,7 @@ public class PanelServerManager {
      * @param exemptStateMessage: The message to send if the server is in an exempt state
      * @return The response
      */
-    private String genericHandler(String[] args, String rootCommand, String usage, List<Integer> exemptStates, String message, String exemptStateMessage) {
+    private String genericHandler(String[] args, String rootCommand, String usage, List<String> exemptStates, String message, String exemptStateMessage) {
         // Usage
         if (args.length == 1) {
             return "§cUsage: " + rootCommand +" " + usage;
@@ -194,27 +221,29 @@ public class PanelServerManager {
         if (args.length == 2) {
             String serverName = args[1];
             if (serverInstanceExists(serverName)) {
-                Instance instance = getServerInstance(serverName);
-                Map<String, Object> status = instance.getStatus();
-                int state = (int) Math.round((double) status.get("State"));
+                Server server = getServer(serverName);
+                Map<String, Object> status = server.getStatus();
+                String state = (String) status.get("State");
 
                 // Check if server is in exempt state
                 if (exemptStates.isEmpty() || !exemptStates.contains(state)) {
                     switch (args[0]) {
                         case "start":
-                            instance.startServer();
+                            server.startServer();
                             break;
                         case "stop":
-                            instance.stopServer();
+                            server.stopServer();
                             break;
                         case "restart":
-                            instance.restartServer();
+                            server.restartServer();
                             break;
                         case "kill":
-                            instance.killServer();
+                            server.killServer();
                             break;
                         case "sleep":
-                            instance.sleepServer();
+                            if (server instanceof AMPServer) {
+                                ((AMPServer) server).sleepServer();
+                            }
                             break;
                     }
                     return message;
@@ -234,7 +263,7 @@ public class PanelServerManager {
      * @return The response
      */
     private String startServerHandler(String[] args) {
-        return genericHandler(args, "/amp", "start <server>", Arrays.asList(10, 20), "§aStarting server...", "§cServer is already running!");
+        return genericHandler(args, "/psm", "start <server>", Arrays.asList("Starting", "Ready"), "§aStarting server...", "§cServer is already running!");
     }
 
     /**
@@ -243,7 +272,7 @@ public class PanelServerManager {
      * @return The response
      */
     private String stopServerHandler(String[] args) {
-        return genericHandler(args, "/amp", "stop <server>", Arrays.asList(0, 40), "§aStopping server...", "§cServer is already stopped!");
+        return genericHandler(args, "/psm", "stop <server>", Arrays.asList("Stopped", "Stopping"), "§aStopping server...", "§cServer is already stopped!");
     }
 
     /**
@@ -252,7 +281,7 @@ public class PanelServerManager {
      * @return The response
      */
     private String restartServerHandler(String[] args) {
-        return genericHandler(args, "/amp", "restart <server>", Arrays.asList(0, 40), "§aRestarting server...", "§cServer is already stopped!");
+        return genericHandler(args, "/psm", "restart <server>", Arrays.asList("Stopped", "Stopping"), "§aRestarting server...", "§cServer is already stopped!");
     }
 
     /**
@@ -261,7 +290,7 @@ public class PanelServerManager {
      * @return The response
      */
     private String killServerHandler(String[] args) {
-        return genericHandler(args, "/amp", "kill <server>", Collections.emptyList(), "§aKilling server...", "§cServer is already stopped!");
+        return genericHandler(args, "/psm", "kill <server>", Collections.emptyList(), "§aKilling server...", "§cServer is already stopped!");
     }
 
 
@@ -271,7 +300,7 @@ public class PanelServerManager {
      * @return The response
      */
     private String sleepServerHandler(String[] args) {
-        return genericHandler(args, "/amp", "sleep <server>", Arrays.asList(0, 30, 40), "§aPutting server to sleep...", "§cServer is already stopped/sleeping!");
+        return genericHandler(args, "/psm", "sleep <server>", Arrays.asList("Stopped", "Restarting", "Stopping"), "§aPutting server to sleep...", "§cServer is already stopped/sleeping!");
     }
 
     /**
@@ -282,18 +311,18 @@ public class PanelServerManager {
     private String sendCommandHandler(String[] args) {
         // Usage
         if (args.length == 1) {
-            return "§cUsage: /amp command <instance> <command>";
+            return "§cUsage: /psm command <instance> <command>";
         }
         // Send command
         if (args.length >= 3) {
             String serverName = args[1];
-            if (instances.containsKey(serverName)) {
-                Instance instance = instances.get(serverName);
-                Map<String, Object> status = instance.getStatus();
-                int state = (int) Math.round((double) status.get("State"));
-                if (Objects.equals(state, 20)) {
+            if (servers.containsKey(serverName)) {
+                Server server = servers.get(serverName);
+                Map<String, Object> status = server.getStatus();
+                String state = (String) status.get("State");
+                if (Objects.equals(state, "Ready")) {
                     String command = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-                    instance.sendCommand(command);
+                    server.sendCommand(command);
                     return "§aSending command to server " + serverName + "...";
                 } else {
                     return "§cServer " + serverName + " is not Ready!";
@@ -313,14 +342,14 @@ public class PanelServerManager {
     private String getStatusHandler(String[] args) {
         // Usage
         if (args.length == 1) {
-            return "§cUsage: /amp status <instance>";
+            return "§cUsage: /psm status <instance>";
         }
         // Get status
         if (args.length == 2) {
             String serverName = args[1];
-            if (instances.containsKey(serverName)) {
-                Instance instance = instances.get(serverName);
-                Map<String, Object> status = instance.parseStatus(instance.getStatus());
+            if (servers.containsKey(serverName)) {
+                Server server = servers.get(serverName);
+                Map<String, Object> status = server.getStatus();
                 if (status == null) {
                     return "§cServer " + serverName + " is not responding!";
                 }
@@ -363,14 +392,14 @@ public class PanelServerManager {
     private String backupServerHandler(String[] args) {
         // Usage
         if (args.length == 1) {
-            return "§cUsage: /amp backup <instance>";
+            return "§cUsage: /psm backup <instance>";
         }
         // Backup server
         if (args.length >= 2) {
             String serverName = args[1];
 
-            if (instances.containsKey(serverName)) {
-                Instance instance = instances.get(serverName);
+            if (servers.containsKey(serverName)) {
+                Server server = servers.get(serverName);
                 // Parse Backup details
                 String backupName = args.length >= 3 ? args[2] : "";
                 String backupDescription = args.length >= 4 ? args[3] : "";
@@ -381,8 +410,10 @@ public class PanelServerManager {
                         || args[4].equalsIgnoreCase("yes")
                         || args[4].equalsIgnoreCase("y")
                 );
-
-                instance.backupServer(backupName, backupDescription, isSticky);
+                if (!(server instanceof AMPServer)) {
+                    return "§cServer " + serverName + " is not an AMP server!";
+                }
+                ((AMPServer) server).backupServer(backupName, backupDescription, isSticky);
                 return "§aBacking up server " + serverName + "...";
             } else {
                 return "§cServer " + serverName + " does not exist!";
@@ -399,23 +430,23 @@ public class PanelServerManager {
     private String playerListHandler(String[] args) {
         // Usage
         if (args.length == 1) {
-            return "§cUsage: /amp players <instance>";
+            return "§cUsage: /psm players <instance>";
         }
         // Get player list
         if (args.length == 2) {
             String serverName = args[1];
-            if (instances.containsKey(serverName)) {
-                Instance instance = instances.get(serverName);
-                Map<String, Object> status = instance.getStatus();
-                int state = (int) Math.round((double) status.get("State"));
-                if (Objects.equals(state, 20)) {
+            if (servers.containsKey(serverName)) {
+                Server server = servers.get(serverName);
+                Map<String, Object> status = server.getStatus();
+                String state = (String) status.get("State");
+                if (Objects.equals(state, "Ready")) {
                     String output = "§6" + serverName + ":\n";
 
                     // Player count
                     if (status.containsKey("Metrics")) {
-                        Map<String, Object> metrics = (Map<String, Object>) status.get("Metrics");
+                        Map<?, ?> metrics = (Map<?, ?>) status.get("Metrics");
                         if (metrics.containsKey("Active Users")) {
-                            Map<String, Object> Players = (Map<String, Object>) metrics.get("Active Users");
+                            Map<?, ?> Players = (Map<?, ?>) metrics.get("Active Users");
                             int PlayersValue = (int) Math.round((double) Players.get("RawValue"));
                             int PlayersMax = (int) Math.round((double) Players.get("MaxValue"));
                             output += "§6Players: §9" + PlayersValue + "§6/§9" + PlayersMax + "\n";
@@ -423,7 +454,7 @@ public class PanelServerManager {
                     }
 
                     // Player list
-                    List<String> playerList = instance.parsePlayerList(instance.getPlayerList());
+                    List<String> playerList = server.getPlayerList();
                     if (playerList == null || playerList.isEmpty()) {
                         return "§cServer " + serverName + " has no players online!";
                     }
@@ -462,7 +493,7 @@ public class PanelServerManager {
             // List
             case "list":
                 // Get server list from config "servers" object keys
-                message = "§6Available servers: §5\n" + String.join("\n", instances.keySet());
+                message = "§6Available servers: §5\n" + String.join("\n", servers.keySet());
                 break;
             // Add
             case "add":
@@ -484,8 +515,8 @@ public class PanelServerManager {
 
     /**
      * Command Messenger
-     * @param args
-     * @return
+     * @param args The command arguments
+     * @return The response
      */
     public String commandMessenger(String[] args) {
         String message;
@@ -539,8 +570,8 @@ public class PanelServerManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Instance instance = instances.get(args[1]);
-            boolean result = instance.APILogin(ADS);
+            Server server = servers.get(args[1]);
+            boolean result = server.reLog();
             if (result) {
                 message = "§cAn error occurred while executing the command!";
             } else {

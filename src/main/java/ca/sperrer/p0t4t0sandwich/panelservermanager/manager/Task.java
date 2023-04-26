@@ -25,7 +25,7 @@ public class Task {
     // Check Player Count
     public boolean checkPlayerCount(String serverName, Condition condition) {
         // Get player count
-        Map<String, Object> status = PanelServerManager.getInstance().getServerInstance(serverName).getStatus();
+        Map<?, ?> status = PanelServerManager.getInstance().getServer(serverName).getStatus();
         if (!status.containsKey("Metrics")) {
             return false;
         }

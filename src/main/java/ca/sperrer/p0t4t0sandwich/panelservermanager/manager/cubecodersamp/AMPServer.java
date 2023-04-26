@@ -1,6 +1,7 @@
-package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
+package ca.sperrer.p0t4t0sandwich.panelservermanager.manager.cubecodersamp;
 
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
+import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.Server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,98 +9,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class Instance {
-    /**
-     * Properties of the Instance class.
-     * host: The host URL of the AMP instance
-     * username: The AMP username
-     * password: The AMP password
-     * isADS: Whether the AMP instance is an ADS instance
-     * serverName: The name that the server is referred to
-     * name: The InstanceName of the AMP instance
-     * id: The InstanceID of the AMP instance
-     * API: The AMPAPIHandler object for the instance
-     */
-    private final String host;
-    private final String username;
-    private final String password;
-    private final boolean isADS;
+public class AMPServer extends Server {
     public final String serverName;
-    public final String name;
-    private String id;
-    private AMPAPIHandler API;
+    private final String instanceName;
+    private final String instanceId;
+    private final AMPAPIHandler API;
+    private Map<?, ?> loginResult;
 
     /**
      * Constructor for the Instance class.
-     * @param host: The host URL of the AMP instance
-     * @param username: The AMP username
-     * @param password: The AMP password
-     * @param isADS: Whether the AMP instance is an ADS instance
      * @param serverName: The name that the server is referred to
      * @param instanceName: The InstanceName of the AMP instance
      * @param instanceId: The InstanceID of the AMP instance
-     * @return Instance object
+     * @param API: The AMPAPIHandler object for the instance
      */
-    public Instance(String host, String username, String password, boolean isADS, String serverName, String instanceName, String instanceId) {
-        this.host = host;
-        this.username = username;
-        this.password = password;
-        this.isADS = isADS;
+    public AMPServer(String serverName, String instanceName, String instanceId, AMPAPIHandler API) {
+        super(serverName);
         this.serverName = serverName;
-        this.name = instanceName;
-        this.id = instanceId;
+        this.instanceName = instanceName;
+        this.instanceId = instanceId;
+        this.API = API;
+        this.loginResult = API.Login();
     }
 
-    /**
-     * Initialize the API object and login to the AMP instance.
-     * If the instance is an ADS instance, get the instance id and proxy the login through the ADS instance.
-     * Else, login directly to the AMP instance.
-     * @return Whether the login was successful
-     */
-    public boolean APILogin(AMPAPIHandler ADS) {
-        if (!isADS) {
-            API = new AMPAPIHandler(host, username, password, "", "");
-        } else {
-//            AMPAPIHandler ADS = new AMPAPIHandler(host, username, password, "", "");
-//            ADS.Login();
+    @Override
+    public boolean isOnline() {
+        return (loginResult != null && (boolean) loginResult.get("success"));
+    }
 
-            if (name != null) {
-                // Get instance ID
-                if (id == null) {
-                    // Loop through the targets
-                    for (Map<String,Object> target : (ArrayList<Map<String,Object>>) ADS.ADSModule_GetInstances().get("result")) {
-
-                        // Loop through the target instances
-                        for (Map<String, Object> instance : (ArrayList<Map<String, Object>>) target.get("AvailableInstances")) {
-
-                            // Grab the instance id
-                            String instanceName = (String) instance.get("InstanceName");
-                            if (instanceName.equals(name)) {
-                                if (instance.containsKey("InstanceID")) {
-                                    id = ((String) instance.get("InstanceID")).split("-")[0];
-                                }
-
-                                // Save the id to the config
-                                PanelServerManager.getInstance().addInstanceID(serverName, id);
-                                break;
-                            }
-
-                            // Break if the instance id is found
-                            if (id != null) {
-                                break;
-                            }
-                        }
-                    }
-                }
-                API = ADS.InstanceLogin(id);
-            }
-        }
-        if (API != null) {
-            Map<?, ?> status = API.Login();
-            return status.get("success").equals(true);
-        } else {
-            return false;
-        }
+    @Override
+    public boolean reLog() {
+        this.loginResult = API.Login();
+        return (loginResult != null && (boolean) loginResult.get("success"));
     }
 
     /**
@@ -107,7 +48,7 @@ public class Instance {
      * @param method: The method to run
      * @return The result of the method
      */
-    public Map<String, Object> runMethod(Function<String[], Map<String, Object>> method) {
+    public Map<?, ?> runMethod(Function<String[], Map<?, ?>> method) {
         try {
             return method.apply(new String[]{});
         } catch (Exception e) {
@@ -119,6 +60,7 @@ public class Instance {
     /**
      * Abstraction for API.Core.Start
      */
+    @Override
     public void startServer() {
         runMethod((args) -> API.Core_Start());
     }
@@ -126,6 +68,7 @@ public class Instance {
     /**
      * Abstraction for API.Core.Stop
      */
+    @Override
     public void stopServer() {
         runMethod((args) -> API.Core_Stop());
     }
@@ -133,6 +76,7 @@ public class Instance {
     /**
      * Abstraction for API.Core.Restart
      */
+    @Override
     public void restartServer() {
         runMethod((args) -> API.Core_Restart());
     }
@@ -140,31 +84,18 @@ public class Instance {
     /**
      * Abstraction for API.Core.Kill
      */
+    @Override
     public void killServer() {
         runMethod((args) -> API.Core_Kill());
-    }
-
-    /**
-     * Abstraction for API.Core.Sleep
-     */
-    public void sleepServer() {
-        runMethod((args) -> API.Core_Sleep());
     }
 
     /**
      * Abstraction for API.Core.SendConsoleMessage
      * @param message: The message/command to send
      */
+    @Override
     public void sendCommand(String message) {
         runMethod((args) -> API.Core_SendConsoleMessage(message));
-    }
-
-    /**
-     * Abstraction for API.Core.GetStatus
-     * @return The status object from the API
-     */
-    public Map<String, Object> getStatus() {
-        return runMethod((args) -> API.Core_GetStatus());
     }
 
     /**
@@ -172,7 +103,7 @@ public class Instance {
      * @param status: The status object from the API
      * @return A parsed status object
      */
-    public Map<String, Object> parseStatus(Map<String, Object> status) {
+    public Map<String, Object> parseStatus(Map<?, ?> status) {
         if (status == null) {
             return null;
         }
@@ -181,13 +112,13 @@ public class Instance {
 
         // Check if Metrics is present and parse it
         if (status.containsKey("Metrics")) {
-            Map<String, Object> Metrics = (Map<String, Object>) status.get("Metrics");
-            double CPU = (double) ((Map<String, Object>) Metrics.get("CPU Usage")).get("Percent");
+            Map<?, ?> Metrics = (Map<?, ?>) status.get("Metrics");
+            double CPU = (double) ((Map<?, ?>) Metrics.get("CPU Usage")).get("Percent");
             newStatus.put("CPU", CPU);
 
             // Check if the Metrics contains Memory Usage and add it to the newStatus object
             if (Metrics.containsKey("Memory Usage")) {
-                Map<String, Object> Memory = (Map<String, Object>) Metrics.get("Memory Usage");
+                Map<?, ?> Memory = (Map<?, ?>) Metrics.get("Memory Usage");
                 int MemoryValue = (int) Math.round((double) Memory.get("RawValue"));
                 int MemoryMax = (int) Math.round((double) Memory.get("MaxValue"));
                 newStatus.put("MemoryValue", MemoryValue);
@@ -196,7 +127,7 @@ public class Instance {
 
             // Check if the Metrics contains Active Users and add it to the newStatus object
             if (Metrics.containsKey("Active Users")) {
-                Map<String, Object> Players = (Map<String, Object>) Metrics.get("Active Users");
+                Map<?, ?> Players = (Map<?, ?>) Metrics.get("Active Users");
                 int PlayersValue = (int) Math.round((double) Players.get("RawValue"));
                 int PlayersMax = (int) Math.round((double) Players.get("MaxValue"));
                 newStatus.put("PlayersValue", PlayersValue);
@@ -205,7 +136,7 @@ public class Instance {
 
             // Check if the Metrics contains TPS and add it to the newStatus object
             if (Metrics.containsKey("TPS")) {
-                Map<String, Object> TPS = (Map<String, Object>) Metrics.get("TPS");
+                Map<?, ?> TPS = (Map<?, ?>) Metrics.get("TPS");
                 double TPSValue = (double) TPS.get("RawValue");
                 newStatus.put("TPSValue", TPSValue);
             }
@@ -275,21 +206,14 @@ public class Instance {
     }
 
     /**
-     * Abstraction for API.LocalFileBackupPlugin.TakeBackup
-     * @param backupTitle: The title of the backup
-     * @param backupDescription: The description of the backup
-     * @param isSticky: Whether the backup is sticky or not
+     * Abstraction for API.Core.GetStatus
+     *
+     * @return The status object from the API
      */
-    public void backupServer(String backupTitle, String backupDescription, boolean isSticky) {
-        runMethod((args) -> API.LocalFileBackupPlugin_TakeBackup(backupTitle, backupDescription, isSticky));
-    }
-
-    /**
-     * Abstraction for API.Core.GetUserList
-     * @return The player list object from the API
-     */
-    public Map<String, Object> getPlayerList() {
-        return runMethod((args) -> (Map<String, Object>) API.Core_GetUserList().get("result"));
+    @Override
+    public Map<String, Object> getStatus() {
+        Map<?, ?> status = runMethod((args) -> API.Core_GetStatus());
+        return parseStatus(status);
     }
 
     /**
@@ -297,14 +221,41 @@ public class Instance {
      * @param playerList: The player list object from the API
      * @return A parsed player list object
      */
-    public List<String> parsePlayerList(Map<String, Object> playerList) {
+    public List<String> parsePlayerList(Map<?, ?> playerList) {
         if (playerList == null) {
             return null;
         }
         List<String> players = new ArrayList<>();
-        for (Map.Entry<String, Object> entry : playerList.entrySet()) {
+        for (Map.Entry<?, ?> entry : playerList.entrySet()) {
             players.add((String) entry.getValue());
         }
         return players;
+    }
+
+    /**
+     * Abstraction for API.Core.GetUserList
+     * @return The player list object from the API
+     */
+    @Override
+    public List<String> getPlayerList() {
+        Map<?, ?> playerList = runMethod((args) -> (Map<?, ?>) API.Core_GetUserList().get("result"));
+        return parsePlayerList(playerList);
+    }
+
+    /**
+     * Abstraction for API.Core.Sleep
+     */
+    public void sleepServer() {
+        runMethod((args) -> API.Core_Sleep());
+    }
+
+    /**
+     * Abstraction for API.LocalFileBackupPlugin.TakeBackup
+     * @param backupTitle: The title of the backup
+     * @param backupDescription: The description of the backup
+     * @param isSticky: Whether the backup is sticky or not
+     */
+    public void backupServer(String backupTitle, String backupDescription, boolean isSticky) {
+        runMethod((args) -> API.LocalFileBackupPlugin_TakeBackup(backupTitle, backupDescription, isSticky));
     }
 }
