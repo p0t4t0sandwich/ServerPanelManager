@@ -13,9 +13,9 @@ public class Utils {
 
     /**
      * Run a task asynchronously, repeating it every period seconds.
-     * @param run: The task to run asynchronously.
-     * @param delay: The delay in seconds to wait before running the task.
-     * @param period: The period in seconds to repeat the task.
+     * @param run The task to run asynchronously.
+     * @param delay The delay in seconds to wait before running the task.
+     * @param period The period in seconds to repeat the task.
      */
     public static void repeatTaskAsync(Runnable run, Long delay, Long period) {
         ForkJoinPool.commonPool().submit(() -> {
@@ -37,7 +37,7 @@ public class Utils {
 
     /**
      * A parser to convert Minecraft's color codes to the terminal's ANSII color codes.
-     * @param s: The string to parse.
+     * @param s The string to parse.
      * @return The parsed string.
      */
     public static String ansiiParser(String s) {

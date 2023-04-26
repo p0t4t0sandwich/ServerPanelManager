@@ -16,7 +16,7 @@ public class Group {
     }
 
     // Set Server
-    public static void setServer(String serverName) {
+    public static void addServer(String serverName) {
         servers.add(serverName);
     }
 
@@ -45,6 +45,30 @@ public class Group {
         tasks.remove(taskName);
     }
 
+    // Task exists
+    public static boolean taskExists(String taskName) {
+        return tasks.containsKey(taskName);
+    }
+
+    // Start task
+    public static void startTask(String taskName) {
+        if (!taskExists(taskName)) {
+            return;
+        }
+        Task task = getTask(taskName);
+        for (String serverName : servers) {
+            boolean result = task.checkConditions(serverName);
+            if (result) {
+                HashMap<String, Object> parseMap = new HashMap<>();
+                parseMap.put("server", serverName);
+                String command = task.getCommand();
+                String parsedCommand = parseCommand(parseMap, command);
+                Server server = PanelServerManager.getInstance().getServer(serverName);
+                server.sendCommand(parsedCommand);
+            }
+        }
+    }
+
     // Contains task
     public static boolean containsTask(String taskName) {
         return tasks.containsKey(taskName);
@@ -68,5 +92,13 @@ public class Group {
     // Contains variable
     public static boolean containsVariable(String variableName) {
         return variableStore.containsKey(variableName);
+    }
+
+    // Command parser
+    public static String parseCommand(HashMap<String, Object> parseMap, String command) {
+        for (String key : parseMap.keySet()) {
+            command = command.replace("{" + key + "}", parseMap.get(key).toString());
+        }
+        return command;
     }
 }

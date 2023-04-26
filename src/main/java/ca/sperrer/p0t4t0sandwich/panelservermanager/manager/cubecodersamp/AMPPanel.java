@@ -10,6 +10,9 @@ import java.util.HashMap;
 public class AMPPanel extends Panel<AMPAPIHandler> {
     private HashMap<?, ?> loginResult;
 
+    /**
+     * Constructor for the AMPPanel class.
+     */
     public AMPPanel(String name, String host, String username, String password) {
         super(name, host);
         this.API = new AMPAPIHandler(host, username, password, "", "");
@@ -30,6 +33,10 @@ public class AMPPanel extends Panel<AMPAPIHandler> {
     /**
      * Initialize the API object and login to the AMP instance.
      * Get the instance id and proxy the login through the ADS instance.
+     * @param serverName The name of the server
+     * @param instanceName The name of the instance
+     * @param instanceId The id of the instance
+     *                   (if null, the id will be found by looping through the instances)
      * @return Whether the login was successful
      */
     public AMPAPIHandler getInstanceAPI(String serverName, String instanceName, String instanceId) {

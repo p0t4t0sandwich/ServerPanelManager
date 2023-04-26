@@ -5,6 +5,7 @@
 A plugin that allows you to manage your Panel's game servers from within minecraft. This plugin is still in development and is not quite ready for production use. Feel free to mess around with it and report any bugs you find, or any features you would like to see.
 
 If you need to port this mod/plugin to an unsupported platform/version, feel free to create an issue, and I'll see what I can do. Older MC implementations are built on an as-needed basis.
+
 If your panel isn't supported yet, create an issue, and we can do some digging to see if it's possible.
 
 ## Commands
@@ -16,13 +17,18 @@ If your panel isn't supported yet, create an issue, and we can do some digging t
 `/psmc` for Client-side
 
 ```
+# General
 start <server>
 stop <server>
 restart <server>
 kill <server>
-sleep <server>
 send <server> <command>
 status <server>
+
+# AMP only
+sleep <server>
+players <server>
+backup <server> [name] [description] [sticky <- true or false]
 ```
 
 ## Permissions
@@ -97,14 +103,14 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 
 ### Bugs
 
-- [ ] Program doesn't time out if it can't connect to the AMP API -- is this a problem with ampapi-java? -- If so, then I'll have to fix it there
-- [ ] Another instance of this problem: occurs when the instance is offline, replicates the above behavior just at an instance level
+- [x] Program doesn't time out if it can't connect to the AMP API -- is this a problem with ampapi-java? -- If so, then I'll have to fix it there
+- [x] Another instance of this problem: occurs when the instance is offline, replicates the above behavior just at an instance level
 
 ### General
 
-- [ ] Refactor everything -- this is a monolithic mess
+- [x] Refactor everything -- this is a monolithic mess
 - [ ] Add a command to reload the config
-- [ ] Design an API for other plugins to use -- that way this plugin doesn't become a spaghetti mess
+- [x] Design an API for other plugins to use -- that way this plugin doesn't become a spaghetti mess
 - [ ] Forge support -- try and generalize the fabric command and see if I can get it to work with forge, as both use brigadier
 - [ ] Multi-Fabric version support -- some gradle project voodoo required
 - [ ] Fabric client side chat listener -- do it like this? https://www.reddit.com/r/fabricmc/comments/wg7jrx/onchat/

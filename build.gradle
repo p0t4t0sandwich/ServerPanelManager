@@ -59,7 +59,7 @@ shadowJar {
     configurations = [project.configurations.runtimeClasspath, project.configurations.shadow]
     dependencies {
         include dependency("dev.dejvokep:boosted-yaml:1.3")
-        include dependency("com.github.p0t4t0sandwich:ampapi-java:ampapi-1.0.3")
+        include dependency("com.github.p0t4t0sandwich:ampapi-java:ampapi-1.0.5")
         include dependency('com.google.code.gson:gson:2.10.1')
     }
 }

@@ -17,10 +17,10 @@ public class AMPServer extends Server {
 
     /**
      * Constructor for the Instance class.
-     * @param serverName: The name that the server is referred to
-     * @param instanceName: The InstanceName of the AMP instance
-     * @param instanceId: The InstanceID of the AMP instance
-     * @param API: The AMPAPIHandler object for the instance
+     * @param serverName The name that the server is referred to
+     * @param instanceName The InstanceName of the AMP instance
+     * @param instanceId The InstanceID of the AMP instance
+     * @param API The AMPAPIHandler object for the instance
      */
     public AMPServer(String serverName, String instanceName, String instanceId, AMPAPIHandler API) {
         super(serverName);
@@ -31,11 +31,17 @@ public class AMPServer extends Server {
         this.loginResult = API.Login();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean isOnline() {
         return (loginResult != null && (boolean) loginResult.get("success"));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean reLog() {
         this.loginResult = API.Login();
@@ -44,7 +50,7 @@ public class AMPServer extends Server {
 
     /**
      * Acts as a wrapper for the Instance object to abstract the API.
-     * @param method: The method to run
+     * @param method The method to run
      * @return The result of the method
      */
     public HashMap<?, ?> runMethod(Function<String[], HashMap<?, ?>> method) {
@@ -57,7 +63,7 @@ public class AMPServer extends Server {
     }
 
     /**
-     * Abstraction for API.Core.Start
+     * @inheritDoc
      */
     @Override
     public void startServer() {
@@ -65,7 +71,7 @@ public class AMPServer extends Server {
     }
 
     /**
-     * Abstraction for API.Core.Stop
+     * @inheritDoc
      */
     @Override
     public void stopServer() {
@@ -73,7 +79,7 @@ public class AMPServer extends Server {
     }
 
     /**
-     * Abstraction for API.Core.Restart
+     * @inheritDoc
      */
     @Override
     public void restartServer() {
@@ -81,7 +87,7 @@ public class AMPServer extends Server {
     }
 
     /**
-     * Abstraction for API.Core.Kill
+     * @inheritDoc
      */
     @Override
     public void killServer() {
@@ -89,8 +95,7 @@ public class AMPServer extends Server {
     }
 
     /**
-     * Abstraction for API.Core.SendConsoleMessage
-     * @param message: The message/command to send
+     * @inheritDoc
      */
     @Override
     public void sendCommand(String message) {
@@ -99,7 +104,7 @@ public class AMPServer extends Server {
 
     /**
      * A parser for this.getStatus()
-     * @param status: The status object from the API
+     * @param status The status object from the API
      * @return A parsed status object
      */
     public HashMap<String, Object> parseStatus(HashMap<?, ?> status) {
@@ -205,9 +210,7 @@ public class AMPServer extends Server {
     }
 
     /**
-     * Abstraction for API.Core.GetStatus
-     *
-     * @return The status object from the API
+     * @inheritDoc
      */
     @Override
     public HashMap<String, Object> getStatus() {
@@ -216,8 +219,25 @@ public class AMPServer extends Server {
     }
 
     /**
+     * Abstraction for API.Core.Sleep
+     */
+    public void sleepServer() {
+        runMethod((args) -> API.Core_Sleep());
+    }
+
+    /**
+     * Abstraction for API.LocalFileBackupPlugin.TakeBackup
+     * @param backupTitle The title of the backup
+     * @param backupDescription The description of the backup
+     * @param isSticky Whether the backup is sticky or not
+     */
+    public void backupServer(String backupTitle, String backupDescription, boolean isSticky) {
+        runMethod((args) -> API.LocalFileBackupPlugin_TakeBackup(backupTitle, backupDescription, isSticky));
+    }
+
+    /**
      * A parser for this.getPlayerList()
-     * @param playerList: The player list object from the API
+     * @param playerList The player list object from the API
      * @return A parsed player list object
      */
     public List<String> parsePlayerList(HashMap<?, ?> playerList) {
@@ -235,26 +255,8 @@ public class AMPServer extends Server {
      * Abstraction for API.Core.GetUserList
      * @return The player list object from the API
      */
-    @Override
     public List<String> getPlayerList() {
         HashMap<?, ?> playerList = runMethod((args) -> (HashMap<?, ?>) API.Core_GetUserList().get("result"));
         return parsePlayerList(playerList);
-    }
-
-    /**
-     * Abstraction for API.Core.Sleep
-     */
-    public void sleepServer() {
-        runMethod((args) -> API.Core_Sleep());
-    }
-
-    /**
-     * Abstraction for API.LocalFileBackupPlugin.TakeBackup
-     * @param backupTitle: The title of the backup
-     * @param backupDescription: The description of the backup
-     * @param isSticky: Whether the backup is sticky or not
-     */
-    public void backupServer(String backupTitle, String backupDescription, boolean isSticky) {
-        runMethod((args) -> API.LocalFileBackupPlugin_TakeBackup(backupTitle, backupDescription, isSticky));
     }
 }

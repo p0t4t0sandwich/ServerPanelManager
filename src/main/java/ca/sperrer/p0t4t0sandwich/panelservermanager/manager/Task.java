@@ -22,6 +22,21 @@ public class Task {
         this.conditions.addAll(conditions);
     }
 
+    // Get Name
+    public String getName() {
+        return name;
+    }
+
+    // Get Command
+    public String getCommand() {
+        return command;
+    }
+
+    // Get Interval
+    public int getInterval() {
+        return interval;
+    }
+
     // Check Player Count
     public boolean checkPlayerCount(String serverName, Condition condition) {
         // Get player count
