@@ -110,7 +110,40 @@ public class PanelServerManager {
             for (Map.Entry<?, ?> entry: serverConfig.entrySet()) {
                 // Get server and panel information
                 String serverName = (String) entry.getKey();
+
                 String panelName = config.getString("servers." + serverName + ".panel");
+                String instanceName;
+                String instanceId;
+
+                // Check if server is a standalone AMP instance
+                if (panelName.equals("ampstandalone")) {
+                    instanceName = config.getString("servers." + serverName + ".name");
+                    instanceId = config.getString("servers." + serverName + ".id");
+                    String host = config.getString("servers." + serverName + ".host");
+                    String username = config.getString("servers." + serverName + ".username");
+                    String password = config.getString("servers." + serverName + ".password");
+                    boolean isADS = config.getBoolean("servers." + serverName + ".isADS") != null
+                            && config.getBoolean("servers." + serverName + ".isADS");
+
+                    AMPPanel panel = new AMPPanel(serverName, host, username, password);
+                    AMPAPIHandler instanceAPI;
+                    if (isADS) {
+                        instanceAPI = panel.getInstanceAPI(serverName, instanceName, instanceId);
+                    } else {
+                        instanceAPI = new AMPAPIHandler(host, username, password, "", "");
+                    }
+                    Server server = new AMPServer(serverName, instanceName, instanceId, instanceAPI);
+
+                    // Check if server is online
+                    if (server.isOnline()) {
+                        setServer(serverName, server);
+                        useLogger(logger, "Server " + serverName + " is online!");
+                    } else {
+                        useLogger(logger, "Server " + serverName + " is offline!");
+                    }
+                    continue;
+                }
+
                 Panel panel = panels.get(panelName);
                 if (panel == null) {
                     useLogger(logger, "Server " + serverName + "'s panel is offline or defined incorrectly!");
@@ -121,8 +154,8 @@ public class PanelServerManager {
                 Server server = null;
                 switch (panelType) {
                     case "cubecodersamp":
-                        String instanceName = config.getString("servers." + serverName + ".name");
-                        String instanceId = config.getString("servers." + serverName + ".id");
+                        instanceName = config.getString("servers." + serverName + ".name");
+                        instanceId = config.getString("servers." + serverName + ".id");
 
                         AMPAPIHandler instanceAPI = ((AMPPanel) panel).getInstanceAPI(serverName, instanceName, instanceId);
                         server = new AMPServer(serverName, instanceName, instanceId, instanceAPI);
