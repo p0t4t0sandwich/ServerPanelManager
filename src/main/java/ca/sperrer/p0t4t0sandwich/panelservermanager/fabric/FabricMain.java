@@ -34,7 +34,7 @@ public class FabricMain implements ModInitializer {
         panelServerManager.start();
 
         // Register commands
-        CommandRegistrationCallback.EVENT.register(FabricAMPCommands::register);
+        CommandRegistrationCallback.EVENT.register(FabricPanelCommands::register);
 
         // Mod enable message
         logger.info("[PanelServerManager]: Panel Server Manager has been enabled!");

@@ -28,7 +28,7 @@ public class BungeeMain extends Plugin {
         panelServerManager.start();
 
         // Register commands
-        getProxy().getPluginManager().registerCommand(this, new BungeeAMPCommands());
+        getProxy().getPluginManager().registerCommand(this, new BungeePanelCommands());
 
         // Plugin enable message
         getLogger().info("Panel Server Manager has been enabled!");

@@ -2,7 +2,7 @@ package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.HashMap;
 
 public class Task {
     private final String name;
@@ -25,17 +25,17 @@ public class Task {
     // Check Player Count
     public boolean checkPlayerCount(String serverName, Condition condition) {
         // Get player count
-        Map<?, ?> status = PanelServerManager.getInstance().getServer(serverName).getStatus();
+        HashMap<?, ?> status = PanelServerManager.getInstance().getServer(serverName).getStatus();
         if (!status.containsKey("Metrics")) {
             return false;
         }
 
-        Map<String, Object> metrics = (Map<String, Object>) status.get("Metrics");
+        HashMap<String, Object> metrics = (HashMap<String, Object>) status.get("Metrics");
         if (!metrics.containsKey("Active Users")) {
             return false;
         }
 
-        Map<String, Object> activeUsers = (Map<String, Object>) metrics.get("Active Users");
+        HashMap<String, Object> activeUsers = (HashMap<String, Object>) metrics.get("Active Users");
         int playerCount = (int) Math.round((double) activeUsers.get("RawValue"));
 
         switch (condition.operator) {

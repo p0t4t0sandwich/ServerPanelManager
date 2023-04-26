@@ -8,7 +8,11 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.runTaskAsync;
 
@@ -27,6 +31,7 @@ public class PanelServerManager {
     private static final HashMap<String, Panel> panels = new HashMap<>();
     private static final HashMap<String, Server> servers = new HashMap<>();
     private static PanelServerManager singleton = null;
+    private boolean STARTED = false;
 
     /**
      * Getter for the singleton instance of the PanelServerManager class.
@@ -78,10 +83,15 @@ public class PanelServerManager {
      * Start the PanelServerManager.
      */
     public void start() {
+        if (STARTED) {
+            useLogger(logger, "PanelServerManager is already started!");
+            return;
+        }
         runTaskAsync(() -> {
+            STARTED = true;
             // Initialize Panels
-            Map<?, ?> panelConfig = (Map<?, ?>) config.getBlock("panels").getStoredValue();
-            for (Map.Entry<?, ?> entry: panelConfig.entrySet()) {
+            HashMap<?, ?> panelConfig = (HashMap<?, ?>) config.getBlock("panels").getStoredValue();
+            for (HashMap.Entry<?, ?> entry: panelConfig.entrySet()) {
                 // Get panel name and type
                 String panelName = (String) entry.getKey();
                 String panelType = config.getString("panels." + panelName + ".type");
@@ -106,8 +116,8 @@ public class PanelServerManager {
             }
 
             // Initialize servers
-            Map<?, ?> serverConfig = (Map<?, ?>) config.getBlock("servers").getStoredValue();
-            for (Map.Entry<?, ?> entry: serverConfig.entrySet()) {
+            HashMap<?, ?> serverConfig = (HashMap<?, ?>) config.getBlock("servers").getStoredValue();
+            for (HashMap.Entry<?, ?> entry: serverConfig.entrySet()) {
                 // Get server and panel information
                 String serverName = (String) entry.getKey();
 
@@ -141,13 +151,13 @@ public class PanelServerManager {
                     } else {
                         useLogger(logger, "Server " + serverName + " is offline!");
                     }
-                    continue;
+                    return;
                 }
 
                 Panel panel = panels.get(panelName);
                 if (panel == null) {
                     useLogger(logger, "Server " + serverName + "'s panel is offline or defined incorrectly!");
-                    continue;
+                    return;
                 }
                 String panelType = config.getString("panels." + panelName + ".type");
 
@@ -216,7 +226,7 @@ public class PanelServerManager {
      * @param serverName: The name of the server
      * @return Whether the server exists or not
      */
-    public static boolean serverInstanceExists(String serverName) {
+    public static boolean serverExists(String serverName) {
         return servers.containsKey(serverName);
     }
 
@@ -253,9 +263,9 @@ public class PanelServerManager {
         // Check if there are enough arguments
         if (args.length == 2) {
             String serverName = args[1];
-            if (serverInstanceExists(serverName)) {
+            if (serverExists(serverName)) {
                 Server server = getServer(serverName);
-                Map<String, Object> status = server.getStatus();
+                HashMap<String, Object> status = server.getStatus();
                 String state = (String) status.get("State");
 
                 // Check if server is in exempt state
@@ -351,7 +361,7 @@ public class PanelServerManager {
             String serverName = args[1];
             if (servers.containsKey(serverName)) {
                 Server server = servers.get(serverName);
-                Map<String, Object> status = server.getStatus();
+                HashMap<String, Object> status = server.getStatus();
                 String state = (String) status.get("State");
                 if (Objects.equals(state, "Ready")) {
                     String command = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
@@ -382,7 +392,7 @@ public class PanelServerManager {
             String serverName = args[1];
             if (servers.containsKey(serverName)) {
                 Server server = servers.get(serverName);
-                Map<String, Object> status = server.getStatus();
+                HashMap<String, Object> status = server.getStatus();
                 if (status == null) {
                     return "§cServer " + serverName + " is not responding!";
                 }
@@ -470,16 +480,16 @@ public class PanelServerManager {
             String serverName = args[1];
             if (servers.containsKey(serverName)) {
                 Server server = servers.get(serverName);
-                Map<String, Object> status = server.getStatus();
+                HashMap<String, Object> status = server.getStatus();
                 String state = (String) status.get("State");
                 if (Objects.equals(state, "Ready")) {
                     String output = "§6" + serverName + ":\n";
 
                     // Player count
                     if (status.containsKey("Metrics")) {
-                        Map<?, ?> metrics = (Map<?, ?>) status.get("Metrics");
+                        HashMap<?, ?> metrics = (HashMap<?, ?>) status.get("Metrics");
                         if (metrics.containsKey("Active Users")) {
-                            Map<?, ?> Players = (Map<?, ?>) metrics.get("Active Users");
+                            HashMap<?, ?> Players = (HashMap<?, ?>) metrics.get("Active Users");
                             int PlayersValue = (int) Math.round((double) Players.get("RawValue"));
                             int PlayersMax = (int) Math.round((double) Players.get("MaxValue"));
                             output += "§6Players: §9" + PlayersValue + "§6/§9" + PlayersMax + "\n";

@@ -5,10 +5,10 @@ import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.Panel;
 import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.PanelServerManager;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashMap;
 
 public class AMPPanel extends Panel<AMPAPIHandler> {
-    private Map<?, ?> loginResult;
+    private HashMap<?, ?> loginResult;
 
     public AMPPanel(String name, String host, String username, String password) {
         super(name, host);
@@ -38,10 +38,10 @@ public class AMPPanel extends Panel<AMPAPIHandler> {
             // Get instance ID
             if (instanceId == null) {
                 // Loop through the targets
-                for (Map<String,Object> target : (ArrayList<Map<String,Object>>) API.ADSModule_GetInstances().get("result")) {
+                for (HashMap<String,Object> target : (ArrayList<HashMap<String,Object>>) API.ADSModule_GetInstances().get("result")) {
 
                     // Loop through the target instances
-                    for (Map<String, Object> instance : (ArrayList<Map<String, Object>>) target.get("AvailableInstances")) {
+                    for (HashMap<String, Object> instance : (ArrayList<HashMap<String, Object>>) target.get("AvailableInstances")) {
 
                         // Grab the instance id
                         String name = (String) instance.get("InstanceName");

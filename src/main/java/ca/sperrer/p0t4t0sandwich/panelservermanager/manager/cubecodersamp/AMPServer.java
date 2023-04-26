@@ -6,7 +6,6 @@ import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.Server;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 public class AMPServer extends Server {
@@ -14,7 +13,7 @@ public class AMPServer extends Server {
     private final String instanceName;
     private final String instanceId;
     private final AMPAPIHandler API;
-    private Map<?, ?> loginResult;
+    private HashMap<?, ?> loginResult;
 
     /**
      * Constructor for the Instance class.
@@ -48,7 +47,7 @@ public class AMPServer extends Server {
      * @param method: The method to run
      * @return The result of the method
      */
-    public Map<?, ?> runMethod(Function<String[], Map<?, ?>> method) {
+    public HashMap<?, ?> runMethod(Function<String[], HashMap<?, ?>> method) {
         try {
             return method.apply(new String[]{});
         } catch (Exception e) {
@@ -103,22 +102,22 @@ public class AMPServer extends Server {
      * @param status: The status object from the API
      * @return A parsed status object
      */
-    public Map<String, Object> parseStatus(Map<?, ?> status) {
+    public HashMap<String, Object> parseStatus(HashMap<?, ?> status) {
         if (status == null) {
             return null;
         }
 
-        Map<String, Object> newStatus = new HashMap<>();
+        HashMap<String, Object> newStatus = new HashMap<>();
 
         // Check if Metrics is present and parse it
         if (status.containsKey("Metrics")) {
-            Map<?, ?> Metrics = (Map<?, ?>) status.get("Metrics");
-            double CPU = (double) ((Map<?, ?>) Metrics.get("CPU Usage")).get("Percent");
+            HashMap<?, ?> Metrics = (HashMap<?, ?>) status.get("Metrics");
+            double CPU = (double) ((HashMap<?, ?>) Metrics.get("CPU Usage")).get("Percent");
             newStatus.put("CPU", CPU);
 
             // Check if the Metrics contains Memory Usage and add it to the newStatus object
             if (Metrics.containsKey("Memory Usage")) {
-                Map<?, ?> Memory = (Map<?, ?>) Metrics.get("Memory Usage");
+                HashMap<?, ?> Memory = (HashMap<?, ?>) Metrics.get("Memory Usage");
                 int MemoryValue = (int) Math.round((double) Memory.get("RawValue"));
                 int MemoryMax = (int) Math.round((double) Memory.get("MaxValue"));
                 newStatus.put("MemoryValue", MemoryValue);
@@ -127,7 +126,7 @@ public class AMPServer extends Server {
 
             // Check if the Metrics contains Active Users and add it to the newStatus object
             if (Metrics.containsKey("Active Users")) {
-                Map<?, ?> Players = (Map<?, ?>) Metrics.get("Active Users");
+                HashMap<?, ?> Players = (HashMap<?, ?>) Metrics.get("Active Users");
                 int PlayersValue = (int) Math.round((double) Players.get("RawValue"));
                 int PlayersMax = (int) Math.round((double) Players.get("MaxValue"));
                 newStatus.put("PlayersValue", PlayersValue);
@@ -136,7 +135,7 @@ public class AMPServer extends Server {
 
             // Check if the Metrics contains TPS and add it to the newStatus object
             if (Metrics.containsKey("TPS")) {
-                Map<?, ?> TPS = (Map<?, ?>) Metrics.get("TPS");
+                HashMap<?, ?> TPS = (HashMap<?, ?>) Metrics.get("TPS");
                 double TPSValue = (double) TPS.get("RawValue");
                 newStatus.put("TPSValue", TPSValue);
             }
@@ -211,8 +210,8 @@ public class AMPServer extends Server {
      * @return The status object from the API
      */
     @Override
-    public Map<String, Object> getStatus() {
-        Map<?, ?> status = runMethod((args) -> API.Core_GetStatus());
+    public HashMap<String, Object> getStatus() {
+        HashMap<?, ?> status = runMethod((args) -> API.Core_GetStatus());
         return parseStatus(status);
     }
 
@@ -221,12 +220,12 @@ public class AMPServer extends Server {
      * @param playerList: The player list object from the API
      * @return A parsed player list object
      */
-    public List<String> parsePlayerList(Map<?, ?> playerList) {
+    public List<String> parsePlayerList(HashMap<?, ?> playerList) {
         if (playerList == null) {
             return null;
         }
         List<String> players = new ArrayList<>();
-        for (Map.Entry<?, ?> entry : playerList.entrySet()) {
+        for (HashMap.Entry<?, ?> entry : playerList.entrySet()) {
             players.add((String) entry.getValue());
         }
         return players;
@@ -238,7 +237,7 @@ public class AMPServer extends Server {
      */
     @Override
     public List<String> getPlayerList() {
-        Map<?, ?> playerList = runMethod((args) -> (Map<?, ?>) API.Core_GetUserList().get("result"));
+        HashMap<?, ?> playerList = runMethod((args) -> (HashMap<?, ?>) API.Core_GetUserList().get("result"));
         return parsePlayerList(playerList);
     }
 

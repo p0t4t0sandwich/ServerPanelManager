@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.runTaskAsync;
 
-public class BukkitAMPCommands implements CommandExecutor {
+public class BukkitPanelCommands implements CommandExecutor {
     private final BukkitMain plugin = BukkitMain.getInstance();
 
     @Override

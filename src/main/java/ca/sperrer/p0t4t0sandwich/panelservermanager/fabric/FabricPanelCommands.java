@@ -16,7 +16,7 @@ import net.minecraft.text.Text;
 import java.util.Arrays;
 import java.util.concurrent.*;
 
-public final class FabricAMPCommands {
+public final class FabricPanelCommands {
     private static final FabricMain mod = FabricMain.getInstance();
 
     // TODO: Consolidate this with Forge, input the environment as a parameter

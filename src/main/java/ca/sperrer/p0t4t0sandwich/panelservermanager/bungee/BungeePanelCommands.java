@@ -7,11 +7,11 @@ import net.md_5.bungee.api.plugin.Command;
 
 import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.runTaskAsync;
 
-public class BungeeAMPCommands extends Command {
+public class BungeePanelCommands extends Command {
     private final BungeeMain plugin = BungeeMain.getInstance();
 
-    public BungeeAMPCommands() {
-        super("bamp");
+    public BungeePanelCommands() {
+        super("psmb");
     }
 
     @Override
@@ -22,7 +22,7 @@ public class BungeeAMPCommands extends Command {
             if (sender instanceof ProxiedPlayer && !sender.hasPermission("psm")) {
                 message = "§cYou do not have permission to use this command!";
             } else {
-                message = args.length == 0 ? "§cUsage: /bpsm <command>" : plugin.panelServerManager.commandMessenger(args);
+                message = args.length == 0 ? "§cUsage: /psmb <command>" : plugin.panelServerManager.commandMessenger(args);
             }
 
             sender.sendMessage(new ComponentBuilder(message).create());

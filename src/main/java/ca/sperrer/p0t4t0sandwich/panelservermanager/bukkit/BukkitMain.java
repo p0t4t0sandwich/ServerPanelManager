@@ -45,7 +45,7 @@ public class BukkitMain extends JavaPlugin {
         panelServerManager.start();
 
         // Register commands
-        Objects.requireNonNull(getCommand("amp")).setExecutor(new BukkitAMPCommands());
+        Objects.requireNonNull(getCommand("amp")).setExecutor(new BukkitPanelCommands());
 
         // Plugin enable message
         getLogger().info("Panel Server Manager has been enabled!");
