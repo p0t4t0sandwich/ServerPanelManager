@@ -47,7 +47,7 @@ psm -- Allows access to all commands
 panels:
   <panel name>:
     type: cubecodersamp
-    host: http://localhost:8080
+    host: http://localhost:8080/
     username: admin
     password: admin
 ```
@@ -68,7 +68,7 @@ servers:
   # Server using the instance's web port for authentication
   <server name 2>:
     panel: ampinstance
-    host: http://localhost:8081
+    host: http://localhost:8081/
     username: admin
     password: admin
 ```
@@ -84,8 +84,8 @@ groups:
       - <server name>
       - <server name>
     tasks:
-      - name: Restart
-        command: restart
+      sendboop:
+        command: send {server} say boop!
         interval: 60 # in seconds
         conditions:
           - placeholder: playercount
@@ -137,8 +137,6 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 - [ ] Add commands to manage/add to the config from within the game
   - [ ] Add a command to list all servers -- `/psm server list`
   - [ ] Add commands to add/remove servers
-    - [ ] `/psm server add <server name> <instance name> [instance id]`
-    - [ ] `/psm server remove <server name>`
 
   - [ ] Add a command to list all groups -- `/psm group list`
   - [ ] Add commands to add/remove servers from groups
@@ -150,6 +148,7 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
     - [ ] `/psm group <group> task add <task name> <command> <interval> <conditions>`
     - [ ] ^A parser to make that possible
     - [ ] `/psm group <group> task remove <task name>`
+    - [ ] `/psm group <group> task cancel <task name>`
   - [ ] findplayer command -- `/psm group <group> findplayer <player>`
 
   - [ ] Add a command to list all conditionals in a task -- `/psm group <group> task <task> condition list`

@@ -2,15 +2,18 @@ package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+
+import static ca.sperrer.p0t4t0sandwich.panelservermanager.Utils.repeatTaskAsync;
 
 public class Group {
-    private static final List<String> servers = new ArrayList<>();
+    private final String groupName;
+    private static final ArrayList<String> servers = new ArrayList<>();
     private static final HashMap<String, Task> tasks = new HashMap<>();
     private static final HashMap<String, Object> variableStore = new HashMap<>();
 
     // Constructor
-    public Group(List<String> s, HashMap<String, Task> t) {
+    public Group(String groupName, ArrayList<String> s, HashMap<String, Task> t) {
+        this.groupName = groupName;
         servers.addAll(s);
         tasks.putAll(t);
     }
@@ -56,17 +59,28 @@ public class Group {
             return;
         }
         Task task = getTask(taskName);
-        for (String serverName : servers) {
-            boolean result = task.checkConditions(serverName);
-            if (result) {
-                HashMap<String, Object> parseMap = new HashMap<>();
-                parseMap.put("server", serverName);
-                String command = task.getCommand();
-                String parsedCommand = parseCommand(parseMap, command);
-                Server server = PanelServerManager.getInstance().getServer(serverName);
-                server.sendCommand(parsedCommand);
+        task.setTask(repeatTaskAsync(() -> {
+            try {
+                for (String serverName : servers) {
+                    boolean result = task.checkConditions(serverName);
+                    System.out.println("Result: " + result);
+                    if (result) {
+                        HashMap<String, Object> parseMap = new HashMap<>();
+                        parseMap.put("server", serverName);
+                        String command = task.getCommand();
+                        String parsedCommand = parseCommand(parseMap, command);
+                        //
+                        System.out.println("Sending command: " + parsedCommand);
+                        //
+                        PanelServerManager.getInstance().commandMessenger(parsedCommand.split(" "));
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Error while executing task: " + taskName);
+                System.out.println("Error: " + e.getMessage());
+                e.printStackTrace();
             }
-        }
+        }, 0L, 20L * task.getInterval()));
     }
 
     // Contains task

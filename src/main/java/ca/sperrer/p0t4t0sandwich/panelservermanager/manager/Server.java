@@ -1,6 +1,6 @@
 package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Server {
     public final String name;
@@ -57,5 +57,5 @@ public abstract class Server {
     /**
      * @return The status of the server.
      */
-    abstract public HashMap<String, Object> getStatus();
+    abstract public Map<String, Object> getStatus();
 }

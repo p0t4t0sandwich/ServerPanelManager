@@ -1,20 +1,23 @@
 package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ForkJoinTask;
 
 public class Task {
     private final String name;
     private final String command;
-    private final int interval;
+    private final long interval;
 
-    private final List<String> servers = new ArrayList<>();
+    private final ArrayList<String> servers = new ArrayList<>();
 
-    private final List<Condition> conditions = new ArrayList<>();
+    private final ArrayList<Condition> conditions = new ArrayList<>();
+
+    private ForkJoinTask<Object> runningTask;
 
     // Constructor
-    public Task(String name, String command, int interval, List<String> servers, List<Condition> conditions) {
+    public Task(String name, String command, long interval, ArrayList<String> servers, ArrayList<Condition> conditions) {
         this.name = name;
         this.command = command;
         this.interval = interval;
@@ -33,25 +36,28 @@ public class Task {
     }
 
     // Get Interval
-    public int getInterval() {
+    public long getInterval() {
         return interval;
+    }
+
+    // Set Task
+    public void setTask(ForkJoinTask<Object> task) {
+        runningTask = task;
+    }
+
+    // Cancel Task
+    public void cancelTask() {
+        runningTask.cancel(true);
     }
 
     // Check Player Count
     public boolean checkPlayerCount(String serverName, Condition condition) {
         // Get player count
-        HashMap<?, ?> status = PanelServerManager.getInstance().getServer(serverName).getStatus();
-        if (!status.containsKey("Metrics")) {
+        Map<?, ?> status = PanelServerManager.getInstance().getServer(serverName).getStatus();
+        if (!status.containsKey("PlayersValue")) {
             return false;
         }
-
-        HashMap<String, Object> metrics = (HashMap<String, Object>) status.get("Metrics");
-        if (!metrics.containsKey("Active Users")) {
-            return false;
-        }
-
-        HashMap<String, Object> activeUsers = (HashMap<String, Object>) metrics.get("Active Users");
-        int playerCount = (int) Math.round((double) activeUsers.get("RawValue"));
+        int playerCount = (int) status.get("PlayersValue");
 
         switch (condition.operator) {
             case "<":
@@ -59,6 +65,7 @@ public class Task {
             case ">":
                 return playerCount > (int) condition.value;
             case "=":
+            case "==":
                 return playerCount == (int) condition.value;
             case "<=":
                 return playerCount <= (int) condition.value;

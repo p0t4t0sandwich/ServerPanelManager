@@ -26,6 +26,7 @@ public class PanelServerManager {
     private final Object logger;
     private static final HashMap<String, Panel> panels = new HashMap<>();
     private static final HashMap<String, Server> servers = new HashMap<>();
+    private static final HashMap<String, Group> groups = new HashMap<>();
     private static PanelServerManager singleton = null;
     private boolean STARTED = false;
 
@@ -84,7 +85,7 @@ public class PanelServerManager {
             useLogger(logger, "PanelServerManager is already started!");
             return;
         }
-        runTaskAsync(() -> {
+//        runTaskAsync(() -> {
             STARTED = true;
             // Initialize Panels
             HashMap<?, ?> panelConfig = (HashMap<?, ?>) config.getBlock("panels").getStoredValue();
@@ -196,13 +197,37 @@ public class PanelServerManager {
                 }
 
                 // Initialize tasks
-//                HashMap<String, Object> tasks = (HashMap<String, Object>) config.getBlock("groups." + groupName + ".tasks").getStoredValue();
-//                HashMap<String, Task> groupTasks = new HashMap<>();
-//                for (HashMap.Entry<String, Object> task: tasks.entrySet()) {
-//                    System.out.println(task.getValue().toString());
-//                }
+                Group group = new Group(groupName, groupServers, new HashMap<>());
+
+                HashMap<String, Object> tasksConfig = (HashMap<String, Object>) config.getBlock("groups." + groupName + ".tasks").getStoredValue();
+                for (HashMap.Entry<String, Object> taskConfig: tasksConfig.entrySet()) {
+                    String taskName = taskConfig.getKey();
+                    String taskCommand = (String) config.getBlock("groups." + groupName + ".tasks." + taskName + ".command").getStoredValue();
+                    long taskInterval = (long) (int) config.getBlock("groups." + groupName + ".tasks." + taskName + ".interval").getStoredValue();
+
+                    // Initialize task conditions
+                    ArrayList<Condition> taskConditions = new ArrayList<>();
+                    ArrayList<HashMap<?, ?>> conditionsConfig = (ArrayList<HashMap<?, ?>>) config.get("groups." + groupName + ".tasks." + taskName + ".conditions");
+                    for (HashMap<?, ?> conditionConfig: conditionsConfig) {
+                        String conditionPlaceholder = (String) conditionConfig.get("placeholder");
+                        String conditionOperator = (String) conditionConfig.get("operator");
+                        int conditionValue = (int) conditionConfig.get("value");
+
+                        // Build Condition and add to ArrayList
+                        Condition condition = new Condition(conditionPlaceholder, conditionOperator, conditionValue);
+                        taskConditions.add(condition);
+                    }
+
+                    // Build Task and add to HashMap
+                    Task task = new Task(taskName, taskCommand, taskInterval, groupServers, taskConditions);
+                    group.setTask(taskName, task);
+                    group.startTask(taskName);
+                }
+
+                // Add group to HashMap
+                groups.put(groupName, group);
             }
-        });
+//        });
     }
 
     /**
@@ -277,7 +302,7 @@ public class PanelServerManager {
                 String serverName = args[1];
                 if (serverExists(serverName)) {
                     Server server = getServer(serverName);
-                    HashMap<String, Object> status = server.getStatus();
+                    Map<String, Object> status = server.getStatus();
                     String state = (String) status.get("State");
 
                     // Check if server is in exempt state
@@ -377,7 +402,7 @@ public class PanelServerManager {
             String serverName = args[1];
             if (serverExists(serverName)) {
                 Server server = servers.get(serverName);
-                HashMap<String, Object> status = server.getStatus();
+                Map<String, Object> status = server.getStatus();
                 String state = (String) status.get("State");
                 if (Objects.equals(state, "Ready")) {
                     String command = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
@@ -408,7 +433,7 @@ public class PanelServerManager {
             String serverName = args[1];
             if (serverExists(serverName)) {
                 Server server = servers.get(serverName);
-                HashMap<String, Object> status = server.getStatus();
+                Map<String, Object> status = server.getStatus();
                 if (status == null) {
                     return "§cServer " + serverName + " is not responding!";
                 }
@@ -504,7 +529,7 @@ public class PanelServerManager {
                     return "§cServer " + serverName + " is not an AMP server!";
                 }
 
-                HashMap<String, Object> status = server.getStatus();
+                Map<String, Object> status = server.getStatus();
                 String state = (String) status.get("State");
                 if (Objects.equals(state, "Ready")) {
                     String output = "§6" + serverName + ":\n";

@@ -1,7 +1,7 @@
 version: 1
 panel:
   type: cubecodersamp
-  host: http://localhost:8080
+  host: http://localhost:8080/
   username: admin
   password: admin
 
@@ -18,7 +18,7 @@ servers:
   # Server using the instance's web port for authentication
   server2:
     panel: ampstandalone
-    host: http://localhost:8081
+    host: http://localhost:8081/
     username: admin
     password: admin
     name: Minecraft02
@@ -35,8 +35,8 @@ groups:
       - server1
       - server3
     tasks:
-      restart:
-        command: restart
+      sendboop:
+        command: send {server} say boop!
         interval: 60 # in seconds
         conditions:
           - placeholder: playercount

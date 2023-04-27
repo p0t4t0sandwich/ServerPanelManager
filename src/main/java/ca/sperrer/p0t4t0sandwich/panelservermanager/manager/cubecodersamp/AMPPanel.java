@@ -6,9 +6,10 @@ import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.PanelServerManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AMPPanel extends Panel<AMPAPIHandler> {
-    private HashMap<?, ?> loginResult;
+    private Map<?, ?> loginResult;
 
     /**
      * Constructor for the AMPPanel class.

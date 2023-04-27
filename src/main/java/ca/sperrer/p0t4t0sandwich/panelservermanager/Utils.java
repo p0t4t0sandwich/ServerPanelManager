@@ -1,6 +1,7 @@
 package ca.sperrer.p0t4t0sandwich.panelservermanager;
 
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 
 public class Utils {
     /**
@@ -17,16 +18,16 @@ public class Utils {
      * @param delay The delay in seconds to wait before running the task.
      * @param period The period in seconds to repeat the task.
      */
-    public static void repeatTaskAsync(Runnable run, Long delay, Long period) {
-        ForkJoinPool.commonPool().submit(() -> {
+    public static ForkJoinTask<Object> repeatTaskAsync(Runnable run, Long delay, Long period) {
+         return ForkJoinPool.commonPool().submit(() -> {
             try {
-                Thread.sleep(delay*1000/20);
+                Thread.sleep(delay * 1000 / 20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             while (true) {
                 try {
-                    Thread.sleep(period*1000/20);
+                    Thread.sleep(period * 1000 / 20);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
