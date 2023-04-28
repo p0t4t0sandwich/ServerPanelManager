@@ -9,26 +9,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AMPPanel extends Panel<AMPAPIHandler> {
+    /**
+     * Parameters for the AMPPanel class
+     * loginResult: The result of the login method
+     */
     private Map<?, ?> loginResult;
 
     /**
      * Constructor for the AMPPanel class.
      */
-    public AMPPanel(String name, String host, String username, String password) {
-        super(name, host);
+    public AMPPanel(String panelName, String host, String username, String password) {
+        super(panelName, host);
         this.API = new AMPAPIHandler(host, username, password, "", "");
         this.loginResult = API.Login();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean isOnline() {
-        return (loginResult != null && (boolean) loginResult.get("success"));
+        return (loginResult != null && loginResult.containsKey("success") && (boolean) loginResult.get("success"));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean reLog() {
         this.loginResult = API.Login();
-        return (loginResult != null && (boolean) loginResult.get("success"));
+        return isOnline();
     }
 
     /**

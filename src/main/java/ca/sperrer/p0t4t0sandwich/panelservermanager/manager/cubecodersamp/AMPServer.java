@@ -10,14 +10,22 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class AMPServer extends Server {
-    public final String serverName;
+    /**
+     * Properties of the AMPServer class
+     * serverName: The name of the server
+     * instanceName: The InstanceName of the AMP instance
+     * instanceId: The InstanceID of the AMP instance
+     * API: The AMPAPIHandler object for the instance
+     * loginResult: The result of the login method
+     *             (null if the login was not successful)
+     */
     private final String instanceName;
     private final String instanceId;
     private final AMPAPIHandler API;
     private Map<?, ?> loginResult;
 
     /**
-     * Constructor for the Instance class.
+     * Constructor for the AMPServer class
      * @param serverName The name that the server is referred to
      * @param instanceName The InstanceName of the AMP instance
      * @param instanceId The InstanceID of the AMP instance
@@ -25,7 +33,6 @@ public class AMPServer extends Server {
      */
     public AMPServer(String serverName, String instanceName, String instanceId, AMPAPIHandler API) {
         super(serverName);
-        this.serverName = serverName;
         this.instanceName = instanceName;
         this.instanceId = instanceId;
         this.API = API;

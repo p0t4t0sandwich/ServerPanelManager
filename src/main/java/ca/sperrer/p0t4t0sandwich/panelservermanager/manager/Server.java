@@ -3,21 +3,30 @@ package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 import java.util.Map;
 
 public abstract class Server {
-    public final String name;
+    /**
+     * Properties of the Server class
+     * serverName: The name of the server
+     */
+    public final String serverName;
 
-    public Server(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String toString() {
-        return name;
+    /**
+     * Constructor for the Server class
+     * @param serverName The name of the server
+     */
+    public Server(String serverName) {
+        this.serverName = serverName;
     }
 
     /**
+     * Get the name of the server
+     * @return The name of the server
+     */
+    public String getName() {
+        return serverName;
+    }
+
+    /**
+     * Get the online status of the serverName.
      * @return Whether the server is online or not.
      */
     abstract public boolean isOnline();

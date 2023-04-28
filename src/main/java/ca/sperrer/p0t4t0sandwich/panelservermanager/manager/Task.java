@@ -1,12 +1,20 @@
 package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ForkJoinTask;
 
 public class Task {
-    private final String name;
+    /**
+     * Properties of the Task class
+     * name: The name of the task
+     * command: The command to run
+     * interval: The interval to run the task at
+     * servers: The servers to run the task on
+     * conditions: The conditions to check before running the task
+     * runningTask: The thread running the task
+     */
+    private final String taskName;
     private final String command;
     private final long interval;
 
@@ -16,74 +24,71 @@ public class Task {
 
     private ForkJoinTask<Object> runningTask;
 
-    // Constructor
-    public Task(String name, String command, long interval, ArrayList<String> servers, ArrayList<Condition> conditions) {
-        this.name = name;
+    /**
+     * Constructor for the Task class
+     * @param taskName The name of the task
+     * @param command The command to run
+     * @param interval The interval to run the task at
+     * @param servers The servers to run the task on
+     * @param conditions The conditions to check before running the task
+     */
+    public Task(String taskName, String command, long interval, ArrayList<String> servers, ArrayList<Condition> conditions) {
+        this.taskName = taskName;
         this.command = command;
         this.interval = interval;
         this.servers.addAll(servers);
         this.conditions.addAll(conditions);
     }
 
-    // Get Name
+    /**
+     * Get the name of the task
+     * @return The name of the task
+     */
     public String getName() {
-        return name;
+        return taskName;
     }
 
-    // Get Command
+    /**
+     * Get the command to run
+     * @return The command to run
+     */
     public String getCommand() {
         return command;
     }
 
-    // Get Interval
+    /**
+     * Get the interval to run the task at
+     * @return The interval to run the task at
+     */
     public long getInterval() {
         return interval;
     }
 
-    // Set Task
+    /**
+     * Set the thread running the task
+     * @param task The thread running the task
+     */
     public void setTask(ForkJoinTask<Object> task) {
         runningTask = task;
     }
 
-    // Cancel Task
-    public void cancelTask() {
-        runningTask.cancel(true);
+    /**
+     * Cancel the running task
+     * @return Whether the task was cancelled
+     */
+    public boolean cancelTask() {
+        return runningTask.cancel(true);
     }
 
-    // Check Player Count
-    public boolean checkPlayerCount(String serverName, Condition condition) {
-        // Get player count
-        Map<?, ?> status = PanelServerManager.getInstance().getServer(serverName).getStatus();
-        if (!status.containsKey("PlayersValue")) {
-            return false;
-        }
-        int playerCount = (int) status.get("PlayersValue");
-
-        switch (condition.operator) {
-            case "<":
-                return playerCount < (int) condition.value;
-            case ">":
-                return playerCount > (int) condition.value;
-            case "=":
-            case "==":
-                return playerCount == (int) condition.value;
-            case "<=":
-                return playerCount <= (int) condition.value;
-            case ">=":
-                return playerCount >= (int) condition.value;
-            default:
-                return false;
-        }
-    }
-
-    // Check Conditions
+    /**
+     * Check the conditions for a server
+     * @param serverName The name of the server
+     * @return Whether the conditions are true
+     */
     public boolean checkConditions(String serverName) {
         for (Condition condition : conditions) {
-            switch (condition.placeholder) {
-                case "playercount":
-                    if (!checkPlayerCount(serverName, condition)) {
-                        return false;
-                    }
+            if (!condition.check(serverName)) {
+                return false;
             }
         }
         return true;

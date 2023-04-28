@@ -31,14 +31,6 @@ public class PanelServerManager {
     private boolean STARTED = false;
 
     /**
-     * Getter for the singleton instance of the PanelServerManager class.
-     * @return The singleton instance
-     */
-    public static PanelServerManager getInstance() {
-        return singleton;
-    }
-
-    /**
      * Constructor for the PanelServerManager class.
      * @param configPath The path to the config file
      * @param logger The logger
@@ -60,6 +52,14 @@ public class PanelServerManager {
             useLogger(logger, "Failed to load config.yml!\n" + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Getter for the singleton instance of the PanelServerManager class.
+     * @return The singleton instance
+     */
+    public static PanelServerManager getInstance() {
+        return singleton;
     }
 
     /**
@@ -85,157 +85,255 @@ public class PanelServerManager {
             useLogger(logger, "PanelServerManager is already started!");
             return;
         }
-//        runTaskAsync(() -> {
+        runTaskAsync(() -> {
             STARTED = true;
             // Initialize Panels
-            HashMap<?, ?> panelConfig = (HashMap<?, ?>) config.getBlock("panels").getStoredValue();
-            for (HashMap.Entry<?, ?> entry: panelConfig.entrySet()) {
-                // Get panel name and type
-                String panelName = (String) entry.getKey();
-                String panelType = config.getString("panels." + panelName + ".type");
-                Panel panel = null;
-
-                switch (panelType) {
-                    case "cubecodersamp":
-                        String host = config.getString("panels." + panelName + ".host");
-                        String username = config.getString("panels." + panelName + ".username");
-                        String password = config.getString("panels." + panelName + ".password");
-                        panel = new AMPPanel(panelName, host, username, password);
-                        break;
-                }
-
-                // Check if panel is online
-                if (panel != null && panel.isOnline()) {
-                    panels.put(panelName, panel);
-                    useLogger(logger, "Panel " + panelName + " is online!");
-                } else {
-                    useLogger(logger, "Panel " + panelName + " is offline!");
-                }
-            }
+            useLogger(logger, "Initializing panels...");
+            initPanels();
 
             // Initialize servers
-            HashMap<?, ?> serverConfig = (HashMap<?, ?>) config.getBlock("servers").getStoredValue();
-            for (HashMap.Entry<?, ?> entry: serverConfig.entrySet()) {
-                // Get server and panel information
-                String serverName = (String) entry.getKey();
+            useLogger(logger, "Initializing servers...");
+            initServers();
 
-                String panelName = config.getString("servers." + serverName + ".panel");
-                String instanceName;
-                String instanceId;
+            // Initialize groups
+            useLogger(logger, "Initializing groups...");
+            initGroups();
+        });
+    }
 
-                // Check if server is a standalone AMP instance
-                if (panelName.equals("ampstandalone")) {
-                    instanceName = config.getString("servers." + serverName + ".name");
-                    instanceId = config.getString("servers." + serverName + ".id");
-                    String host = config.getString("servers." + serverName + ".host");
-                    String username = config.getString("servers." + serverName + ".username");
-                    String password = config.getString("servers." + serverName + ".password");
-                    boolean isADS = config.getBoolean("servers." + serverName + ".isADS") != null
-                            && config.getBoolean("servers." + serverName + ".isADS");
+    /**
+     * Initialize panels
+     */
+    private void initPanels() {
+        HashMap<?, ?> panelConfig = (HashMap<?, ?>) config.getBlock("panels").getStoredValue();
+        for (HashMap.Entry<?, ?> entry: panelConfig.entrySet()) {
+            // Get panel name and type
+            String panelName = (String) entry.getKey();
+            String panelType = config.getString("panels." + panelName + ".type");
+            Panel panel = null;
 
-                    AMPPanel panel = new AMPPanel(serverName, host, username, password);
-                    AMPAPIHandler instanceAPI;
-                    if (isADS) {
-                        instanceAPI = panel.getInstanceAPI(serverName, instanceName, instanceId);
-                    } else {
-                        instanceAPI = new AMPAPIHandler(host, username, password, "", "");
-                    }
-                    Server server = new AMPServer(serverName, instanceName, instanceId, instanceAPI);
+            switch (panelType) {
+                case "cubecodersamp":
+                    String host = config.getString("panels." + panelName + ".host");
+                    String username = config.getString("panels." + panelName + ".username");
+                    String password = config.getString("panels." + panelName + ".password");
+                    panel = new AMPPanel(panelName, host, username, password);
+                    break;
+                case "pterodactyl":
+                    break;
+                default:
+                    useLogger(logger, "Panel " + panelName + " has an invalid type!");
+                    break;
+            }
 
-                    // Check if server is online
-                    if (server.isOnline()) {
-                        setServer(serverName, server);
-                        useLogger(logger, "Server " + serverName + " is online!");
-                    } else {
-                        useLogger(logger, "Server " + serverName + " is offline!");
-                    }
-                    return;
+            // Check if panel is online
+            if (panel != null && panel.isOnline()) {
+                setPanel(panelName, panel);
+                useLogger(logger, "Panel " + panelName + " is online!");
+            } else {
+                useLogger(logger, "Panel " + panelName + " is offline!");
+            }
+        }
+    }
+
+    /**
+     * Initialize servers
+     */
+    private void initServers() {
+        HashMap<?, ?> serverConfig = (HashMap<?, ?>) config.getBlock("servers").getStoredValue();
+        for (HashMap.Entry<?, ?> entry: serverConfig.entrySet()) {
+            // Get server and panel information
+            String serverName = (String) entry.getKey();
+
+            String panelName = config.getString("servers." + serverName + ".panel");
+            String instanceName;
+            String instanceId;
+
+            // Check if server is a standalone AMP instance
+            if (panelName.equals("ampstandalone")) {
+                instanceName = config.getString("servers." + serverName + ".name");
+                instanceId = config.getString("servers." + serverName + ".id");
+                String host = config.getString("servers." + serverName + ".host");
+                String username = config.getString("servers." + serverName + ".username");
+                String password = config.getString("servers." + serverName + ".password");
+                boolean isADS = config.getBoolean("servers." + serverName + ".isADS") != null
+                        && config.getBoolean("servers." + serverName + ".isADS");
+
+                AMPPanel panel = new AMPPanel(serverName, host, username, password);
+                AMPAPIHandler instanceAPI;
+                if (isADS) {
+                    instanceAPI = panel.getInstanceAPI(serverName, instanceName, instanceId);
+                } else {
+                    instanceAPI = new AMPAPIHandler(host, username, password, "", "");
                 }
-
-                Panel panel = panels.get(panelName);
-                if (panel == null) {
-                    useLogger(logger, "Server " + serverName + "'s panel is offline or defined incorrectly!");
-                    return;
-                }
-                String panelType = config.getString("panels." + panelName + ".type");
-
-                Server server = null;
-                switch (panelType) {
-                    case "cubecodersamp":
-                        instanceName = config.getString("servers." + serverName + ".name");
-                        instanceId = config.getString("servers." + serverName + ".id");
-
-                        AMPAPIHandler instanceAPI = ((AMPPanel) panel).getInstanceAPI(serverName, instanceName, instanceId);
-                        server = new AMPServer(serverName, instanceName, instanceId, instanceAPI);
-                        break;
-                }
+                Server server = new AMPServer(serverName, instanceName, instanceId, instanceAPI);
 
                 // Check if server is online
-                if (server != null && server.isOnline()) {
+                if (server.isOnline()) {
                     setServer(serverName, server);
                     useLogger(logger, "Server " + serverName + " is online!");
                 } else {
                     useLogger(logger, "Server " + serverName + " is offline!");
                 }
+                return;
             }
 
-            // Initialize groups
-            HashMap<?, ?> groupConfig = (HashMap<?, ?>) config.getBlock("groups").getStoredValue();
-            for (HashMap.Entry<?, ?> entry: groupConfig.entrySet()) {
-                // Get group name
-                String groupName = (String) entry.getKey();
-
-                // Check if servers exist
-                ArrayList<String> servers = (ArrayList<String>) config.getBlock("groups." + groupName + ".servers").getStoredValue();
-                ArrayList<String> groupServers = new ArrayList<>();
-                for (String serverName: servers) {
-                    if (!serverExists(serverName)) {
-                        useLogger(logger, "Server " + serverName + " does not exist!");
-                        continue;
-                    }
-                    groupServers.add(serverName);
-                }
-
-                // Initialize tasks
-                Group group = new Group(groupName, groupServers, new HashMap<>());
-
-                HashMap<String, Object> tasksConfig = (HashMap<String, Object>) config.getBlock("groups." + groupName + ".tasks").getStoredValue();
-                for (HashMap.Entry<String, Object> taskConfig: tasksConfig.entrySet()) {
-                    String taskName = taskConfig.getKey();
-                    String taskCommand = (String) config.getBlock("groups." + groupName + ".tasks." + taskName + ".command").getStoredValue();
-                    long taskInterval = (long) (int) config.getBlock("groups." + groupName + ".tasks." + taskName + ".interval").getStoredValue();
-
-                    // Initialize task conditions
-                    ArrayList<Condition> taskConditions = new ArrayList<>();
-                    ArrayList<HashMap<?, ?>> conditionsConfig = (ArrayList<HashMap<?, ?>>) config.get("groups." + groupName + ".tasks." + taskName + ".conditions");
-                    for (HashMap<?, ?> conditionConfig: conditionsConfig) {
-                        String conditionPlaceholder = (String) conditionConfig.get("placeholder");
-                        String conditionOperator = (String) conditionConfig.get("operator");
-                        int conditionValue = (int) conditionConfig.get("value");
-
-                        // Build Condition and add to ArrayList
-                        Condition condition = new Condition(conditionPlaceholder, conditionOperator, conditionValue);
-                        taskConditions.add(condition);
-                    }
-
-                    // Build Task and add to HashMap
-                    Task task = new Task(taskName, taskCommand, taskInterval, groupServers, taskConditions);
-                    group.setTask(taskName, task);
-                    group.startTask(taskName);
-                }
-
-                // Add group to HashMap
-                groups.put(groupName, group);
+            Panel panel = getPanel(panelName);
+            if (panel == null) {
+                useLogger(logger, "Server " + serverName + "'s panel is offline or defined incorrectly!");
+                return;
             }
-//        });
+            String panelType = config.getString("panels." + panelName + ".type");
+
+            Server server = null;
+            switch (panelType) {
+                case "cubecodersamp":
+                    instanceName = config.getString("servers." + serverName + ".name");
+                    instanceId = config.getString("servers." + serverName + ".id");
+
+                    AMPAPIHandler instanceAPI = ((AMPPanel) panel).getInstanceAPI(serverName, instanceName, instanceId);
+                    server = new AMPServer(serverName, instanceName, instanceId, instanceAPI);
+                    break;
+            }
+
+            // Check if server is online
+            if (server != null && server.isOnline()) {
+                setServer(serverName, server);
+                useLogger(logger, "Server " + serverName + " is online!");
+            } else {
+                useLogger(logger, "Server " + serverName + " is offline!");
+            }
+        }
+    }
+
+    /**
+     * Initialize groups
+     */
+    private void initGroups() {
+        HashMap<?, ?> groupConfig = (HashMap<?, ?>) config.getBlock("groups").getStoredValue();
+        for (HashMap.Entry<?, ?> entry: groupConfig.entrySet()) {
+            // Get group name
+            String groupName = (String) entry.getKey();
+
+            // Check if servers exist
+            ArrayList<String> servers = (ArrayList<String>) config.getBlock("groups." + groupName + ".servers").getStoredValue();
+            ArrayList<String> groupServers = new ArrayList<>();
+            for (String serverName: servers) {
+                if (!serverExists(serverName)) {
+                    useLogger(logger, "Server " + serverName + " does not exist!");
+                    continue;
+                }
+                groupServers.add(serverName);
+            }
+
+            // Initialize tasks
+            Group group = new Group(groupName, groupServers, new HashMap<>());
+
+            HashMap<String, Object> tasksConfig = (HashMap<String, Object>) config.getBlock("groups." + groupName + ".tasks").getStoredValue();
+            for (HashMap.Entry<String, Object> taskConfig: tasksConfig.entrySet()) {
+                String taskName = taskConfig.getKey();
+                String taskCommand = (String) config.getBlock("groups." + groupName + ".tasks." + taskName + ".command").getStoredValue();
+                long taskInterval = (long) (int) config.getBlock("groups." + groupName + ".tasks." + taskName + ".interval").getStoredValue();
+
+                // Initialize task conditions
+                ArrayList<Condition> taskConditions = new ArrayList<>();
+                ArrayList<HashMap<?, ?>> conditionsConfig = (ArrayList<HashMap<?, ?>>) config.get("groups." + groupName + ".tasks." + taskName + ".conditions");
+                for (HashMap<?, ?> conditionConfig: conditionsConfig) {
+                    String conditionPlaceholder = (String) conditionConfig.get("placeholder");
+                    String conditionOperator = (String) conditionConfig.get("operator");
+                    int conditionValue = (int) conditionConfig.get("value");
+
+                    // Build Condition and add to ArrayList
+                    Condition condition = new Condition(conditionPlaceholder, conditionOperator, conditionValue);
+                    taskConditions.add(condition);
+                }
+
+                // Build Task and add to HashMap
+                Task task = new Task(taskName, taskCommand, taskInterval, groupServers, taskConditions);
+                group.setTask(taskName, task);
+                group.startTask(taskName);
+            }
+
+            // Add group to HashMap
+            setGroup(groupName, group);
+            useLogger(logger, "Group " + groupName + " initialized!");
+        }
+    }
+
+    /**
+     * Getter for the panel HashMap.
+     * @param panelName The name of the panel
+     * @return The panel instance
+     */
+    public static Panel getPanel(String panelName) {
+        return panels.get(panelName);
+    }
+
+    /**
+     * Setter for the panel HashMap.
+     * @param panelName The name of the panel
+     * @param panel The panel instance
+     */
+    private void setPanel(String panelName, Panel panel) {
+        panels.put(panelName, panel);
+    }
+
+    /**
+     * Remove a panel from the HashMap.
+     * @param panelName The name of the panel
+     */
+    private void removePanel(String panelName) {
+        panels.remove(panelName);
+    }
+
+    /**
+     * Check if a panel exists.
+     * @param panelName The name of the panel
+     * @return Whether the panel exists or not
+     */
+    public boolean panelExists(String panelName) {
+        return panels.containsKey(panelName);
+    }
+
+    /**
+     * Getter for the group HashMap.
+     */
+    public static Group getGroup(String groupName) {
+        return groups.get(groupName);
+    }
+
+    /**
+     * Setter for the group HashMap.
+     * @param groupName The name of the group
+     * @param group The group instance
+     */
+    private void setGroup(String groupName, Group group) {
+        groups.put(groupName, group);
+    }
+
+    /**
+     * Remove a group from the HashMap.
+     * @param groupName The name of the group
+     */
+    private void removeGroup(String groupName) {
+        groups.remove(groupName);
+    }
+
+    /**
+     * Check if a group exists.
+     * @param groupName The name of the group
+     * @return Whether the group exists or not
+     */
+    public boolean groupExists(String groupName) {
+        return groups.containsKey(groupName);
     }
 
     /**
      * Getter for the server HashMap.
      * @param serverName The name of the server
-     * @return The instance
+     * @return The server instance
      */
-    public static Server getServer(String serverName) {
+    public Server getServer(String serverName) {
         return servers.get(serverName);
     }
 
@@ -261,7 +359,7 @@ public class PanelServerManager {
      * @param serverName The name of the server
      * @return Whether the server exists or not
      */
-    public static boolean serverExists(String serverName) {
+    public boolean serverExists(String serverName) {
         return servers.containsKey(serverName);
     }
 
@@ -376,7 +474,6 @@ public class PanelServerManager {
     private String killServerHandler(String[] args) {
         return genericHandler(args, "/psm", "kill <server>", Collections.emptyList(), "§aKilling server...", "§cServer is already stopped!");
     }
-
 
     /**
      * Sleep Server Handler
