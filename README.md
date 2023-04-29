@@ -133,10 +133,19 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 
 ### Commands
 
-- [ ] Set up group commands -- `/psm group <group> <command>`
+- [ ] Set up group commands -- `/psm group command <command> <group>`
+- [ ] Group playerlist -- `/psm group playerlist <group>`
 - [ ] Add commands to manage/add to the config from within the game
+  - [ ] Add a command to list all panels -- `/psm panel list`
+  - [ ] Add commands to add/remove panels
+    - [ ] `/psm panel add <panel> <type> <host> <username> <password>`
+    - [ ] `/psm panel edit <panel> <type> <host> <username> <password>`
+    - [ ] `/psm panel remove <panel>`
   - [x] Add a command to list all servers -- `/psm server list`
   - [ ] Add commands to add/remove servers
+    - [ ] `/psm server add <server> <panel> <name> <id>`
+    - [ ] `/psm server edit <server> <panel> <name> <id>`
+    - [ ] `/psm server remove <server>`
 
   - [x] Add a command to list all groups -- `/psm group list`
   - [x] Add commands to add/remove servers from groups
@@ -151,21 +160,23 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
     - [ ] `/psm group task edit <group> <task> <command> <interval>`
     - [ ] `/psm group task pause <group> <task>`
     - [ ] `/psm group task resume <group> <task>`
+
     - [ ] Add commands to manage task conditions
       - [ ] `/psm group task condition list <group> <task>`
       - [ ] `/psm group task condition add <group> <task> <placeholder> <operator> <value>`
       - [ ] `/psm group task condition remove <group> <task> <placeholder> <operator> <value>`
-  - [ ] findplayer command -- `/psm group findplayer <group> <player>`
+
+  - [x] findplayer command -- `/psm group findplayer <group> <player>`
 
 - [x] playerlist command -- `/psm players <server>`
 
 ### Groups
 
 - [ ] Finalize configuration for groups
-  - [ ] Add timed tasks
-  - [ ] Add conditionals
-  - [ ] think of a placeholder spec for conditionals
-  - [ ] Build a parser for conditionals and placeholders
+  - [x] Add timed tasks
+  - [x] Add conditionals
+  - [x] think of a placeholder spec for conditionals
+  - [x] Build a parser for conditionals and placeholders
   - [ ] Webhook task
 - [ ] Send commands to all servers in a group
 - [ ] Group playerlist interface -- Some readout of the playerlist for all servers in a group -- good for Proxy setups
@@ -177,7 +188,7 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 - [ ] Update mods/plugins from url? -- maybe add a `update` command to the group system?
   - [ ] Optional: include regex to delete old files
 
-- [ ] Server console regex task -- maybe add a `regex` command to the group system?
+- [ ] Server console regex trigger -- maybe add a `regex` command to the group system?
 
 - [ ] No-start status fix -- plop a proper `server started` message in the console -- Fix for Forge 1.12.2 v14.23.5.2858 and FTB Revelation
 

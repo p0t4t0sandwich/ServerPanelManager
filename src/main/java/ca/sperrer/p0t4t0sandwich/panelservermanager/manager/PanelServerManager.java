@@ -824,10 +824,31 @@ public class PanelServerManager {
                         break;
                 }
                 return message;
+            // Find Player
+            case "findplayer":
+                if (args.length == 4) {
+                    String groupName = args[2];
+                    String playerName = args[3];
+                    if (!groupExists(groupName)) {
+                        message = "§cGroup " + groupName + " does not exist!";
+                        break;
+                    }
+                    Group group = getGroup(groupName);
+                    String serverName = group.findPlayer(playerName);
+                    if (serverName.equals("")) {
+                        message = "§cPlayer " + playerName + " is not on any server in group " + groupName + "!";
+                        break;
+                    }
+                    message = "§6Player " + playerName + " is on server " + serverName + "!";
+                } else {
+                    message = "§cUsage: /psm group findplayer <groupName> <playerName>";
+                }
+                break;
             default:
                 message = "§6Available subcommands:" +
                     "\nhelp - Show this message" +
                     "\ngroup list - List available groups" +
+                    "\ngroup findplayer <groupName> <playerName> - Find player in group" +
                     "\ngroup server <command> - Manage group servers";
                 break;
         }

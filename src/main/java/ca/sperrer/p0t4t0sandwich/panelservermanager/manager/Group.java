@@ -1,5 +1,7 @@
 package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
+import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.cubecodersamp.AMPServer;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -211,5 +213,23 @@ public class Group {
             command = command.replace("{" + key + "}", parseMap.get(key).toString());
         }
         return command;
+    }
+
+    /**
+     * Find Player command
+     * @param playerName The name of the player to find
+     * @return The server the player is on
+     */
+    public String findPlayer(String playerName) {
+        for (String serverName : getServers()) {
+            Server server = PanelServerManager.getInstance().getServer(serverName);
+            if (server instanceof AMPServer) {
+                AMPServer ampServer = (AMPServer) server;
+                if (ampServer.getPlayerList().contains(playerName)) {
+                    return serverName;
+                }
+            }
+        }
+        return "";
     }
 }
