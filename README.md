@@ -135,23 +135,27 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 
 - [ ] Set up group commands -- `/psm group <group> <command>`
 - [ ] Add commands to manage/add to the config from within the game
-  - [ ] Add a command to list all servers -- `/psm server list`
+  - [x] Add a command to list all servers -- `/psm server list`
   - [ ] Add commands to add/remove servers
 
-  - [ ] Add a command to list all groups -- `/psm group list`
-  - [ ] Add commands to add/remove servers from groups
-    - [ ] `/psm group <group> server add <server name>`
-    - [ ] `/psm group <group> server remove <server name>`
+  - [x] Add a command to list all groups -- `/psm group list`
+  - [x] Add commands to add/remove servers from groups
+    - [x] `/psm group server list <group>` 
+    - [x] `/psm group server add <group> <server>`
+    - [x] `/psm group server remove <group> <server>`
 
-  - [ ] Add a command to list all tasks in a group -- `/psm group <group> task list`
-  - [ ] Add commands to add/remove tasks from groups
-    - [ ] `/psm group <group> task add <task name> <command> <interval> <conditions>`
-    - [ ] ^A parser to make that possible
-    - [ ] `/psm group <group> task remove <task name>`
-    - [ ] `/psm group <group> task cancel <task name>`
-  - [ ] findplayer command -- `/psm group <group> findplayer <player>`
-
-  - [ ] Add a command to list all conditionals in a task -- `/psm group <group> task <task> condition list`
+  - [x] Add a command to list all tasks in a group -- `/psm group task list <group>`
+  - [ ] Add commands to manage group tasks
+    - [ ] `/psm group task create <group> <task> <command> <interval>`
+    - [ ] `/psm group task remove <group> <task>`
+    - [ ] `/psm group task edit <group> <task> <command> <interval>`
+    - [ ] `/psm group task pause <group> <task>`
+    - [ ] `/psm group task resume <group> <task>`
+    - [ ] Add commands to manage task conditions
+      - [ ] `/psm group task condition list <group> <task>`
+      - [ ] `/psm group task condition add <group> <task> <placeholder> <operator> <value>`
+      - [ ] `/psm group task condition remove <group> <task> <placeholder> <operator> <value>`
+  - [ ] findplayer command -- `/psm group findplayer <group> <player>`
 
 - [x] playerlist command -- `/psm players <server>`
 

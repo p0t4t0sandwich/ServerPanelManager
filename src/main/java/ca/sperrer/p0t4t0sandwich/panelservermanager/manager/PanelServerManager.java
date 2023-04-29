@@ -265,7 +265,7 @@ public class PanelServerManager {
      * @param panelName The name of the panel
      * @return The panel instance
      */
-    public static Panel getPanel(String panelName) {
+    public Panel getPanel(String panelName) {
         return panels.get(panelName);
     }
 
@@ -298,7 +298,7 @@ public class PanelServerManager {
     /**
      * Getter for the group HashMap.
      */
-    public static Group getGroup(String groupName) {
+    public Group getGroup(String groupName) {
         return groups.get(groupName);
     }
 
@@ -375,6 +375,19 @@ public class PanelServerManager {
         } catch (Exception e) {
             useLogger(logger, "Failed to save config!\n" + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Save group to config.
+     * @param groupName The group to save
+     */
+    public void saveGroupServers(String groupName) {
+        config.set("groups." + groupName + ".servers", getGroup(groupName).getServers());
+        try {
+            config.save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -658,6 +671,10 @@ public class PanelServerManager {
         return null;
     }
 
+    /**
+     * Server List Handler
+     * @return The response
+     */
     private String helpHandler() {
         return "§6Available commands:" +
             "\nhelp - Show this message" +
@@ -673,11 +690,160 @@ public class PanelServerManager {
             "\nbackup <server> [name] [description] [sticky <- true or false] - Backup server" +
             "\nplayers <server> - Get server player list" +
             "\n\nOther Commands:" +
-            "\nserver list - List available servers";
+            "\nserver list - List available servers" +
+            "\ngroup list - List available groups" +
+            "\ngroup server list <groupName>" +
+            "\ngroup server add <serverName> <groupName> - Add server to group" +
+            "\ngroup server remove <serverName> <groupName> - Remove server from group";
     }
 
+    /**
+     * Group Command Handler
+     * @param args The command arguments
+     * @return The response
+     */
+    private String groupCommand(String[] args) {
+        String message;
+        if (args.length == 1) {
+            return "§6Available subcommands:" +
+                "\nhelp - Show this message" +
+                "\ngroup list - List available groups" +
+                "\ngroup server <command> - Manage group servers";
+        }
+        switch (args[1].toLowerCase()) {
+            // List
+            case "list":
+                // Get group list from config "groups" object keys
+                message = "§6Available groups: §5\n" + String.join("\n", groups.keySet());
+                break;
+            // Server
+            case "server":
+                switch(args[2].toLowerCase()) {
+                    // List
+                    case "list":
+                        if (args.length == 4) {
+                            String groupName = args[3];
+                            if (groupExists(groupName)) {
+                                Group group = getGroup(groupName);
+                                message = "§6Servers in group " + groupName + ": §5\n" + String.join("\n", group.getServers());
+                            } else {
+                                message = "§cGroup " + groupName + " does not exist!";
+                            }
+                        } else {
+                            message = "§cUsage: /psm group server list <groupName>";
+                        }
+                        break;
+                    // Add
+                    case "add":
+                        if (args.length == 5) {
+                            String groupName = args[4];
+                            String serverName = args[3];
+                            if (groupExists(groupName)) {
+                                if (serverExists(serverName)) {
+                                    Group group = getGroup(groupName);
+                                    if (!group.containsServer(serverName)) {
+                                        group.addServer(serverName);
+                                        saveGroupServers(groupName);
+                                        message = "§aAdded server " + serverName + " to group " + groupName + "!";
+                                    } else {
+                                        message = "§cServer " + serverName + " is already in group " + groupName + "!";
+                                    }
+                                } else {
+                                    message = "§cServer " + serverName + " does not exist!";
+                                }
+                            } else {
+                                message = "§cGroup " + groupName + " does not exist!";
+                            }
+                        } else {
+                            message = "§cUsage: /psm group server add <serverName> <groupName>";
+                        }
+                        break;
+                    // Remove
+                    case "remove":
+                        if (args.length == 5) {
+                            String groupName = args[4];
+                            String serverName = args[3];
+                            if (groupExists(groupName)) {
+                                if (serverExists(serverName)) {
+                                    Group group = getGroup(groupName);
+                                    if (group.containsServer(serverName)) {
+                                        group.removeServer(serverName);
+                                        saveGroupServers(groupName);
+                                        message = "§aRemoved server " + serverName + " from group " + groupName + "!";
+                                    } else {
+                                        message = "§cServer " + serverName + " is not in group " + groupName + "!";
+                                    }
+                                } else {
+                                    message = "§cServer " + serverName + " does not exist!";
+                                }
+                            } else {
+                                message = "§cGroup " + groupName + " does not exist!";
+                            }
+                        } else {
+                            message = "§cUsage: /psm group server remove <serverName> <groupName>";
+                        }
+                        break;
+                    default:
+                        message = "§6Available subcommands:" +
+                            "\nhelp - Show this message" +
+                            "\ngroup server list <groupName>" +
+                            "\ngroup server add <serverName> <groupName>" +
+                            "\ngroup server remove <serverName> <groupName>";
+                        break;
+                }
+                return message;
+            // Task
+            case "task":
+                switch (args[2].toLowerCase()) {
+                    // List
+                    case "list":
+                        if (args.length == 4) {
+                            String groupName = args[3];
+                            if (groupExists(groupName)) {
+                                Group group = getGroup(groupName);
+                                message = "§6Tasks in group " + groupName + ": §5\n" + String.join("\n", group.getTasks());
+                            } else {
+                                message = "§cGroup " + groupName + " does not exist!";
+                            }
+                        } else {
+                            message = "§cUsage: /psm group task list <groupName>";
+                        }
+                        break;
+                    // Create
+                    case "create":
+                    // Remove
+                    case "remove":
+                        message = "§cNot implemented yet!";
+                        break;
+                    default:
+                        message = "§6Available subcommands:" +
+                            "\nhelp - Show this message" +
+                            "\ngroup task list <groupName>" +
+                            "\ngroup task add <taskName> <groupName>" +
+                            "\ngroup task remove <taskName> <groupName>";
+                        break;
+                }
+                return message;
+            default:
+                message = "§6Available subcommands:" +
+                    "\nhelp - Show this message" +
+                    "\ngroup list - List available groups" +
+                    "\ngroup server <command> - Manage group servers";
+                break;
+        }
+        return message;
+    }
+
+    /**
+     * Server Command Handler
+     * @param args The command arguments
+     * @return The response
+     */
     private String serverCommand(String[] args) {
         String message;
+        if (args.length == 1) {
+            return "§cUsage: /psm server <subcommand>";
+        }
         switch (args[1].toLowerCase()) {
             // List
             case "list":
@@ -685,7 +851,6 @@ public class PanelServerManager {
                 message = "§6Available servers: §5\n" + String.join("\n", servers.keySet());
                 break;
             default:
-                // TODO: Need specific help handler
                 message = "§6Available subcommands:" +
                     "\nhelp - Show this message" +
                     "\nlist - List available servers";
@@ -707,7 +872,10 @@ public class PanelServerManager {
                 case "server":
                     message = serverCommand(args);
                     break;
-
+                // Group Command Tree
+                case "group":
+                    message = groupCommand(args);
+                    break;
                 // Start Server
                 case "start":
                     message = startServerHandler(args);

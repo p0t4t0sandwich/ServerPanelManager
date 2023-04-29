@@ -29,7 +29,7 @@ repositories {
 dependencies {
     // General dependencies
     implementation("dev.dejvokep:boosted-yaml:1.3")
-    implementation('com.github.p0t4t0sandwich:ampapi-java:ampapi-1.0.10')
+    implementation('com.github.p0t4t0sandwich:ampapi-java:ampapi-1.0.11')
     implementation('com.google.code.gson:gson:2.10.1')
 
     // Spigot
@@ -59,7 +59,7 @@ shadowJar {
     configurations = [project.configurations.runtimeClasspath, project.configurations.shadow]
     dependencies {
         include dependency("dev.dejvokep:boosted-yaml:1.3")
-        include dependency("com.github.p0t4t0sandwich:ampapi-java:ampapi-1.0.10")
+        include dependency("com.github.p0t4t0sandwich:ampapi-java:ampapi-1.0.11")
         include dependency('com.google.code.gson:gson:2.10.1')
     }
 }

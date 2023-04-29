@@ -56,6 +56,11 @@ public class Condition {
         }
     }
 
+    /**
+     * Check the condition
+     * @param serverName The name of the server
+     * @return Whether the condition is true
+     */
     public boolean check(String serverName) {
         switch (placeholder) {
             case "playercount":
