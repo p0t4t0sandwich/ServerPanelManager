@@ -31,12 +31,28 @@ public class AMPServer extends Server {
      * @param instanceId The InstanceID of the AMP instance
      * @param API The AMPAPIHandler object for the instance
      */
-    public AMPServer(String serverName, String instanceName, String instanceId, AMPAPIHandler API) {
-        super(serverName);
+    public AMPServer(String serverName, String panelName, String instanceName, String instanceId, AMPAPIHandler API) {
+        super(serverName, panelName);
         this.instanceName = instanceName;
         this.instanceId = instanceId;
         this.API = API;
         this.loginResult = API.Login();
+    }
+
+    /**
+     * Get InstanceName
+     * @return The InstanceName of the AMP instance
+     */
+    public String getInstanceName() {
+        return instanceName;
+    }
+
+    /**
+     * Get InstanceID
+     * @return The InstanceID of the AMP instance
+     */
+    public String getInstanceId() {
+        return instanceId;
     }
 
     /**

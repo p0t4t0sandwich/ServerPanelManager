@@ -19,7 +19,7 @@ public class AMPPanel extends Panel<AMPAPIHandler> {
      * Constructor for the AMPPanel class.
      */
     public AMPPanel(String panelName, String host, String username, String password) {
-        super(panelName, host);
+        super(panelName, "cubecodersamp", host);
         this.API = new AMPAPIHandler(host, username, password, "", "");
         this.loginResult = API.Login();
     }
@@ -56,10 +56,10 @@ public class AMPPanel extends Panel<AMPAPIHandler> {
             // Get instance ID
             if (instanceId == null) {
                 // Loop through the targets
-                for (HashMap<String,Object> target : (ArrayList<HashMap<String,Object>>) API.ADSModule_GetInstances().get("result")) {
+                for (Map<String,Object> target : (ArrayList<Map<String,Object>>) API.ADSModule_GetInstances().get("result")) {
 
                     // Loop through the target instances
-                    for (HashMap<String, Object> instance : (ArrayList<HashMap<String, Object>>) target.get("AvailableInstances")) {
+                    for (Map<String, Object> instance : (ArrayList<Map<String, Object>>) target.get("AvailableInstances")) {
 
                         // Grab the instance id
                         String name = (String) instance.get("InstanceName");

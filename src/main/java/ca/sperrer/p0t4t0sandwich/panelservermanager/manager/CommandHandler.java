@@ -1,12 +1,28 @@
 package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
+import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
+import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.cubecodersamp.AMPPanel;
 import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.cubecodersamp.AMPServer;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class CommandHandler {
+    private final PanelServerManager psm;
     /**
-     * Generic handler for command responses.
+     * Constructor for the CommandHandler class
+     * @param psm The PanelServerManager instance
+     */
+    public CommandHandler(PanelServerManager psm) {
+        this.psm = psm;
+    }
+
+    /**
+     * Generic handler for server commands.
      * @param args The command arguments
      * @param rootCommand The root command
      * @param usage The usage of the command
@@ -25,8 +41,8 @@ public class CommandHandler {
             // Check if there are enough arguments
             if (args.length == 2) {
                 String serverName = args[1];
-                if (PanelServerManager.getInstance().serverExists(serverName)) {
-                    Server server = PanelServerManager.getInstance().getServer(serverName);
+                if (psm.serverExists(serverName)) {
+                    Server server = psm.getServer(serverName);
                     Map<String, Object> status = server.getStatus();
                     String state = (String) status.get("State");
 
@@ -124,8 +140,8 @@ public class CommandHandler {
         // Send command
         if (args.length >= 3) {
             String serverName = args[1];
-            if (PanelServerManager.getInstance().serverExists(serverName)) {
-                Server server = PanelServerManager.getInstance().getServer(serverName);
+            if (psm.serverExists(serverName)) {
+                Server server = psm.getServer(serverName);
                 Map<String, Object> status = server.getStatus();
                 String state = (String) status.get("State");
                 if (Objects.equals(state, "Ready")) {
@@ -155,8 +171,8 @@ public class CommandHandler {
         // Get status
         if (args.length == 2) {
             String serverName = args[1];
-            if (PanelServerManager.getInstance().serverExists(serverName)) {
-                Server server = PanelServerManager.getInstance().getServer(serverName);
+            if (psm.serverExists(serverName)) {
+                Server server = psm.getServer(serverName);
                 Map<String, Object> status = server.getStatus();
                 if (status == null) {
                     return "§cServer " + serverName + " is not responding!";
@@ -206,8 +222,8 @@ public class CommandHandler {
         if (args.length >= 2) {
             String serverName = args[1];
 
-            if (PanelServerManager.getInstance().serverExists(serverName)) {
-                Server server = PanelServerManager.getInstance().getServer(serverName);
+            if (psm.serverExists(serverName)) {
+                Server server = psm.getServer(serverName);
                 if (!(server instanceof AMPServer)) {
                     return "§cServer " + serverName + " is not an AMP server!";
                 }
@@ -244,8 +260,8 @@ public class CommandHandler {
         // Get player list
         if (args.length == 2) {
             String serverName = args[1];
-            if (PanelServerManager.getInstance().serverExists(serverName)) {
-                Server server = PanelServerManager.getInstance().getServer(serverName);
+            if (psm.serverExists(serverName)) {
+                Server server = psm.getServer(serverName);
                 if (!(server instanceof AMPServer)) {
                     return "§cServer " + serverName + " is not an AMP server!";
                 }
@@ -283,29 +299,126 @@ public class CommandHandler {
     }
 
     /**
-     * Server List Handler
+     * Server Command Handler
+     * @param args The command arguments
      * @return The response
      */
-    private String helpHandler() {
-        return "§6Available commands:" +
-                "\nhelp - Show this message" +
-                "\nexit - Exit the application (CLI only)" +
-                "\nstart <server> - Start server" +
-                "\nstop <server> - Stop server" +
-                "\nrestart <server> - Restart server" +
-                "\nkill <server> - Kill server" +
-                "\nsend <server> <command> - Send command to server" +
-                "\nstatus <server> - Get server status" +
-                "\n\nAMP Only:" +
-                "\nsleep <server> - Put server to sleep" +
-                "\nbackup <server> [name] [description] [sticky <- true or false] - Backup server" +
-                "\nplayers <server> - Get server player list" +
-                "\n\nOther Commands:" +
-                "\nserver list - List available servers" +
-                "\ngroup list - List available groups" +
-                "\ngroup server list <groupName>" +
-                "\ngroup server add <serverName> <groupName> - Add server to group" +
-                "\ngroup server remove <serverName> <groupName> - Remove server from group";
+    private String serverCommand(String[] args) {
+        String message;
+        String helpMessage = "§6Available subcommands:" +
+                    "\nserver help - Show this message" +
+                    "\nserver list - List available servers" +
+                    "\nserver add <serverName> <panelName> <InstanceName> <InstanceId> - Add a server" +
+                    "\nserver remove <serverName> - Remove a server";
+        if (args.length == 1) {
+            return "§cUsage: /psm server <subcommand>";
+        }
+        switch (args[1].toLowerCase()) {
+            // server list
+            case "list":
+                message = "§6Available servers: §5\n" + String.join("\n", psm.getServers());
+                break;
+            // server add <serverName> <panelName> <InstanceName> <InstanceId>
+            case "add":
+                if (args.length >= 5) {
+                    String serverName = args[2];
+                    String panelName = args[3];
+                    String instanceName = args[4];
+                    String instanceId = args.length == 6 ? args[5] : null;
+                    if (!psm.panelExists(panelName)) {
+                        message = "§cPanel " + panelName + " does not exist!";
+                        break;
+                    }
+                    if (psm.serverExists(serverName)) {
+                        message = "§cServer " + serverName + " already exists!";
+                        break;
+                    }
+                    Panel panel = psm.getPanel(panelName);
+                    Server server = null;
+                    switch (panel.getPanelType().toLowerCase()) {
+                        case "ampstandalone":
+                            // TODO: Implement AMP Standalone
+                            break;
+                        case "cubecodersamp":
+                            AMPAPIHandler instanceAPI = ((AMPPanel) panel).getInstanceAPI(serverName, instanceName, instanceId);
+                            server = new AMPServer(serverName, panelName, instanceName, instanceId, instanceAPI);
+                    }
+                    // Check if server is online
+                    if (server != null && server.isOnline()) {
+                        psm.setServer(serverName, server);
+                        psm.saveServerConfig(serverName);
+                        message = "§aServer " + serverName + " added!";
+                    } else {
+                        message = "§cServer " + serverName + " is offline!";
+                    }
+                } else {
+                    message = "§cUsage: /psm server add <serverName> <panelName> <InstanceName> <InstanceId>";
+                }
+                break;
+
+            // server edit <serverName> <panelName> <InstanceName> <InstanceId>
+            case "edit":
+                if (args.length >= 5) {
+                    String serverName = args[2];
+                    String panelName = args[3];
+                    String instanceName = args[4];
+                    String instanceId = args.length == 6 ? args[5] : null;
+                    if (!psm.panelExists(panelName)) {
+                        message = "§cPanel " + panelName + " does not exist!";
+                        break;
+                    }
+                    if (!psm.serverExists(serverName)) {
+                        message = "§cServer " + serverName + " does not exist!";
+                        break;
+                    }
+                    Panel panel = psm.getPanel(panelName);
+                    Server server = null;
+                    switch (panel.getPanelType().toLowerCase()) {
+                        case "ampstandalone":
+                            // TODO: Implement AMP Standalone
+                            break;
+                        case "cubecodersamp":
+                            AMPAPIHandler instanceAPI = ((AMPPanel) panel).getInstanceAPI(serverName, instanceName, instanceId);
+                            server = new AMPServer(serverName, panelName, instanceName, instanceId, instanceAPI);
+                    }
+                    // Check if server is online
+                    if (server != null && server.isOnline()) {
+                        // Remove old server
+                        psm.removeServer(serverName);
+                        psm.deleteServerConfig(serverName);
+
+                        // Add edited server
+                        psm.setServer(serverName, server);
+                        psm.saveServerConfig(serverName);
+                        message = "§aServer " + serverName + " edited!";
+                    } else {
+                        message = "§cServer " + serverName + " is offline!";
+                    }
+                } else {
+                    message = "§cUsage: /psm server edit <serverName> <panelName> <InstanceName> <InstanceId>";
+                }
+                break;
+
+            // server remove <serverName>
+            case "remove":
+                if (args.length == 3) {
+                    String serverName = args[2];
+                    if (psm.serverExists(serverName)) {
+                        psm.removeServer(serverName);
+                        psm.deleteServerConfig(serverName);
+                        message = "§aServer " + serverName + " removed!";
+                    } else {
+                        message = "§cServer " + serverName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm server remove <serverName>";
+                }
+                break;
+            default:
+                message = helpMessage;
+                break;
+        }
+        return message;
     }
 
     /**
@@ -315,27 +428,28 @@ public class CommandHandler {
      */
     private String groupCommand(String[] args) {
         String message;
+        String helpMessage = "§6Available subcommands:" +
+                "\ngroup help - Show this message" +
+                "\ngroup server list <groupName>" +
+                "\ngroup server add <serverName> <groupName>" +
+                "\ngroup server remove <serverName> <groupName>";
         if (args.length == 1) {
-            return "§6Available subcommands:" +
-                    "\nhelp - Show this message" +
-                    "\ngroup list - List available groups" +
-                    "\ngroup server <command> - Manage group servers";
+            return helpMessage;
         }
         switch (args[1].toLowerCase()) {
-            // List
+            // group list
             case "list":
-                // Get group list from config "groups" object keys
-                message = "§6Available groups: §5\n" + String.join("\n", PanelServerManager.getInstance().getGroups());
+                message = "§6Available groups: §5\n" + String.join("\n", psm.getGroups());
                 break;
-            // Server
+            // group server
             case "server":
                 switch(args[2].toLowerCase()) {
-                    // List
+                    // group server list
                     case "list":
                         if (args.length == 4) {
                             String groupName = args[3];
-                            if (PanelServerManager.getInstance().groupExists(groupName)) {
-                                Group group = PanelServerManager.getInstance().getGroup(groupName);
+                            if (psm.groupExists(groupName)) {
+                                Group group = psm.getGroup(groupName);
                                 message = "§6Servers in group " + groupName + ": §5\n" + String.join("\n", group.getServers());
                             } else {
                                 message = "§cGroup " + groupName + " does not exist!";
@@ -344,17 +458,17 @@ public class CommandHandler {
                             message = "§cUsage: /psm group server list <groupName>";
                         }
                         break;
-                    // Add
+                    // group server add <serverName> <groupName>
                     case "add":
                         if (args.length == 5) {
                             String groupName = args[4];
                             String serverName = args[3];
-                            if (PanelServerManager.getInstance().groupExists(groupName)) {
-                                if (PanelServerManager.getInstance().serverExists(serverName)) {
-                                    Group group = PanelServerManager.getInstance().getGroup(groupName);
+                            if (psm.groupExists(groupName)) {
+                                if (psm.serverExists(serverName)) {
+                                    Group group = psm.getGroup(groupName);
                                     if (!group.containsServer(serverName)) {
                                         group.addServer(serverName);
-                                        PanelServerManager.getInstance().saveGroupServers(groupName);
+                                        psm.saveGroupServers(groupName);
                                         message = "§aAdded server " + serverName + " to group " + groupName + "!";
                                     } else {
                                         message = "§cServer " + serverName + " is already in group " + groupName + "!";
@@ -369,17 +483,17 @@ public class CommandHandler {
                             message = "§cUsage: /psm group server add <serverName> <groupName>";
                         }
                         break;
-                    // Remove
+                    // group server remove <serverName> <groupName>
                     case "remove":
                         if (args.length == 5) {
                             String groupName = args[4];
                             String serverName = args[3];
-                            if (PanelServerManager.getInstance().groupExists(groupName)) {
-                                if (PanelServerManager.getInstance().serverExists(serverName)) {
-                                    Group group = PanelServerManager.getInstance().getGroup(groupName);
+                            if (psm.groupExists(groupName)) {
+                                if (psm.serverExists(serverName)) {
+                                    Group group = psm.getGroup(groupName);
                                     if (group.containsServer(serverName)) {
                                         group.removeServer(serverName);
-                                        PanelServerManager.getInstance().saveGroupServers(groupName);
+                                        psm.saveGroupServers(groupName);
                                         message = "§aRemoved server " + serverName + " from group " + groupName + "!";
                                     } else {
                                         message = "§cServer " + serverName + " is not in group " + groupName + "!";
@@ -395,23 +509,19 @@ public class CommandHandler {
                         }
                         break;
                     default:
-                        message = "§6Available subcommands:" +
-                                "\nhelp - Show this message" +
-                                "\ngroup server list <groupName>" +
-                                "\ngroup server add <serverName> <groupName>" +
-                                "\ngroup server remove <serverName> <groupName>";
+                        message = helpMessage;
                         break;
                 }
                 return message;
-            // Task
+            // group task
             case "task":
                 switch (args[2].toLowerCase()) {
-                    // List
+                    // group task list
                     case "list":
                         if (args.length == 4) {
                             String groupName = args[3];
-                            if (PanelServerManager.getInstance().groupExists(groupName)) {
-                                Group group = PanelServerManager.getInstance().getGroup(groupName);
+                            if (psm.groupExists(groupName)) {
+                                Group group = psm.getGroup(groupName);
                                 message = "§6Tasks in group " + groupName + ": §5\n" + String.join("\n", group.getTasks());
                             } else {
                                 message = "§cGroup " + groupName + " does not exist!";
@@ -420,9 +530,9 @@ public class CommandHandler {
                             message = "§cUsage: /psm group task list <groupName>";
                         }
                         break;
-                    // Create
+                    // group task create <group> <task> <command> <interval>
                     case "create":
-                        // Remove
+                    // group task remove <group> <task>
                     case "remove":
                         message = "§cNot implemented yet!";
                         break;
@@ -435,16 +545,16 @@ public class CommandHandler {
                         break;
                 }
                 return message;
-            // Find Player
+            // group findplayer <groupName> <playerName>
             case "findplayer":
                 if (args.length == 4) {
                     String groupName = args[2];
                     String playerName = args[3];
-                    if (!PanelServerManager.getInstance().groupExists(groupName)) {
+                    if (!psm.groupExists(groupName)) {
                         message = "§cGroup " + groupName + " does not exist!";
                         break;
                     }
-                    Group group = PanelServerManager.getInstance().getGroup(groupName);
+                    Group group = psm.getGroup(groupName);
                     String serverName = group.findPlayer(playerName);
                     if (serverName.equals("")) {
                         message = "§cPlayer " + playerName + " is not on any server in group " + groupName + "!";
@@ -467,28 +577,30 @@ public class CommandHandler {
     }
 
     /**
-     * Server Command Handler
-     * @param args The command arguments
+     * Help Handler
      * @return The response
      */
-    private String serverCommand(String[] args) {
-        String message;
-        if (args.length == 1) {
-            return "§cUsage: /psm server <subcommand>";
-        }
-        switch (args[1].toLowerCase()) {
-            // List
-            case "list":
-                // Get server list from config "servers" object keys
-                message = "§6Available servers: §5\n" + String.join("\n", PanelServerManager.getInstance().getServers());
-                break;
-            default:
-                message = "§6Available subcommands:" +
-                        "\nhelp - Show this message" +
-                        "\nlist - List available servers";
-                break;
-        }
-        return message;
+    private String helpHandler() {
+        return "§6Available commands:" +
+                "\nhelp - Show this message" +
+                "\nexit - Exit the application (CLI only)" +
+                "\nstart <server> - Start server" +
+                "\nstop <server> - Stop server" +
+                "\nrestart <server> - Restart server" +
+                "\nkill <server> - Kill server" +
+                "\nsend <server> <command> - Send command to server" +
+                "\nstatus <server> - Get server status" +
+                "\n\nAMP Only:" +
+                "\nsleep <server> - Put server to sleep" +
+                "\nbackup <server> [name] [description] [sticky <- true or false] - Backup server" +
+                "\nplayers <server> - Get server player list" +
+                "\n\nOther Commands:" +
+                "\nserver list - List available servers" +
+                "\ngroup list - List available groups" +
+                "\ngroup server list <groupName>" +
+                "\ngroup findplayer <groupName> <playerName>" +
+                "\ngroup server add <serverName> <groupName> - Add server to group" +
+                "\ngroup server remove <serverName> <groupName> - Remove server from group";
     }
 
     /**
@@ -500,14 +612,6 @@ public class CommandHandler {
         String message;
         try {
             switch (args[0].toLowerCase()) {
-                // Server Command Tree
-                case "server":
-                    message = serverCommand(args);
-                    break;
-                // Group Command Tree
-                case "group":
-                    message = groupCommand(args);
-                    break;
                 // Start Server
                 case "start":
                     message = startServerHandler(args);
@@ -544,6 +648,14 @@ public class CommandHandler {
                 case "players":
                     message = playerListHandler(args);
                     break;
+                // Server Command Tree
+                case "server":
+                    message = serverCommand(args);
+                    break;
+                // Group Command Tree
+                case "group":
+                    message = groupCommand(args);
+                    break;
                 // Help
                 default:
                     message = helpHandler();
@@ -552,7 +664,7 @@ public class CommandHandler {
         } catch (Exception e) {
             System.out.println("An error occurred while executing the command!\n" + e.getMessage());
             e.printStackTrace();
-            Server server = PanelServerManager.getInstance().getServer(args[1]);
+            Server server = psm.getServer(args[1]);
             boolean result = server.reLog();
             if (result) {
                 message = "§cAn error occurred while executing the command!";

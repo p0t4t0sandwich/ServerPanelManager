@@ -141,11 +141,12 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
     - [ ] `/psm panel add <panel> <type> <host> <username> <password>`
     - [ ] `/psm panel edit <panel> <type> <host> <username> <password>`
     - [ ] `/psm panel remove <panel>`
+
   - [x] Add a command to list all servers -- `/psm server list`
-  - [ ] Add commands to add/remove servers
-    - [ ] `/psm server add <server> <panel> <name> <id>`
-    - [ ] `/psm server edit <server> <panel> <name> <id>`
-    - [ ] `/psm server remove <server>`
+  - [x] Add commands to add/remove servers
+    - [x] `/psm server add <server> <panel> <name> <id>`
+    - [x] `/psm server edit <server> <panel> <name> <id>`
+    - [x] `/psm server remove <server>`
 
   - [x] Add a command to list all groups -- `/psm group list`
   - [x] Add commands to add/remove servers from groups

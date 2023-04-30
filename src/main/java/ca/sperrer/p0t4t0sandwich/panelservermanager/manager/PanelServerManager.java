@@ -30,7 +30,7 @@ public class PanelServerManager {
     private static final HashMap<String, Server> servers = new HashMap<>();
     private static final HashMap<String, Group> groups = new HashMap<>();
     private static PanelServerManager singleton = null;
-    public final CommandHandler commandHandler = new CommandHandler();
+    public final CommandHandler commandHandler = new CommandHandler(this);
     private boolean STARTED = false;
 
     /**
@@ -52,7 +52,7 @@ public class PanelServerManager {
             );
             config.reload();
         } catch (IOException e) {
-            useLogger(logger, "Failed to load config.yml!\n" + e.getMessage());
+            useLogger("Failed to load config.yml!\n" + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -67,10 +67,9 @@ public class PanelServerManager {
 
     /**
      * Use whatever logger is being used.
-     * @param logger The logger
      * @param message The message to log
      */
-    private void useLogger(Object logger, String message) {
+    public void useLogger(String message) {
         if (logger instanceof java.util.logging.Logger) {
             ((java.util.logging.Logger) logger).info(message);
         } else if (logger instanceof org.slf4j.Logger) {
@@ -85,21 +84,21 @@ public class PanelServerManager {
      */
     public void start() {
         if (STARTED) {
-            useLogger(logger, "PanelServerManager is already started!");
+            useLogger("PanelServerManager is already started!");
             return;
         }
         runTaskAsync(() -> {
             STARTED = true;
             // Initialize Panels
-            useLogger(logger, "Initializing panels...");
+            useLogger("Initializing panels...");
             initPanels();
 
             // Initialize servers
-            useLogger(logger, "Initializing servers...");
+            useLogger("Initializing servers...");
             initServers();
 
             // Initialize groups
-            useLogger(logger, "Initializing groups...");
+            useLogger("Initializing groups...");
             initGroups();
         });
     }
@@ -125,16 +124,16 @@ public class PanelServerManager {
                 case "pterodactyl":
                     break;
                 default:
-                    useLogger(logger, "Panel " + panelName + " has an invalid type!");
+                    useLogger("Panel " + panelName + " has an invalid type!");
                     break;
             }
 
             // Check if panel is online
             if (panel != null && panel.isOnline()) {
                 setPanel(panelName, panel);
-                useLogger(logger, "Panel " + panelName + " is online!");
+                useLogger("Panel " + panelName + " is online!");
             } else {
-                useLogger(logger, "Panel " + panelName + " is offline!");
+                useLogger("Panel " + panelName + " is offline!");
             }
         }
     }
@@ -169,21 +168,21 @@ public class PanelServerManager {
                 } else {
                     instanceAPI = new AMPAPIHandler(host, username, password, "", "");
                 }
-                Server server = new AMPServer(serverName, instanceName, instanceId, instanceAPI);
+                Server server = new AMPServer(serverName, "ampstandalone", instanceName, instanceId, instanceAPI);
 
                 // Check if server is online
                 if (server.isOnline()) {
                     setServer(serverName, server);
-                    useLogger(logger, "Server " + serverName + " is online!");
+                    useLogger("Server " + serverName + " is online!");
                 } else {
-                    useLogger(logger, "Server " + serverName + " is offline!");
+                    useLogger("Server " + serverName + " is offline!");
                 }
                 return;
             }
 
             Panel panel = getPanel(panelName);
             if (panel == null) {
-                useLogger(logger, "Server " + serverName + "'s panel is offline or defined incorrectly!");
+                useLogger("Server " + serverName + "'s panel is offline or defined incorrectly!");
                 return;
             }
             String panelType = config.getString("panels." + panelName + ".type");
@@ -195,16 +194,16 @@ public class PanelServerManager {
                     instanceId = config.getString("servers." + serverName + ".id");
 
                     AMPAPIHandler instanceAPI = ((AMPPanel) panel).getInstanceAPI(serverName, instanceName, instanceId);
-                    server = new AMPServer(serverName, instanceName, instanceId, instanceAPI);
+                    server = new AMPServer(serverName, panelName, instanceName, instanceId, instanceAPI);
                     break;
             }
 
             // Check if server is online
             if (server != null && server.isOnline()) {
                 setServer(serverName, server);
-                useLogger(logger, "Server " + serverName + " is online!");
+                useLogger("Server " + serverName + " is online!");
             } else {
-                useLogger(logger, "Server " + serverName + " is offline!");
+                useLogger("Server " + serverName + " is offline!");
             }
         }
     }
@@ -223,7 +222,7 @@ public class PanelServerManager {
             ArrayList<String> groupServers = new ArrayList<>();
             for (String serverName: servers) {
                 if (!serverExists(serverName)) {
-                    useLogger(logger, "Server " + serverName + " does not exist!");
+                    useLogger("Server " + serverName + " does not exist!");
                     continue;
                 }
                 groupServers.add(serverName);
@@ -259,7 +258,7 @@ public class PanelServerManager {
 
             // Add group to HashMap
             setGroup(groupName, group);
-            useLogger(logger, "Group " + groupName + " initialized!");
+            useLogger("Group " + groupName + " initialized!");
         }
     }
 
@@ -277,7 +276,7 @@ public class PanelServerManager {
      * @param panelName The name of the panel
      * @param panel The panel instance
      */
-    private void setPanel(String panelName, Panel panel) {
+    public void setPanel(String panelName, Panel panel) {
         panels.put(panelName, panel);
     }
 
@@ -285,7 +284,7 @@ public class PanelServerManager {
      * Remove a panel from the HashMap.
      * @param panelName The name of the panel
      */
-    private void removePanel(String panelName) {
+    public void removePanel(String panelName) {
         panels.remove(panelName);
     }
 
@@ -310,7 +309,7 @@ public class PanelServerManager {
      * @param groupName The name of the group
      * @param group The group instance
      */
-    private void setGroup(String groupName, Group group) {
+    public void setGroup(String groupName, Group group) {
         groups.put(groupName, group);
     }
 
@@ -318,7 +317,7 @@ public class PanelServerManager {
      * Remove a group from the HashMap.
      * @param groupName The name of the group
      */
-    private void removeGroup(String groupName) {
+    public void removeGroup(String groupName) {
         groups.remove(groupName);
     }
 
@@ -353,7 +352,7 @@ public class PanelServerManager {
      * @param serverName The name of the server
      * @param server The server instance
      */
-    private void setServer(String serverName, Server server) {
+    public void setServer(String serverName, Server server) {
         servers.put(serverName, server);
     }
 
@@ -361,7 +360,7 @@ public class PanelServerManager {
      * Remove a server from the HashMap.
      * @param serverName The name of the server
      */
-    private void removeServer(String serverName) {
+    public void removeServer(String serverName) {
         servers.remove(serverName);
     }
 
@@ -392,7 +391,7 @@ public class PanelServerManager {
         try {
             config.save();
         } catch (Exception e) {
-            useLogger(logger, "Failed to save config!\n" + e.getMessage());
+            useLogger("Failed to save config!\n" + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -403,6 +402,51 @@ public class PanelServerManager {
      */
     public void saveGroupServers(String groupName) {
         config.set("groups." + groupName + ".servers", getGroup(groupName).getServers());
+        try {
+            config.save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Save server to config.
+     * @param serverName The server to save
+     */
+    public void saveServerConfig(String serverName) {
+        Server server = getServer(serverName);
+
+        // Save Panel Name
+        String panelName = server.getPanelName();
+        config.set("servers." + serverName + ".panel", panelName);
+
+        // Save AMP server
+        if (server instanceof AMPServer) {
+            // Save instanceName
+            String instanceName = ((AMPServer) server).getInstanceName();
+            if (instanceName != null) {
+                config.set("servers." + serverName + ".name", instanceName);
+            }
+
+            // Save instanceId
+            String instanceId = ((AMPServer) server).getInstanceId();
+            if (instanceId != null) {
+                config.set("servers." + serverName + ".id", instanceId);
+            }
+        }
+        try {
+            config.save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Delete server from config.
+     * @param serverName The server to delete
+     */
+    public void deleteServerConfig(String serverName) {
+        config.remove("servers." + serverName);
         try {
             config.save();
         } catch (IOException e) {

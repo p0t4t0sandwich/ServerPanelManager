@@ -7,14 +7,16 @@ public abstract class Server {
      * Properties of the Server class
      * serverName: The name of the server
      */
-    public final String serverName;
+    private final String serverName;
+    private final String panelName;
 
     /**
      * Constructor for the Server class
      * @param serverName The name of the server
      */
-    public Server(String serverName) {
+    public Server(String serverName, String panelName) {
         this.serverName = serverName;
+        this.panelName = panelName;
     }
 
     /**
@@ -23,6 +25,14 @@ public abstract class Server {
      */
     public String getName() {
         return serverName;
+    }
+
+    /**
+     * Get the name of the panel
+     * @return The name of the panel
+     */
+    public String getPanelName() {
+        return panelName;
     }
 
     /**
