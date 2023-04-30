@@ -167,8 +167,9 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
       - [ ] `/psm group task condition add <group> <task> <placeholder> <operator> <value>`
       - [ ] `/psm group task condition remove <group> <task> <placeholder> <operator> <value>`
 
-  - [x] findplayer command -- `/psm group findplayer <group> <player>`
+  - [x] find player command -- `/psm group find <group> <player>`
 
+- [x] find player command -- `/psm find <player>`
 - [x] playerlist command -- `/psm players <server>`
 
 ### Groups

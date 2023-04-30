@@ -299,6 +299,28 @@ public class CommandHandler {
     }
 
     /**
+     * Find Player Handler
+     * @param args The command arguments
+     * @return The response
+     */
+    private String findPlayerHandler(String[] args) {
+        // Find player
+        if (args.length == 2) {
+            String playerName = args[1];
+            List<String> groups = psm.getGroups();
+            for (String group : groups) {
+                String server = psm.getGroup(group).findPlayer(playerName);
+                if (!server.equals("")) {
+                    return "§6Player " + playerName + " is online on: §5" + server;
+                }
+            }
+            return "§cCould not find player " + playerName + "!";
+        } else {
+            return "§cUsage: /psm find <player>";
+        }
+    }
+
+    /**
      * Server Command Handler
      * @param args The command arguments
      * @return The response
@@ -430,9 +452,10 @@ public class CommandHandler {
         String message;
         String helpMessage = "§6Available subcommands:" +
                 "\ngroup help - Show this message" +
-                "\ngroup server list <groupName>" +
-                "\ngroup server add <serverName> <groupName>" +
-                "\ngroup server remove <serverName> <groupName>";
+                "\ngroup list - List available groups" +
+                "\ngroup find <group> <player> - Find what server a player is on" +
+                "\ngroup server <subcommand> - Manage servers in a group" +
+                "\ngroup task <subcommand> - Manage tasks in a group";
         if (args.length == 1) {
             return helpMessage;
         }
@@ -509,7 +532,11 @@ public class CommandHandler {
                         }
                         break;
                     default:
-                        message = helpMessage;
+                        message = "§6Available subcommands:" +
+                                "\ngroup server help - Show this message" +
+                                "\ngroup server list <groupName> - List servers in a group" +
+                                "\ngroup server add <serverName> <groupName> - Add a server to a group" +
+                                "\ngroup server remove <serverName> <groupName> - Remove a server from a group";
                         break;
                 }
                 return message;
@@ -530,23 +557,23 @@ public class CommandHandler {
                             message = "§cUsage: /psm group task list <groupName>";
                         }
                         break;
-                    // group task create <group> <task> <command> <interval>
+                    // group task create <groupName> <taskName> <command> <interval>
                     case "create":
-                    // group task remove <group> <task>
+                    // group task remove <groupName> <taskName>
                     case "remove":
                         message = "§cNot implemented yet!";
                         break;
                     default:
                         message = "§6Available subcommands:" +
-                                "\nhelp - Show this message" +
+                                "\ngroup task help - Show this message" +
                                 "\ngroup task list <groupName>" +
                                 "\ngroup task add <taskName> <groupName>" +
                                 "\ngroup task remove <taskName> <groupName>";
                         break;
                 }
                 return message;
-            // group findplayer <groupName> <playerName>
-            case "findplayer":
+            // group find <groupName> <playerName>
+            case "find":
                 if (args.length == 4) {
                     String groupName = args[2];
                     String playerName = args[3];
@@ -562,15 +589,16 @@ public class CommandHandler {
                     }
                     message = "§6Player " + playerName + " is on server " + serverName + "!";
                 } else {
-                    message = "§cUsage: /psm group findplayer <groupName> <playerName>";
+                    message = "§cUsage: /psm group find <groupName> <playerName>";
                 }
                 break;
             default:
                 message = "§6Available subcommands:" +
                         "\nhelp - Show this message" +
                         "\ngroup list - List available groups" +
-                        "\ngroup findplayer <groupName> <playerName> - Find player in group" +
-                        "\ngroup server <command> - Manage group servers";
+                        "\ngroup find <groupName> <playerName> - Find player in group" +
+                        "\ngroup task <subcommand> - Manage group tasks" +
+                        "\ngroup server <subcommand> - Manage group servers";
                 break;
         }
         return message;
@@ -612,41 +640,45 @@ public class CommandHandler {
         String message;
         try {
             switch (args[0].toLowerCase()) {
-                // Start Server
+                // start <serverName>
                 case "start":
                     message = startServerHandler(args);
                     break;
-                // Stop Server
+                // stop <serverName>
                 case "stop":
                     message = stopServerHandler(args);
                     break;
-                // Restart Server
+                // restart <serverName>
                 case "restart":
                     message = restartServerHandler(args);
                     break;
-                // Kill Server
+                // kill <serverName>
                 case "kill":
                     message = killServerHandler(args);
                     break;
-                // Sleep Server
+                // sleep <serverName>
                 case "sleep":
                     message = sleepServerHandler(args);
                     break;
-                // Send Command
+                // send <serverName> <message>
                 case "send":
                     message = sendCommandHandler(args);
                     break;
-                // Get Status
+                // status <serverName>
                 case "status":
                     message = getStatusHandler(args);
                     break;
-                // Backup Server
+                // backup <serverName> [name] [description] [sticky <- true or false]
                 case "backup":
                     message = backupServerHandler(args);
                     break;
-                // Player List
+                // players <serverName>
                 case "players":
                     message = playerListHandler(args);
+                    break;
+                // find <serverName>
+                case "find":
+                    message = findPlayerHandler(args);
                     break;
                 // Server Command Tree
                 case "server":
