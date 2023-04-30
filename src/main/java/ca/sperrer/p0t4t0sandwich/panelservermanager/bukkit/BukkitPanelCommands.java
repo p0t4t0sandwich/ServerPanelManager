@@ -1,5 +1,6 @@
 package ca.sperrer.p0t4t0sandwich.panelservermanager.bukkit;
 
+import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.CommandHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +20,7 @@ public class BukkitPanelCommands implements CommandExecutor {
             if (sender instanceof Player && !sender.hasPermission("psm")) {
                 message = "§cYou do not have permission to use this command!";
             } else {
-                message = args.length == 0 ? "§cUsage: /psm <command>" : plugin.panelServerManager.commandMessenger(args);
+                message = args.length == 0 ? "§cUsage: /psm <command>" : plugin.panelServerManager.commandHandler.commandMessenger(args);
             }
             sender.sendMessage(message);
         });

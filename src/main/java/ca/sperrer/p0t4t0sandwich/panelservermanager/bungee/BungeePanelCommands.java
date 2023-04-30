@@ -22,7 +22,7 @@ public class BungeePanelCommands extends Command {
             if (sender instanceof ProxiedPlayer && !sender.hasPermission("psm")) {
                 message = "§cYou do not have permission to use this command!";
             } else {
-                message = args.length == 0 ? "§cUsage: /psmb <command>" : plugin.panelServerManager.commandMessenger(args);
+                message = args.length == 0 ? "§cUsage: /psmb <command>" : plugin.panelServerManager.commandHandler.commandMessenger(args);
             }
 
             sender.sendMessage(new ComponentBuilder(message).create());

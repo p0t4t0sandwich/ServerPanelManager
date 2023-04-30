@@ -32,7 +32,7 @@ public final class FabricPanelCommands {
                         // Get arguments and send to commandMessenger
                         String[] args = context.getInput().split(" ");
                         args = Arrays.copyOfRange(args, 1, args.length);
-                        String message = args.length == 0 ? "§cUsage: /psm <command>" : mod.panelServerManager.commandMessenger(args);
+                        String message = args.length == 0 ? "§cUsage: /psm <command>" : mod.panelServerManager.commandHandler.commandMessenger(args);
 
                         // Check if message is null or empty
                         if (message == null || message.equals("")) {

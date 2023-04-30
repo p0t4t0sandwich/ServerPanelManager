@@ -142,7 +142,7 @@ public class Group {
                         parseMap.put("server", serverName);
                         String command = task.getCommand();
                         String parsedCommand = parseCommand(parseMap, command);
-                        PanelServerManager.getInstance().commandMessenger(parsedCommand.split(" "));
+                        PanelServerManager.getInstance().commandHandler.commandMessenger(parsedCommand.split(" "));
                     }
                 }
             } catch (Exception e) {

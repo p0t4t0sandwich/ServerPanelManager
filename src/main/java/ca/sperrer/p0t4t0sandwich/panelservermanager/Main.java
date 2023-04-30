@@ -59,7 +59,7 @@ public class Main {
                     break;
                 } else {
                     runTaskAsync(() -> {
-                        String response = ansiiParser(panelServerManager.commandMessenger(input));
+                        String response = ansiiParser(panelServerManager.commandHandler.commandMessenger(input));
                         if (response.equals("")) {
                             response = "Use 'help' to see a list of commands.";
                         }
