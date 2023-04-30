@@ -133,7 +133,7 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 
 ### Commands
 
-- [ ] Set up group commands -- `/psm group command <group> <command> `
+- [x] Set up group commands -- `/psm group command <group> <command> `
 - [X] Group players -- `/psm group players <group>`
 - [ ] Add commands to manage/add to the config from within the game
   - [ ] Add a command to list all panels -- `/psm panel list`
@@ -170,7 +170,7 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
   - [x] find player command -- `/psm group find <group> <player>`
 
 - [x] find player command -- `/psm find <player>`
-- [x] playerlist command -- `/psm players <server>`
+- [x] players command -- `/psm players <server>`
 
 ### Groups
 
@@ -180,8 +180,8 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
   - [x] think of a placeholder spec for conditionals
   - [x] Build a parser for conditionals and placeholders
   - [ ] Webhook task
-- [ ] Send commands to all servers in a group
-- [ ] Group playerlist interface -- Some readout of the playerlist for all servers in a group -- good for Proxy setups
+- [x] Send commands to all servers in a group
+- [x] Group playerlist interface -- Some readout of the playerlist for all servers in a group -- good for Proxy setups
 
 ### Misc
 
