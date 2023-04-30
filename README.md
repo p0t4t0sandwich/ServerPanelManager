@@ -133,8 +133,8 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 
 ### Commands
 
-- [ ] Set up group commands -- `/psm group command <command> <group>`
-- [ ] Group playerlist -- `/psm group playerlist <group>`
+- [ ] Set up group commands -- `/psm group command <group> <command> `
+- [X] Group players -- `/psm group players <group>`
 - [ ] Add commands to manage/add to the config from within the game
   - [ ] Add a command to list all panels -- `/psm panel list`
   - [ ] Add commands to add/remove panels
