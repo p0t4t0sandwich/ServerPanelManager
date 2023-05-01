@@ -298,6 +298,14 @@ public class PanelServerManager {
     }
 
     /**
+     * Get Panels
+     * @return The names of all panels
+     */
+    public ArrayList<String> getPanels() {
+        return new ArrayList<>(panels.keySet());
+    }
+
+    /**
      * Getter for the group HashMap.
      */
     public Group getGroup(String groupName) {
@@ -382,6 +390,52 @@ public class PanelServerManager {
     }
 
     /**
+     * Save panel to config.
+     * @param panelName The panel to save
+     */
+    public void savePanelConfig(String panelName) {
+        Panel panel = getPanel(panelName);
+
+        // Save Host
+        String host = panel.getHost();
+        config.set("panels." + panelName + ".host", host);
+
+        // Save AMP Panel
+        if (panel instanceof AMPPanel) {
+            // Save username
+            String username = ((AMPPanel) panel).getUsername();
+            config.set("panels." + panelName + ".username", username);
+
+            // Save password
+            String password = ((AMPPanel) panel).getPassword();
+            config.set("panels." + panelName + ".password", password);
+        }
+
+        // Save Pterodactyl Panel TODO: Add Pterodactyl support
+
+        // Save config
+        try {
+            config.save();
+        } catch (Exception e) {
+            useLogger("Failed to save config!\n" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Delete panel from config.
+     * @param panelName The panel to delete
+     */
+    public void deletePanelConfig(String panelName) {
+        config.remove("panels." + panelName);
+        try {
+            config.save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Add/update server id in config.
      * @param serverName The name of the server
      * @param id The InstanceID of the server
@@ -393,19 +447,6 @@ public class PanelServerManager {
         } catch (Exception e) {
             useLogger("Failed to save config!\n" + e.getMessage());
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * Save group to config.
-     * @param groupName The group to save
-     */
-    public void saveGroupServers(String groupName) {
-        config.set("groups." + groupName + ".servers", getGroup(groupName).getServers());
-        try {
-            config.save();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -447,6 +488,19 @@ public class PanelServerManager {
      */
     public void deleteServerConfig(String serverName) {
         config.remove("servers." + serverName);
+        try {
+            config.save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Save group to config.
+     * @param groupName The group to save
+     */
+    public void saveGroupServers(String groupName) {
+        config.set("groups." + groupName + ".servers", getGroup(groupName).getServers());
         try {
             config.save();
         } catch (IOException e) {

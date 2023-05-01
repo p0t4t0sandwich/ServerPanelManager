@@ -1,9 +1,10 @@
 version: 1
-panel:
-  type: cubecodersamp
-  host: http://localhost:8080/
-  username: admin
-  password: admin
+panels:
+  panel1:
+    type: cubecodersamp
+    host: http://localhost:8080/
+    username: admin
+    password: admin
 
 servers:
   # Server using the ADS for authentication

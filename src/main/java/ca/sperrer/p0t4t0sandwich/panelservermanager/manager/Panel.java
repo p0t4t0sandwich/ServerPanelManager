@@ -42,6 +42,14 @@ public abstract class Panel<T> {
     }
 
     /**
+     * Get the host address of the panel
+     * @return The host address of the panel
+     */
+    public String getHost() {
+        return host;
+    }
+
+    /**
      * Get the online status of the panel
      * @return The online status of the panel
      */

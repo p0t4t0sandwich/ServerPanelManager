@@ -136,11 +136,11 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 - [x] Set up group commands -- `/psm group command <group> <command> `
 - [X] Group players -- `/psm group players <group>`
 - [ ] Add commands to manage/add to the config from within the game
-  - [ ] Add a command to list all panels -- `/psm panel list`
-  - [ ] Add commands to add/remove panels
-    - [ ] `/psm panel add <panel> <type> <host> <username> <password>`
-    - [ ] `/psm panel edit <panel> <type> <host> <username> <password>`
-    - [ ] `/psm panel remove <panel>`
+  - [x] Add a command to list all panels -- `/psm panel list`
+  - [x] Add commands to add/remove panels
+    - [x] `/psm panel add <panel> <type> <host> <username> <password>`
+    - [x] `/psm panel edit <panel> <type> <host> <username> <password>`
+    - [x] `/psm panel remove <panel>`
 
   - [x] Add a command to list all servers -- `/psm server list`
   - [x] Add commands to add/remove servers

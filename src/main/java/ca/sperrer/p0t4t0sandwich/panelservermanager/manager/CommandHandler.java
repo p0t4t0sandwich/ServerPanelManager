@@ -312,6 +312,116 @@ public class CommandHandler {
     }
 
     /**
+     * Panel Command Handler
+     * @param args The command arguments
+     * @return The response
+     */
+    private String panelCommand(String[] args) {
+        String message;
+        String helpMessage = "§6Available subcommands:" +
+                "\npanel help - Show this message" +
+                "\npanel list - List available servers" +
+                "\npanel add <panelName> <type> <host> <username> <password> - Add a panel" +
+                "\npanel edit <panelName> <type> <host> <username> <password> - Edit a panel" +
+                "\npanel remove <panelName> - Remove a panel";
+        if (args.length == 1) {
+            return "§cUsage: /psm panel <subcommand>";
+        }
+        switch (args[1].toLowerCase()) {
+            // panel list
+            case "list":
+                message = "§6Available panels: §5\n" + String.join("\n", psm.getPanels());
+                break;
+            // panel add <panelName> <type> <host> <username> <password>
+            case "add":
+                if (args.length == 7) {
+                    String panelName = args[2];
+                    String type = args[3];
+                    String host = args[4];
+                    String username = args[5];
+                    String password = args[6];
+
+                    if (psm.panelExists(panelName)) {
+                        message = "§cPanel " + panelName + " already exists!";
+                        break;
+                    }
+                    Panel panel = null;
+                    switch (type) {
+                        case "cubecodersamp":
+                            panel = new AMPPanel(panelName, host, username, password);
+                            psm.setPanel(panelName, panel);
+                    }
+                    // Check if server is online
+                    if (panel != null && panel.isOnline()) {
+                        psm.setPanel(panelName, panel);
+                        psm.savePanelConfig(panelName);
+                        message = "§aServer " + panelName + " added!";
+                    } else {
+                        message = "§cServer " + panelName + " is offline!";
+                    }
+                } else {
+                    message = "§cUsage: /psm panel add <panelName> <type> <host> <username> <password>";
+                }
+                break;
+            // panel remove <panelName>
+            case "remove":
+                if (args.length == 3) {
+                    String panelName = args[2];
+                    if (psm.panelExists(panelName)) {
+                        psm.removePanel(panelName);
+                        psm.deletePanelConfig(panelName);
+                        message = "§aPanel " + panelName + " removed!";
+                    } else {
+                        message = "§cPanel " + panelName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm panel remove <panelName>";
+                }
+                break;
+            // panel edit <panelName> <type> <host> <username> <password>
+            case "edit":
+                if (args.length == 7) {
+                    String panelName = args[2];
+                    String type = args[3];
+                    String host = args[4];
+                    String username = args[5];
+                    String password = args[6];
+
+                    if (!psm.panelExists(panelName)) {
+                        message = "§cPanel " + panelName + " does not exist!";
+                        break;
+                    }
+                    Panel panel = null;
+                    switch (type) {
+                        case "cubecodersamp":
+                            panel = new AMPPanel(panelName, host, username, password);
+                            psm.setPanel(panelName, panel);
+                    }
+                    // Check if server is online
+                    if (panel != null && panel.isOnline()) {
+                        // Remove old panel
+                        psm.removeServer(panelName);
+                        psm.deleteServerConfig(panelName);
+
+                        // Add edited panel
+                        psm.setPanel(panelName, panel);
+                        psm.savePanelConfig(panelName);
+                        message = "§aPanel " + panelName + " edited!";
+                    } else {
+                        message = "§cPanel " + panelName + " is offline!";
+                    }
+                } else {
+                    message = "§cUsage: /psm panel edit <panelName> <type> <host> <username> <password>";
+                }
+                break;
+            default:
+                message = helpMessage;
+                break;
+        }
+        return message;
+    }
+
+    /**
      * Server Command Handler
      * @param args The command arguments
      * @return The response
@@ -322,7 +432,8 @@ public class CommandHandler {
                     "\nserver help - Show this message" +
                     "\nserver list - List available servers" +
                     "\nserver add <serverName> <panelName> <InstanceName> <InstanceId> - Add a server" +
-                    "\nserver remove <serverName> - Remove a server";
+                    "\nserver remove <serverName> - Remove a server" +
+                    "\nserver edit <serverName> <panelName> <InstanceName> <InstanceId> - Edit a server";
         if (args.length == 1) {
             return "§cUsage: /psm server <subcommand>";
         }
@@ -369,6 +480,25 @@ public class CommandHandler {
                 }
                 break;
 
+            // server remove <serverName>
+            case "remove":
+                if (args.length == 3) {
+                    String serverName = args[2];
+                    if (psm.serverExists(serverName)) {
+                        psm.removeServer(serverName);
+                        psm.deleteServerConfig(serverName);
+                        message = "§aServer " + serverName + " removed!";
+                    } else {
+                        message = "§cServer " + serverName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm server remove <serverName>";
+                }
+                break;
+            default:
+                message = helpMessage;
+                break;
+
             // server edit <serverName> <panelName> <InstanceName> <InstanceId>
             case "edit":
                 if (args.length >= 5) {
@@ -410,25 +540,6 @@ public class CommandHandler {
                 } else {
                     message = "§cUsage: /psm server edit <serverName> <panelName> <InstanceName> <InstanceId>";
                 }
-                break;
-
-            // server remove <serverName>
-            case "remove":
-                if (args.length == 3) {
-                    String serverName = args[2];
-                    if (psm.serverExists(serverName)) {
-                        psm.removeServer(serverName);
-                        psm.deleteServerConfig(serverName);
-                        message = "§aServer " + serverName + " removed!";
-                    } else {
-                        message = "§cServer " + serverName + " does not exist!";
-                    }
-                } else {
-                    message = "§cUsage: /psm server remove <serverName>";
-                }
-                break;
-            default:
-                message = helpMessage;
                 break;
         }
         return message;
@@ -662,12 +773,9 @@ public class CommandHandler {
                 "\nplayers <server> - Get server player list" +
                 "\nfind <player> - Find the server the player is on" +
                 "\n\nOther Commands:" +
-                "\nserver list - List available servers" +
-                "\ngroup list - List available groups" +
-                "\ngroup server <subcommand>" +
-                "\ngroup find <groupName> <playerName>" +
-                "\ngroup server add <serverName> <groupName> - Add server to group" +
-                "\ngroup server remove <serverName> <groupName> - Remove server from group";
+                "\npanel <subcommand>" +
+                "\nserver <subcommand>" +
+                "\ngroup <subcommand>";
     }
 
     /**
@@ -719,15 +827,19 @@ public class CommandHandler {
                 case "find":
                     message = findPlayerHandler(args);
                     break;
-                // Server Command Tree
+                // panel <subcommand>
+                case "panel":
+                    message = panelCommand(args);
+                    break;
+                // server <subcommand>
                 case "server":
                     message = serverCommand(args);
                     break;
-                // Group Command Tree
+                // group <subcommand>
                 case "group":
                     message = groupCommand(args);
                     break;
-                // Help
+                // help
                 default:
                     message = helpHandler();
                     break;

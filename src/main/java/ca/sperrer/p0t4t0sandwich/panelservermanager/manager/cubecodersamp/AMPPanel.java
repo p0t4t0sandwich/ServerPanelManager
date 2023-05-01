@@ -5,14 +5,17 @@ import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.Panel;
 import ca.sperrer.p0t4t0sandwich.panelservermanager.manager.PanelServerManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class AMPPanel extends Panel<AMPAPIHandler> {
     /**
      * Parameters for the AMPPanel class
+     * username: The username of the panel
+     * password: The password of the panel
      * loginResult: The result of the login method
      */
+    private final String username;
+    private final String password;
     private Map<?, ?> loginResult;
 
     /**
@@ -20,8 +23,26 @@ public class AMPPanel extends Panel<AMPAPIHandler> {
      */
     public AMPPanel(String panelName, String host, String username, String password) {
         super(panelName, "cubecodersamp", host);
+        this.username = username;
+        this.password = password;
         this.API = new AMPAPIHandler(host, username, password, "", "");
         this.loginResult = API.Login();
+    }
+
+    /**
+     * Get the username of the panel
+     * @return The username of the panel
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * Get the password of the panel
+     * @return The password of the panel
+     */
+    public String getPassword() {
+        return password;
     }
 
     /**
