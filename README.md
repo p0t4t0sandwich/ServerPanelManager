@@ -76,7 +76,6 @@ servers:
 ### Groups
 
 ```yaml
-# Experimental feature, still a work in progress
 groups:
   <group name>:
     name: Group1
@@ -88,7 +87,8 @@ groups:
         command: send {server} say boop!
         interval: 60 # in seconds
         conditions:
-          - placeholder: playercount
+          1:
+            placeholder: playercount
             operator: ==
             value: 0
 ```

@@ -230,8 +230,8 @@ public class PanelServerManager {
 
             // Initialize tasks
             Group group = new Group(groupName, groupServers, new HashMap<>());
-
             HashMap<String, Object> tasksConfig = (HashMap<String, Object>) config.getBlock("groups." + groupName + ".tasks").getStoredValue();
+
             for (HashMap.Entry<String, Object> taskConfig: tasksConfig.entrySet()) {
                 String taskName = taskConfig.getKey();
                 String taskCommand = (String) config.getBlock("groups." + groupName + ".tasks." + taskName + ".command").getStoredValue();
@@ -239,11 +239,14 @@ public class PanelServerManager {
 
                 // Initialize task conditions
                 ArrayList<Condition> taskConditions = new ArrayList<>();
-                ArrayList<HashMap<?, ?>> conditionsConfig = (ArrayList<HashMap<?, ?>>) config.get("groups." + groupName + ".tasks." + taskName + ".conditions");
-                for (HashMap<?, ?> conditionConfig: conditionsConfig) {
-                    String conditionPlaceholder = (String) conditionConfig.get("placeholder");
-                    String conditionOperator = (String) conditionConfig.get("operator");
-                    int conditionValue = (int) conditionConfig.get("value");
+                HashMap<String, Object> conditionsConfig = (HashMap<String, Object>) config.getBlock("groups." + groupName + ".tasks." + taskName + ".conditions").getStoredValue();
+
+                // loop entries
+                for (HashMap.Entry<String, Object> conditionEntry: conditionsConfig.entrySet()) {
+                    String conditionNumber = conditionEntry.getKey();
+                    String conditionPlaceholder = (String) config.get("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".placeholder");
+                    String conditionOperator = (String) config.get("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".operator");
+                    int conditionValue = (int) config.get("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".value");
 
                     // Build Condition and add to ArrayList
                     Condition condition = new Condition(conditionPlaceholder, conditionOperator, conditionValue);
