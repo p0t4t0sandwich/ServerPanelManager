@@ -106,15 +106,11 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 
 ### Bugs
 
-- [x] Program doesn't time out if it can't connect to the AMP API -- is this a problem with ampapi-java? -- If so, then I'll have to fix it there
-- [x] Another instance of this problem: occurs when the instance is offline, replicates the above behavior just at an instance level
 - [ ] Tasks don't pause, the thread just keeps running
 
 ### General
 
-- [x] Refactor everything -- this is a monolithic mess
 - [ ] Add a command to reload the config
-- [x] Design an API for other plugins to use -- that way this plugin doesn't become a spaghetti mess
 - [ ] Forge support -- try and generalize the fabric command and see if I can get it to work with forge, as both use brigadier
 - [ ] Multi-Fabric version support -- some gradle project voodoo required
 - [ ] Fabric client side chat listener -- do it like this? https://www.reddit.com/r/fabricmc/comments/wg7jrx/onchat/
@@ -122,6 +118,7 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 - [ ] Sponge support
 - [ ] Velocity support
 - [ ] Set up proper gradle projects for each platform -- need help with this
+- [ ] Add webhook support here and there
 
 ### Permissions
 
@@ -135,65 +132,11 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
   - [ ] Fabric will be more fun to implement -- either look into how Fabric does it, or require LuckPerms to doll out specific permissions
   - [ ] Similar dealio for Forge
 
-### Commands
-
-- [x] Set up group commands -- `/psm group command <group> <command> `
-- [X] Group players -- `/psm group players <group>`
-- [ ] Add commands to manage/add to the config from within the game
-  - [x] Add a command to list all panels -- `/psm panel list`
-  - [x] Add commands to add/remove panels
-    - [x] `/psm panel add <panel> <type> <host> <username> <password>`
-    - [x] `/psm panel edit <panel> <type> <host> <username> <password>`
-    - [x] `/psm panel remove <panel>`
-
-  - [x] Add a command to list all servers -- `/psm server list`
-  - [x] Add commands to add/remove servers
-    - [x] `/psm server add <server> <panel> <name> <id>`
-    - [x] `/psm server edit <server> <panel> <name> <id>`
-    - [x] `/psm server remove <server>`
-
-  - [x] Add a command to list all groups -- `/psm group list`
-  - [x] Add commands to add/remove servers from groups
-    - [x] `/psm group server list <group>` 
-    - [x] `/psm group server add <group> <server>`
-    - [x] `/psm group server remove <group> <server>`
-
-  - [x] Add a command to list all tasks in a group -- `/psm task list <group>`
-  - [x] Add commands to manage group tasks
-    - [x] `/psm group task create <group> <task> <interval> <command>`
-    - [x] `/psm group task remove <group> <task>`
-    - [x] `/psm group task edit <group> <task> <interval> <command>`
-    - [x] `/psm group task pause <group> <task>`
-    - [x] `/psm group task resume <group> <task>`
-
-    - [x] Add commands to manage task conditions
-      - [x] `/psm condition list <group> <task>`
-      - [x] `/psm condition add <group> <task> <placeholder> <operator> <value>`
-      - [x] `/psm condition remove <group> <task> <condition>`
-      - [x] `/psm condition edit <group> <task> <condition> <placeholder> <operator> <value>`
-
-  - [x] find player command -- `/psm group find <group> <player>`
-
-- [x] find player command -- `/psm find <player>`
-- [x] players command -- `/psm players <server>`
-
-### Groups
-
-- [ ] Finalize configuration for groups
-  - [x] Add timed tasks
-  - [x] Add conditionals
-  - [x] think of a placeholder spec for conditionals
-  - [x] Build a parser for conditionals and placeholders
-  - [ ] Webhook task
-- [x] Send commands to all servers in a group
-- [x] Group playerlist interface -- Some readout of the playerlist for all servers in a group -- good for Proxy setups
-
 ### Misc
 
 - [ ] various in-game event triggers
   - [ ] integrate with the AMP scheduler
-
-- [x] Add multi-ADS/Controller logic -- similar to old WatchFerret
+  - [ ] set up webhook support
 
 - [ ] Update mods/plugins from url? -- maybe add a `update` command to the group system?
   - [ ] Optional: include regex to delete old files
@@ -201,11 +144,6 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 - [ ] Server console regex trigger -- maybe add a `regex` command to the group system?
 
 - [ ] No-start status fix -- plop a proper `server started` message in the console -- Fix for Forge 1.12.2 v14.23.5.2858 and FTB Revelation
-
-- [x] Make AMPServerManagerPlugin function as a standalone terminal program, since it's all compiled to Java 8 anyway.
-  - [x] Format the log properly
-  - [x] Add pretty terminal colors
-  - [ ] Wonder how hard tab completion and command history would be to implement
 
 - [ ] Add the ability to sync the config with a database? -- would need one AMPServerManager process to act as a main process and handle all the group tasks.
   - [ ] hot reload the config when it changes -- how? -- LuckPerms does it, maybe subscribe to database changes?
