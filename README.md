@@ -154,18 +154,18 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
     - [x] `/psm group server add <group> <server>`
     - [x] `/psm group server remove <group> <server>`
 
-  - [x] Add a command to list all tasks in a group -- `/psm group task list <group>`
-  - [ ] Add commands to manage group tasks
-    - [ ] `/psm group task create <group> <task> <command> <interval>`
-    - [ ] `/psm group task remove <group> <task>`
-    - [ ] `/psm group task edit <group> <task> <command> <interval>`
-    - [ ] `/psm group task pause <group> <task>`
-    - [ ] `/psm group task resume <group> <task>`
+  - [x] Add a command to list all tasks in a group -- `/psm task list <group>`
+  - [x] Add commands to manage group tasks
+    - [x] `/psm group task create <group> <task> <interval> <command>`
+    - [x] `/psm group task remove <group> <task>`
+    - [x] `/psm group task edit <group> <task> <interval> <command>`
+    - [x] `/psm group task pause <group> <task>`
+    - [x] `/psm group task resume <group> <task>`
 
     - [ ] Add commands to manage task conditions
-      - [ ] `/psm group task condition list <group> <task>`
-      - [ ] `/psm group task condition add <group> <task> <placeholder> <operator> <value>`
-      - [ ] `/psm group task condition remove <group> <task> <placeholder> <operator> <value>`
+      - [ ] `/psm condition list <group> <task>`
+      - [ ] `/psm condition add <group> <task> <placeholder> <operator> <value>`
+      - [ ] `/psm condition remove <group> <task> <condition>`
 
   - [x] find player command -- `/psm group find <group> <player>`
 
@@ -184,6 +184,9 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 - [x] Group playerlist interface -- Some readout of the playerlist for all servers in a group -- good for Proxy setups
 
 ### Misc
+
+- [ ] various in-game event triggers
+  - [ ] integrate with the AMP scheduler
 
 - [x] Add multi-ADS/Controller logic -- similar to old WatchFerret
 

@@ -9,9 +9,9 @@ public class Condition {
      * operator: The operator for the condition
      * value: The value for the condition
      */
-    public final String placeholder;
-    public final String operator;
-    public final Object value;
+    private final String placeholder;
+    private final String operator;
+    private final Object value;
 
     /**
      * Constructor for the Condition class
@@ -23,6 +23,30 @@ public class Condition {
         this.placeholder = placeholder;
         this.operator = operator;
         this.value = value;
+    }
+
+    /**
+     * Get the placeholder for the condition
+     * @return The placeholder for the condition
+     */
+    public String getPlaceholder() {
+        return placeholder;
+    }
+
+    /**
+     * Get the operator for the condition
+     * @return The operator for the condition
+     */
+    public String getOperator() {
+        return operator;
+    }
+
+    /**
+     * Get the value for the condition
+     * @return The value for the condition
+     */
+    public Object getValue() {
+        return value;
     }
 
     /**

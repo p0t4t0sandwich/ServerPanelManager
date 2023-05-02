@@ -753,6 +753,159 @@ public class CommandHandler {
         return message;
     }
 
+    private String taskCommand(String[] args) {
+        String message;
+        String helpMessage = "§6Available subcommands:" +
+                "\ntask help - Show this message" +
+                "\ntask list <groupName> - List tasks in group" +
+                "\ntask create <groupName> <taskName> <interval> <command> - Create a task" +
+                "\ntask remove <groupName> <taskName> - Remove a task" +
+                "\ntask edit <groupName> <taskName> <interval> <command> - Edit a task" +
+                "\ntask pause <groupName> <taskName> - Pause a task" +
+                "\ntask resume <groupName> <taskName> - Resume a task";
+        if (args.length == 1) {
+            return helpMessage;
+        }
+        switch (args[1].toLowerCase()) {
+            // task list <groupName>
+            case "list":
+                if (args.length == 3) {
+                    String groupName = args[2];
+                    if (psm.groupExists(groupName)) {
+                        Group group = psm.getGroup(groupName);
+                        message = "§6Tasks in group " + groupName + ": §5\n" + String.join("\n", group.getTasks());
+                    } else {
+                        message = "§cGroup " + groupName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm task list <groupName>";
+                }
+                break;
+            // task create <groupName> <taskName> <interval> <command>
+            case "create":
+                if (args.length >= 6) {
+                    String groupName = args[2];
+                    String taskName = args[3];
+                    int interval = Integer.parseInt(args[4]);
+                    String command = String.join(" ", Arrays.copyOfRange(args, 4, args.length - 1));
+                    if (psm.groupExists(groupName)) {
+                        Group group = psm.getGroup(groupName);
+                        if (!group.containsTask(taskName)) {
+                            Task task = new Task(taskName, command, interval, new HashMap<>());
+                            group.setTask(taskName, task);
+                            group.startTask(taskName);
+                            psm.saveGroupTasks(groupName);
+                            message = "§aCreated task " + taskName + " in group " + groupName + "!";
+                        } else {
+                            message = "§cTask " + taskName + " already exists in group " + groupName + "!";
+                        }
+                    } else {
+                        message = "§cGroup " + groupName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm task create <groupName> <taskName> <interval> <command>";
+                }
+                break;
+            // task remove <groupName> <taskName>
+            case "remove":
+                if (args.length == 4) {
+                    String groupName = args[2];
+                    String taskName = args[3];
+                    if (psm.groupExists(groupName)) {
+                        Group group = psm.getGroup(groupName);
+                        if (group.containsTask(taskName)) {
+                            group.stopTask(taskName);
+                            group.removeTask(taskName);
+                            psm.deleteTaskConfig(groupName, taskName);
+                            message = "§aRemoved task " + taskName + " from group " + groupName + "!";
+                        } else {
+                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
+                        }
+                    } else {
+                        message = "§cGroup " + groupName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm task remove <groupName> <taskName>";
+                }
+                break;
+            // task edit <groupName> <taskName> <interval> <command>
+            case "edit":
+                if (args.length >= 6) {
+                    String groupName = args[2];
+                    String taskName = args[3];
+                    int interval = Integer.parseInt(args[4]);
+                    String command = String.join(" ", Arrays.copyOfRange(args, 4, args.length - 1));
+                    if (psm.groupExists(groupName)) {
+                        Group group = psm.getGroup(groupName);
+                        if (group.containsTask(taskName)) {
+                            Task task = new Task(taskName, command, interval, new HashMap<>());
+                            group.setTask(taskName, task);
+                            group.startTask(taskName);
+
+                            // Delete old config
+                            psm.deleteTaskConfig(groupName, taskName);
+
+                            // Save new config
+                            psm.saveGroupTasks(groupName);
+
+                            message = "§aEdited task " + taskName + " in group " + groupName + "!";
+                        } else {
+                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
+                        }
+                    } else {
+                        message = "§cGroup " + groupName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm task edit <groupName> <taskName> <interval> <command>";
+                }
+                break;
+            // task pause <groupName> <taskName>
+            case "pause":
+                if (args.length == 4) {
+                    String groupName = args[2];
+                    String taskName = args[3];
+                    if (psm.groupExists(groupName)) {
+                        Group group = psm.getGroup(groupName);
+                        if (group.containsTask(taskName)) {
+                            group.stopTask(taskName);
+                            message = "§aPaused task " + taskName + " in group " + groupName + "!";
+                        } else {
+                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
+                        }
+                    } else {
+                        message = "§cGroup " + groupName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm task pause <groupName> <taskName>";
+                }
+                break;
+            // task resume <groupName> <taskName>
+            case "resume":
+                if (args.length == 4) {
+                    String groupName = args[2];
+                    String taskName = args[3];
+                    if (psm.groupExists(groupName)) {
+                        Group group = psm.getGroup(groupName);
+                        if (group.containsTask(taskName)) {
+                            group.startTask(taskName);
+                            message = "§aResumed task " + taskName + " in group " + groupName + "!";
+                        } else {
+                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
+                        }
+                    } else {
+                        message = "§cGroup " + groupName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm task resume <groupName> <taskName>";
+                }
+                break;
+            // task help
+            default:
+                message = helpMessage;
+        }
+        return message;
+    }
+
     /**
      * Help Handler
      * @return The response
@@ -775,7 +928,8 @@ public class CommandHandler {
                 "\n\nOther Commands:" +
                 "\npanel <subcommand>" +
                 "\nserver <subcommand>" +
-                "\ngroup <subcommand>";
+                "\ngroup <subcommand>" +
+                "\ntask <subcommand>";
     }
 
     /**
@@ -838,6 +992,10 @@ public class CommandHandler {
                 // group <subcommand>
                 case "group":
                     message = groupCommand(args);
+                    break;
+                // task <subcommand>
+                case "task":
+                    message = taskCommand(args);
                     break;
                 // help
                 default:

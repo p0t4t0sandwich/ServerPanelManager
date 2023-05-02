@@ -238,25 +238,31 @@ public class PanelServerManager {
                 long taskInterval = (long) (int) config.getBlock("groups." + groupName + ".tasks." + taskName + ".interval").getStoredValue();
 
                 // Initialize task conditions
-                ArrayList<Condition> taskConditions = new ArrayList<>();
+                HashMap<String, Condition> taskConditions = new HashMap<>();
+
+                if (config.get("groups." + groupName + ".tasks." + taskName + ".conditions") == null) {
+                    useLogger("Group " + groupName + ": Task " + taskName + " has no conditions!");
+                    continue;
+                }
                 HashMap<String, Object> conditionsConfig = (HashMap<String, Object>) config.getBlock("groups." + groupName + ".tasks." + taskName + ".conditions").getStoredValue();
 
                 // loop entries
-                for (HashMap.Entry<String, Object> conditionEntry: conditionsConfig.entrySet()) {
-                    String conditionNumber = conditionEntry.getKey();
+                for (int i = 1; i <= conditionsConfig.size(); i++) {
+                    String conditionNumber = String.valueOf(i);
                     String conditionPlaceholder = (String) config.get("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".placeholder");
                     String conditionOperator = (String) config.get("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".operator");
                     int conditionValue = (int) config.get("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".value");
 
                     // Build Condition and add to ArrayList
                     Condition condition = new Condition(conditionPlaceholder, conditionOperator, conditionValue);
-                    taskConditions.add(condition);
+                    taskConditions.put(conditionNumber, condition);
                 }
 
                 // Build Task and add to HashMap
-                Task task = new Task(taskName, taskCommand, taskInterval, groupServers, taskConditions);
+                Task task = new Task(taskName, taskCommand, taskInterval, taskConditions);
                 group.setTask(taskName, task);
                 group.startTask(taskName);
+                useLogger("Group " + groupName + ": Task " + taskName + " initialized!");
             }
 
             // Add group to HashMap
@@ -499,11 +505,58 @@ public class PanelServerManager {
     }
 
     /**
-     * Save group to config.
-     * @param groupName The group to save
+     * Save group servers to config.
+     * @param groupName The group for which to save the servers
      */
     public void saveGroupServers(String groupName) {
         config.set("groups." + groupName + ".servers", getGroup(groupName).getServers());
+        try {
+            config.save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Save group tasks to config.
+     * @param groupName The group for which to save the tasks
+     */
+    public void saveGroupTasks(String groupName) {
+        Group group = getGroup(groupName);
+        ArrayList<String> tasks = group.getTasks();
+        for (String taskName : tasks) {
+            config.set("groups." + groupName + ".tasks." + taskName, taskName);
+
+            Task task = group.getTask(taskName);
+            config.set("groups." + groupName + ".tasks." + taskName + ".command", task.getCommand());
+            config.set("groups." + groupName + ".tasks." + taskName + ".interval", task.getInterval());
+
+            // Save Conditions
+            HashMap<String, Condition> conditions = task.getConditions();
+            for (int i = 1; i <= conditions.size(); i++) {
+                Condition condition = conditions.get(Integer.toString(i));
+                if (condition == null) {
+                    continue;
+                }
+                config.set("groups." + groupName + ".tasks." + taskName + ".conditions." + i + ".placeholder", condition.getPlaceholder());
+                config.set("groups." + groupName + ".tasks." + taskName + ".conditions." + i + ".operator", condition.getOperator());
+                config.set("groups." + groupName + ".tasks." + taskName + ".conditions." + i + ".value", condition.getValue());
+            }
+        }
+        try {
+            config.save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Delete task from group in config.
+     * @param groupName The group for which to delete the task
+     * @param taskName The task to delete
+     */
+    public void deleteTaskConfig(String groupName, String taskName) {
+        config.remove("groups." + groupName + ".tasks." + taskName);
         try {
             config.save();
         } catch (IOException e) {

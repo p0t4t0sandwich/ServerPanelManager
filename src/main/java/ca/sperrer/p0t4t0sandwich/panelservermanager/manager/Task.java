@@ -1,7 +1,6 @@
 package ca.sperrer.p0t4t0sandwich.panelservermanager.manager;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.ForkJoinTask;
 
 public class Task {
@@ -18,9 +17,7 @@ public class Task {
     private final String command;
     private final long interval;
 
-    private final ArrayList<String> servers = new ArrayList<>();
-
-    private final ArrayList<Condition> conditions = new ArrayList<>();
+    private final HashMap<String, Condition> conditions = new HashMap<>();
 
     private ForkJoinTask<Object> runningTask;
 
@@ -29,15 +26,13 @@ public class Task {
      * @param taskName The name of the task
      * @param command The command to run
      * @param interval The interval to run the task at
-     * @param servers The servers to run the task on
      * @param conditions The conditions to check before running the task
      */
-    public Task(String taskName, String command, long interval, ArrayList<String> servers, ArrayList<Condition> conditions) {
+    public Task(String taskName, String command, long interval, HashMap<String, Condition> conditions) {
         this.taskName = taskName;
         this.command = command;
         this.interval = interval;
-        this.servers.addAll(servers);
-        this.conditions.addAll(conditions);
+        this.conditions.putAll(conditions);
     }
 
     /**
@@ -65,6 +60,14 @@ public class Task {
     }
 
     /**
+     * Get the conditions to check before running the task
+     * @return The conditions to check before running the task
+     */
+    public HashMap<String, Condition> getConditions() {
+        return conditions;
+    }
+
+    /**
      * Set the thread running the task
      * @param task The thread running the task
      */
@@ -86,7 +89,8 @@ public class Task {
      * @return Whether the conditions are true
      */
     public boolean checkConditions(String serverName) {
-        for (Condition condition : conditions) {
+        for (HashMap.Entry<String, Condition> conditionMap : conditions.entrySet()) {
+            Condition condition = conditionMap.getValue();
             if (!condition.check(serverName)) {
                 return false;
             }
