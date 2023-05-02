@@ -753,6 +753,11 @@ public class CommandHandler {
         return message;
     }
 
+    /**
+     * Task Command Handler
+     * @param args The command arguments
+     * @return The response
+     */
     private String taskCommand(String[] args) {
         String message;
         String helpMessage = "§6Available subcommands:" +
@@ -848,6 +853,10 @@ public class CommandHandler {
                             // Save new config
                             psm.saveGroupTasks(groupName);
 
+                            // Restart task
+                            group.stopTask(taskName);
+                            group.startTask(taskName);
+
                             message = "§aEdited task " + taskName + " in group " + groupName + "!";
                         } else {
                             message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
@@ -867,8 +876,12 @@ public class CommandHandler {
                     if (psm.groupExists(groupName)) {
                         Group group = psm.getGroup(groupName);
                         if (group.containsTask(taskName)) {
-                            group.stopTask(taskName);
-                            message = "§aPaused task " + taskName + " in group " + groupName + "!";
+                            boolean stopped = group.stopTask(taskName);
+                            if (stopped) {
+                                message = "§aPaused task " + taskName + " in group " + groupName + "! -- this is probably a lie, tis broken";
+                            } else {
+                                message = "§cCould not pause task " + taskName + " in group " + groupName + "!";
+                            }
                         } else {
                             message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
                         }
@@ -902,6 +915,168 @@ public class CommandHandler {
             // task help
             default:
                 message = helpMessage;
+        }
+        return message;
+    }
+
+    /**
+     * Condition Command Handler
+     * @param args The command arguments
+     * @return The response
+     */
+    private String conditionCommand(String[] args) {
+        String message;
+        String helpMessage = "§6Available subcommands:" +
+                "\ncondition list <groupName> <taskName> - List conditions" +
+                "\ncondition add <groupName> <taskName> <placeholder> <operator> <value> - Add condition" +
+                "\ncondition remove <groupName> <taskName> <conditionNumber> - Remove condition" +
+                "\ncondition edit <groupName> <taskName> <conditionNumber> <placeholder> <operator> <value> - Edit condition";
+        switch (args[1]) {
+            // condition list <groupName> <taskName>
+            case "list":
+                if (args.length == 4) {
+                    String groupName = args[2];
+                    String taskName = args[3];
+                    if (psm.groupExists(groupName)) {
+                        Group group = psm.getGroup(groupName);
+                        if (group.containsTask(taskName)) {
+                            Task task = group.getTask(taskName);
+                            HashMap<String, Condition> conditions = task.getConditions();
+                            if (conditions.size() > 0) {
+                                message = "§6Conditions for task " + taskName + " in group " + groupName + ":";
+                                for (int i = 1; i <= conditions.size(); i++) {
+                                    Condition condition = conditions.get(Integer.toString(i));
+                                    message += "\n§e" + i + " - " + condition.getPlaceholder() + " " + condition.getOperator() + " " + condition.getValue();
+                                }
+                            } else {
+                                message = "§cNo conditions found for task " + taskName + " in group " + groupName + "!";
+                            }
+                        } else {
+                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
+                        }
+                    } else {
+                        message = "§cGroup " + groupName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm condition list <groupName> <taskName>";
+                }
+                break;
+            // condition add <groupName> <taskName> <placeholder> <operator> <value>
+            case "add":
+                if (args.length == 7) {
+                    String groupName = args[2];
+                    String taskName = args[3];
+                    String placeholder = args[4];
+                    String operator = args[5];
+                    String value = args[6];
+                    if (psm.groupExists(groupName)) {
+                        Group group = psm.getGroup(groupName);
+                        if (group.containsTask(taskName)) {
+                            Task task = group.getTask(taskName);
+                            HashMap<String, Condition> conditions = task.getConditions();
+                            Condition condition = new Condition(placeholder, operator, value);
+                            int conditionNumber = conditions.size() + 1;
+                            task.setCondition(conditionNumber, condition);
+
+                            // Delete old config
+                            psm.deleteTaskConfig(groupName, taskName);
+
+                            // Save new config
+                            psm.saveGroupTasks(groupName);
+                            message = "§aAdded condition to task " + taskName + " in group " + groupName + "!";
+                        } else {
+                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
+                        }
+                    } else {
+                        message = "§cGroup " + groupName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm condition add <groupName> <taskName> <placeholder> <operator> <value>";
+                }
+                break;
+            // condition remove <groupName> <taskName> <conditionNumber>
+            case "remove":
+                if (args.length == 5) {
+                    String groupName = args[2];
+                    String taskName = args[3];
+                    int conditionNumber = Integer.parseInt(args[4]);
+                    if (psm.groupExists(groupName)) {
+                        Group group = psm.getGroup(groupName);
+                        if (group.containsTask(taskName)) {
+                            Task task = group.getTask(taskName);
+                            HashMap<String, Condition> conditions = task.getConditions();
+                            if (conditions.size() >= conditionNumber) {
+                                conditions.remove(Integer.toString(conditionNumber));
+
+                                // Reorder conditions
+                                HashMap<String, Condition> newConditions = new HashMap<>();
+                                int i = 1;
+                                for (Condition condition : conditions.values()) {
+                                    newConditions.put(Integer.toString(i), condition);
+                                    i++;
+                                }
+                                task.setConditions(newConditions);
+
+                                // Delete old config
+                                psm.deleteTaskConfig(groupName, taskName);
+
+                                // Save new config
+                                psm.saveGroupTasks(groupName);
+                                message = "§aRemoved condition " + conditionNumber + " from task " + taskName + " in group " + groupName + "!";
+                            } else {
+                                message = "§cCondition " + conditionNumber + " does not exist in task " + taskName + " in group " + groupName + "!";
+                            }
+                        } else {
+                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
+                        }
+                    } else {
+                        message = "§cGroup " + groupName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm condition remove <groupName> <taskName> <conditionNumber>";
+                }
+                break;
+            // condition edit <groupName> <taskName> <conditionNumber> <placeholder> <operator> <value>
+            case "edit":
+                if (args.length == 8) {
+                    String groupName = args[2];
+                    String taskName = args[3];
+                    int conditionNumber = Integer.parseInt(args[4]);
+                    String placeholder = args[5];
+                    String operator = args[6];
+                    String value = args[7];
+                    if (psm.groupExists(groupName)) {
+                        Group group = psm.getGroup(groupName);
+                        if (group.containsTask(taskName)) {
+                            Task task = group.getTask(taskName);
+                            HashMap<String, Condition> conditions = task.getConditions();
+                            if (conditions.size() >= conditionNumber) {
+                                Condition condition = new Condition(placeholder, operator, value);
+                                conditions.put(Integer.toString(conditionNumber), condition);
+
+                                // Delete old config
+                                psm.deleteTaskConfig(groupName, taskName);
+
+                                // Save new config
+                                psm.saveGroupTasks(groupName);
+                                message = "§aEdited condition " + conditionNumber + " in task " + taskName + " in group " + groupName + "!";
+                            } else {
+                                message = "§cCondition " + conditionNumber + " does not exist in task " + taskName + " in group " + groupName + "!";
+                            }
+                        } else {
+                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
+                        }
+                    } else {
+                        message = "§cGroup " + groupName + " does not exist!";
+                    }
+                } else {
+                    message = "§cUsage: /psm condition edit <groupName> <taskName> <conditionNumber> <placeholder> <operator> <value>";
+                }
+                break;
+            // condition help
+            default:
+                message = helpMessage;
+                break;
         }
         return message;
     }
@@ -996,6 +1171,10 @@ public class CommandHandler {
                 // task <subcommand>
                 case "task":
                     message = taskCommand(args);
+                    break;
+                // condition <subcommand>
+                case "condition":
+                    message = conditionCommand(args);
                     break;
                 // help
                 default:

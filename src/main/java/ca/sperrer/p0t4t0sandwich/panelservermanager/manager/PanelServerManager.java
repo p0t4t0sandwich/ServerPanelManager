@@ -237,32 +237,34 @@ public class PanelServerManager {
                 String taskCommand = (String) config.getBlock("groups." + groupName + ".tasks." + taskName + ".command").getStoredValue();
                 long taskInterval = (long) (int) config.getBlock("groups." + groupName + ".tasks." + taskName + ".interval").getStoredValue();
 
-                // Initialize task conditions
-                HashMap<String, Condition> taskConditions = new HashMap<>();
+                if (config.get("groups." + groupName + ".tasks." + taskName + ".conditions") != null) {
+                    // Initialize task conditions
+                    HashMap<String, Condition> taskConditions = new HashMap<>();
 
-                if (config.get("groups." + groupName + ".tasks." + taskName + ".conditions") == null) {
+                    HashMap<String, Object> conditionsConfig = (HashMap<String, Object>) config.getBlock("groups." + groupName + ".tasks." + taskName + ".conditions").getStoredValue();
+
+                    // loop entries
+                    for (int i = 1; i <= conditionsConfig.size(); i++) {
+                        String conditionNumber = String.valueOf(i);
+                        String conditionPlaceholder = config.getString("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".placeholder");
+                        String conditionOperator = config.getString("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".operator");
+                        String conditionValue = config.getString("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".value");
+
+                        // Build Condition and add to ArrayList
+                        Condition condition = new Condition(conditionPlaceholder, conditionOperator, conditionValue);
+                        taskConditions.put(conditionNumber, condition);
+                    }
+
+                    // Build Task and add to HashMap
+                    Task task = new Task(taskName, taskCommand, taskInterval, taskConditions);
+                    group.setTask(taskName, task);
+                    group.startTask(taskName);
+                    useLogger("Group " + groupName + ": Task " + taskName + " initialized!");
+                } else {
+                    Task task = new Task(taskName, taskCommand, taskInterval, new HashMap<>());
+                    group.setTask(taskName, task);
                     useLogger("Group " + groupName + ": Task " + taskName + " has no conditions!");
-                    continue;
                 }
-                HashMap<String, Object> conditionsConfig = (HashMap<String, Object>) config.getBlock("groups." + groupName + ".tasks." + taskName + ".conditions").getStoredValue();
-
-                // loop entries
-                for (int i = 1; i <= conditionsConfig.size(); i++) {
-                    String conditionNumber = String.valueOf(i);
-                    String conditionPlaceholder = (String) config.get("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".placeholder");
-                    String conditionOperator = (String) config.get("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".operator");
-                    int conditionValue = (int) config.get("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".value");
-
-                    // Build Condition and add to ArrayList
-                    Condition condition = new Condition(conditionPlaceholder, conditionOperator, conditionValue);
-                    taskConditions.put(conditionNumber, condition);
-                }
-
-                // Build Task and add to HashMap
-                Task task = new Task(taskName, taskCommand, taskInterval, taskConditions);
-                group.setTask(taskName, task);
-                group.startTask(taskName);
-                useLogger("Group " + groupName + ": Task " + taskName + " initialized!");
             }
 
             // Add group to HashMap

@@ -68,6 +68,32 @@ public class Task {
     }
 
     /**
+     * Set Condition
+     * @param conditionNumber The number of the condition
+     * @param condition The condition to set
+     */
+    public void setCondition(int conditionNumber, Condition condition) {
+        conditions.put(String.valueOf(conditionNumber), condition);
+    }
+
+    /**
+     * Set Conditions
+     * @param conditions The conditions to set
+     */
+    public void setConditions(HashMap<String, Condition> conditions) {
+        this.conditions.clear();
+        this.conditions.putAll(conditions);
+    }
+
+    /**
+     * Get the thread running the task
+     * @return The thread running the task
+     */
+    public ForkJoinTask<Object> getTask() {
+        return runningTask;
+    }
+
+    /**
      * Set the thread running the task
      * @param task The thread running the task
      */
@@ -81,6 +107,13 @@ public class Task {
      */
     public boolean cancelTask() {
         return runningTask.cancel(true);
+    }
+
+    /**
+     * Delete the task
+     */
+    public void deleteTask() {
+        runningTask = null;
     }
 
     /**

@@ -65,16 +65,16 @@ public class Condition {
         // Check condition
         switch (operator) {
             case "<":
-                return playerCount < (int) value;
+                return playerCount < Integer.parseInt(value.toString());
             case ">":
-                return playerCount > (int) value;
+                return playerCount > Integer.parseInt(value.toString());
             case "=":
             case "==":
-                return playerCount == (int) value;
+                return playerCount == Integer.parseInt(value.toString());
             case "<=":
-                return playerCount <= (int) value;
+                return playerCount <= Integer.parseInt(value.toString());
             case ">=":
-                return playerCount >= (int) value;
+                return playerCount >= Integer.parseInt(value.toString());
             default:
                 return false;
         }

@@ -108,6 +108,7 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 
 - [x] Program doesn't time out if it can't connect to the AMP API -- is this a problem with ampapi-java? -- If so, then I'll have to fix it there
 - [x] Another instance of this problem: occurs when the instance is offline, replicates the above behavior just at an instance level
+- [ ] Tasks don't pause, the thread just keeps running
 
 ### General
 
@@ -165,10 +166,11 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
     - [x] `/psm group task pause <group> <task>`
     - [x] `/psm group task resume <group> <task>`
 
-    - [ ] Add commands to manage task conditions
-      - [ ] `/psm condition list <group> <task>`
-      - [ ] `/psm condition add <group> <task> <placeholder> <operator> <value>`
-      - [ ] `/psm condition remove <group> <task> <condition>`
+    - [x] Add commands to manage task conditions
+      - [x] `/psm condition list <group> <task>`
+      - [x] `/psm condition add <group> <task> <placeholder> <operator> <value>`
+      - [x] `/psm condition remove <group> <task> <condition>`
+      - [x] `/psm condition edit <group> <task> <condition> <placeholder> <operator> <value>`
 
   - [x] find player command -- `/psm group find <group> <player>`
 

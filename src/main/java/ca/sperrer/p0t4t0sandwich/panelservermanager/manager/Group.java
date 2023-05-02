@@ -163,8 +163,9 @@ public class Group {
             return false;
         }
         Task task = getTask(taskName);
-        return task.cancelTask();
-
+        boolean success = task.cancelTask();
+        task.deleteTask();
+        return success;
     }
 
     /**
