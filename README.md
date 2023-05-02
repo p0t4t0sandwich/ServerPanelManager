@@ -4,9 +4,12 @@
 
 A plugin that allows you to manage your Panel's game servers from within minecraft. This plugin is still in development and is not quite ready for production use. Feel free to mess around with it and report any bugs you find, or any features you would like to see.
 
-If you need to port this mod/plugin to an unsupported platform/version, feel free to create an issue, and I'll see what I can do. Older MC implementations are built on an as-needed basis.
+Feel free to create an issue/PR if:
 
-If your panel isn't supported yet, create an issue, and we can do some digging to see if it's possible.
+- you find a bug
+- you need to port this mod/plugin to an unsupported platform/version. Older MC implementations are built on an as-needed basis.
+- your panel isn't supported yet. We can do some digging to see if it's possible to add support for it.
+- you have suggestions around the group/task system
 
 ## Commands
 
