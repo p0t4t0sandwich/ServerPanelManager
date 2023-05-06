@@ -19,7 +19,6 @@ import java.util.concurrent.*;
 public final class FabricPanelCommands {
     private static final FabricMain mod = FabricMain.getInstance();
 
-    // TODO: Consolidate this with Forge, input the environment as a parameter
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, RegistrationEnvironment environment) {
         String commandName = environment.dedicated ? "psm" : "psmc";
         int permissionLevel = environment.dedicated ? 4 : 0;

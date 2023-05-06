@@ -27,6 +27,9 @@ mv ./common-*.jar ./common.zip
 cp ../fabric/build/libs/fabric-*.jar ./
 mv ./fabric-*.jar ./fabric.zip
 
+cp ../forge/build/libs/forge-*.jar ./
+mv ./forge-*.jar ./forge.zip
+
 cp ../standalone/build/libs/standalone-*.jar ./
 mv ./standalone-*.jar ./standalone.zip
 
@@ -36,6 +39,7 @@ unzip ./bukkit.zip -d ./bukkit
 unzip ./bungee.zip -d ./bungee
 unzip ./common.zip -d ./common
 unzip ./fabric.zip -d ./fabric
+unzip ./forge.zip -d ./forge
 unzip ./standalone.zip -d ./standalone
 
 # Process Jars
@@ -55,6 +59,10 @@ cp -r ./fabric/ca/sperrer/p0t4t0sandwich/panelservermanager/fabric ./panelserver
 cp ./fabric/fabric.mod.json ./panelservermanager
 cp ./fabric/panelservermanager.mixins.json ./panelservermanager
 cp -r ./fabric/assets ./panelservermanager
+
+cp -r ./forge/ca/sperrer/p0t4t0sandwich/panelservermanager/forge ./panelservermanager/ca/sperrer/p0t4t0sandwich/panelservermanager/forge
+cp ./forge/pack.mcmeta ./panelservermanager
+cp ./forge/META-INF/mods.toml ./panelservermanager/META-INF
 
 cp -r ./standalone/ca/sperrer/p0t4t0sandwich/panelservermanager/standalone ./panelservermanager/ca/sperrer/p0t4t0sandwich/panelservermanager/standalone
 echo "Manifest-Version: 1.0" > ./panelservermanager/META-INF/MANIFEST.MF

@@ -20,6 +20,7 @@ shadowJar {
         exclude(dependency('com.google.code.gson:gson:2.10.1'))
     }
     relocate 'ca.sperrer.p0t4t0sandwich.panelservermanager.common', 'ca.sperrer.p0t4t0sandwich.panelservermanager.lib.common'
+    relocate 'com.google.gson', 'ca.sperrer.p0t4t0sandwich.panelservermanager.lib.gson'
 }
 
 artifacts {

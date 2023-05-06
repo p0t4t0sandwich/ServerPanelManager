@@ -12,10 +12,10 @@ java.disableAutoTargetJvm()
 
 shadowJar {
     classifier = ''
-
     dependencies {
         include(project(":common"))
     }
+    relocate 'com.google.gson', 'ca.sperrer.p0t4t0sandwich.panelservermanager.lib.gson'
 }
 
 processResources {

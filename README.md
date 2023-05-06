@@ -111,13 +111,12 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 ### General
 
 - [ ] Add a command to reload the config
-- [ ] Forge support -- try and generalize the fabric command and see if I can get it to work with forge, as both use brigadier
-- [ ] Multi-Fabric version support -- some gradle project voodoo required
+- [x] Forge support
 - [ ] Fabric client side chat listener -- do it like this? https://www.reddit.com/r/fabricmc/comments/wg7jrx/onchat/
 - [ ] Quilt support
 - [ ] Sponge support
 - [ ] Velocity support
-- [ ] Set up proper gradle projects for each platform -- need help with this
+- [x] Set up proper gradle projects for each platform -- need help with this
 - [ ] Add webhook support here and there
 
 ### Permissions

@@ -19,6 +19,7 @@ shadowJar {
         include(dependency("com.github.p0t4t0sandwich:ampapi-java:ampapi-1.0.11"))
         include(dependency('com.google.code.gson:gson:2.10.1'))
     }
+    relocate 'com.google.gson', 'ca.sperrer.p0t4t0sandwich.panelservermanager.lib.gson'
 }
 
 artifacts {

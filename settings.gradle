@@ -17,6 +17,7 @@ include(
         'bukkit',
         'bungee',
         'fabric',
+        'forge',
         'common',
         'standalone'
 )

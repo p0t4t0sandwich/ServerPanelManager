@@ -48,6 +48,7 @@ shadowJar {
         include(project(":common"))
         exclude '/mappings/*'
     }
+    relocate 'com.google.gson', 'ca.sperrer.p0t4t0sandwich.panelservermanager.lib.gson'
 }
 
 task remappedShadowJar(type: RemapJarTask) {
