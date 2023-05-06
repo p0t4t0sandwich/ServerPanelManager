@@ -11,3 +11,12 @@ pluginManagement {
 }
 
 rootProject.name = 'PanelServerManager'
+
+include(
+        'api',
+        'bukkit',
+        'bungee',
+        'fabric',
+        'common',
+        'standalone'
+)

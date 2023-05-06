@@ -1,0 +1,27 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+dependencies {
+    implementation(project(path: ':common', configuration: 'shadow'))
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'ca.sperrer.p0t4t0sandwich.panelservermanager.standalone.StandaloneMain'
+        )
+    }
+}
+
+shadowJar {
+    classifier = ''
+
+    dependencies {
+        include(project(":common"))
+    }
+}
+
+artifacts {
+    archives shadowJar
+}
