@@ -37,16 +37,25 @@ unzip ./standalone.zip -d ./standalone
 
 # Process Jars
 cp -r ./api/ca/sperrer/p0t4t0sandwich/panelservermanager/api ./panelservermanager/ca/sperrer/p0t4t0sandwich/panelservermanager/api
+
 cp -r ./bukkit/ca/sperrer/p0t4t0sandwich/panelservermanager/bukkit ./panelservermanager/ca/sperrer/p0t4t0sandwich/panelservermanager/bukkit
 cp ./bukkit/plugin.yml ./panelservermanager
+
 cp -r ./bungee/ca/sperrer/p0t4t0sandwich/panelservermanager/bungee ./panelservermanager/ca/sperrer/p0t4t0sandwich/panelservermanager/bungee
 cp ./bungee/bungee.yml ./panelservermanager
+
 cp -r ./common/* ./panelservermanager
-rm -f ./panelservermanager/LICENSE
-cp -r ./fabric/ca/sperrer/p0t4t0sandwich/panelservermanager/fabric ./panelservermanager/ca/sperrer/p0t4t0sandwich/panelservermanager/fabric
-cp -r ./standalone/ca/sperrer/p0t4t0sandwich/panelservermanager/standalone ./panelservermanager/ca/sperrer/p0t4t0sandwich/panelservermanager/standalone
 rm -rf ./panelservermanager/META-INF/*
-cp ./standalone/META-INF/MANIFEST.MF ./panelservermanager/META-INF/MANIFEST.MF
+rm -f ./panelservermanager/LICENSE
+
+cp -r ./fabric/ca/sperrer/p0t4t0sandwich/panelservermanager/fabric ./panelservermanager/ca/sperrer/p0t4t0sandwich/panelservermanager/fabric
+cp ./fabric/fabric.mod.json ./panelservermanager
+cp ./fabric/panelservermanager.mixins.json ./panelservermanager
+cp -r ./fabric/assets ./panelservermanager
+
+cp -r ./standalone/ca/sperrer/p0t4t0sandwich/panelservermanager/standalone ./panelservermanager/ca/sperrer/p0t4t0sandwich/panelservermanager/standalone
+echo "Manifest-Version: 1.0" > ./panelservermanager/META-INF/MANIFEST.MF
+echo "Main-Class: ca.sperrer.p0t4t0sandwich.panelservermanager.standalone.StandaloneMain" >> ./panelservermanager/META-INF/MANIFEST.MF
 
 # Zip Jar contents
 cd ./panelservermanager
