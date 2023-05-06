@@ -43,7 +43,3 @@ subprojects {
         }
     }
 }
-
-artifacts {
-    archives file: file('api/build/libs/api-{version}.jar')
-}
