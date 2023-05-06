@@ -32,3 +32,5 @@ bin
 # IntelliJ IDEA
 .idea
 
+temp_build
+

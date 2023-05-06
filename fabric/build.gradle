@@ -38,7 +38,7 @@ task remappedShadowJar(type: RemapJarTask) {
     dependsOn tasks.shadowJar
     input.set(tasks.shadowJar.archiveFile)
     addNestedDependencies.set(true)
-    archiveFileName = "PanelServerManager-Fabric-${version}.jar"
+    archiveFileName = "fabric-${version}.jar"
 }
 
 tasks.assemble.dependsOn tasks.remappedShadowJar

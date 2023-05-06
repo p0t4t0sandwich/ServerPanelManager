@@ -12,7 +12,7 @@ dependencies {
 }
 
 shadowJar {
-    classifier = 'common'
+    classifier = ''
     configurations = [project.configurations.runtimeClasspath, project.configurations.shadow]
     dependencies {
         include(dependency("dev.dejvokep:boosted-yaml:1.3"))
