@@ -1,5 +1,8 @@
 #!/bin/bash
 
+VERSION=1.0.0
+MC_VERSION=1.19.4
+
 # Make directories
 rm -rf ./temp_build
 mkdir -p ./temp_build
@@ -62,4 +65,4 @@ cd ./panelservermanager
 zip -r ./panelservermanager.zip ./*
 
 # Rename Jar
-mv ./panelservermanager.zip ../../build/libs/panelservermanager.jar
+mv ./panelservermanager.zip ../../build/libs/PanelServerManager-$VERSION-$MC_VERSION.jar
