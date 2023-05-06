@@ -1,0 +1,51 @@
+version: 1
+panels:
+  panel1:
+    type: cubecodersamp
+    host: http://localhost:8080/
+    username: admin
+    password: admin
+
+servers:
+  # Server using the ADS for authentication
+  server1:
+    panel: <panel name>
+    # Instance Name -- found in AMP
+    name: Minecraft01
+    # instance ID -- right click and manage in new tab, this will be the bit after the ?id= in the URL
+    # The plugin can also fetch this automatically if you leave it blank
+    id: 1ty3j38u
+
+  # Server using the instance's web port for authentication
+  server2:
+    panel: ampstandalone
+    host: http://localhost:8081/
+    username: admin
+    password: admin
+    name: Minecraft02
+  server3:
+    name: Minecraft03
+  server4:
+    name: Minecraft04
+
+# Experimental feature, still a work in progress
+groups:
+  minigames:
+    name: Minigames
+    servers:
+      - server1
+      - server3
+    tasks:
+      sendboop:
+        command: send {server} say boop!
+        interval: 60 # in seconds
+        conditions:
+          - placeholder: playercount
+            operator: ==
+            value: 0
+
+  community:
+    name: Community
+    servers:
+      - server2
+      - server4
