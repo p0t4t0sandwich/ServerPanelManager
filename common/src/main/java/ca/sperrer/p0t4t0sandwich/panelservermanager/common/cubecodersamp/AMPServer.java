@@ -91,7 +91,7 @@ public class AMPServer extends Server {
      */
     @Override
     public void startServer() {
-        runMethod((args) -> (HashMap<?, ?>) API.Core_Start());
+        runMethod((args) -> API.Core_Start());
     }
 
     /**

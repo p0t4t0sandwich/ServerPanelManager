@@ -10,7 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static ca.sperrer.p0t4t0sandwich.panelservermanager.common.Utils.repeatTaskAsync;
 import static ca.sperrer.p0t4t0sandwich.panelservermanager.common.Utils.runTaskAsync;
+import static java.lang.Thread.sleep;
 
 public class PanelServerManager {
     /**
@@ -87,7 +89,7 @@ public class PanelServerManager {
             useLogger("PanelServerManager is already started!");
             return;
         }
-        runTaskAsync(() -> {
+//        runTaskAsync(() -> {
             STARTED = true;
             // Initialize Panels
             useLogger("Initializing panels...");
@@ -100,7 +102,7 @@ public class PanelServerManager {
             // Initialize groups
             useLogger("Initializing groups...");
             initGroups();
-        });
+//        });
     }
 
     /**
@@ -209,6 +211,72 @@ public class PanelServerManager {
     }
 
     /**
+     * Initialize WatchFerret
+     */
+    private void initWatchFerret(String groupName) {
+        // Start WatchFerret
+        repeatTaskAsync(() -> {
+            useLogger("Running WatchFerret for group " + groupName + "...");
+            // Get group
+            Group group = getGroup(groupName);
+            if (group == null) {
+                useLogger("Group " + groupName + " does not exist!");
+                return;
+            }
+
+            // Get servers
+            ArrayList<String> servers = group.getServers();
+            if (servers.size() == 0) {
+                useLogger("Group " + groupName + " has no servers!");
+                return;
+            }
+
+            // Loop through servers
+            for (String serverName: servers) {
+                Server server = getServer(serverName);
+                if (!(server instanceof AMPServer)) {
+                    useLogger("Server " + serverName + " does not exist!");
+                    continue;
+                }
+
+                // Get server status
+                Map<String, Object> status = server.getStatus();
+                if (status == null) {
+                    useLogger("Server " + serverName + " is offline!");
+                    continue;
+                }
+
+                if (status.containsKey("State")) {
+                    String state = (String) status.get("State");
+                    if (state.equals("Restarting")) {
+                        if (group.getVariable("restart") == null) {
+                            group.setVariable("restart", 1);
+                        } else {
+                            int restartPings = (int) group.getVariable("restart");
+                            useLogger("Server " + serverName + " is restarting! + " + restartPings + " restart pings");
+                            if (restartPings >= 3) {
+                                useLogger("Rescuing server " + serverName + "...");
+                                server.killServer();
+                                try {
+                                    sleep(1000L);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                server.startServer();
+                                group.setVariable("restart", 0);
+                                useLogger("Server " + serverName + " has been rescued!");
+                            }
+                            group.setVariable("restart", restartPings + 1);
+                        }
+                    } else if (state.equals("Running")) {
+                        group.setVariable("restart", 0);
+                    }
+                }
+            }
+        }, 0L, 20*500L);
+    }
+
+    /**
      * Initialize groups
      */
     private void initGroups() {
@@ -234,6 +302,11 @@ public class PanelServerManager {
 
             for (HashMap.Entry<String, Object> taskConfig: tasksConfig.entrySet()) {
                 String taskName = taskConfig.getKey();
+
+                if (Objects.equals(taskName, "watchferret")) {
+                    continue;
+                }
+
                 String taskCommand = (String) config.getBlock("groups." + groupName + ".tasks." + taskName + ".command").getStoredValue();
                 long taskInterval = (long) (int) config.getBlock("groups." + groupName + ".tasks." + taskName + ".interval").getStoredValue();
 
@@ -270,6 +343,11 @@ public class PanelServerManager {
             // Add group to HashMap
             setGroup(groupName, group);
             useLogger("Group " + groupName + " initialized!");
+
+            // Initialize WatchFerret
+            if (config.get("groups." + groupName + ".tasks.watchferret") != null) {
+                initWatchFerret(groupName);
+            }
         }
     }
 

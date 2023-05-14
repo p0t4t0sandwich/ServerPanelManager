@@ -96,6 +96,20 @@ groups:
             value: 0
 ```
 
+### WatchFerret
+
+```yaml
+groups:
+  <group name>:
+    name: Group1
+    servers:
+      - <server name>
+      - <server name>
+    tasks:
+      watchferret: {} # settings are a work in progress
+```
+
+
 #### Placeholders
 
 - playercount -- the number of players on the server
@@ -147,5 +161,5 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 - [ ] Add the ability to sync the config with a database? -- would need one AMPServerManager process to act as a main process and handle all the group tasks.
   - [ ] hot reload the config when it changes -- how? -- LuckPerms does it, maybe subscribe to database changes?
 
-- [ ] WatchFerret?
-  - [ ] Should be able to hook into the Groups system and run the checks on a timer -- maybe add a `watch` command to the group system? -- Store in Groups class in some sort of variables property
+- [x] WatchFerret?
+  - [x] Should be able to hook into the Groups system and run the checks on a timer -- maybe add a `watch` command to the group system? -- Store in Groups class in some sort of variables property
