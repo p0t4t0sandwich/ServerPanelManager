@@ -89,7 +89,7 @@ public class PanelServerManager {
             useLogger("PanelServerManager is already started!");
             return;
         }
-//        runTaskAsync(() -> {
+        runTaskAsync(() -> {
             STARTED = true;
             // Initialize Panels
             useLogger("Initializing panels...");
@@ -102,7 +102,7 @@ public class PanelServerManager {
             // Initialize groups
             useLogger("Initializing groups...");
             initGroups();
-//        });
+        });
     }
 
     /**
