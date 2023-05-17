@@ -273,7 +273,7 @@ public class PanelServerManager {
                     }
                 }
             }
-        }, 0L, 20*500L);
+        }, 0L, 20*300L);
     }
 
     /**
