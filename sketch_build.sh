@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=1.0.2
+VERSION=1.0.3
 MC_VERSION=1.19.4
 
 # Make directories
