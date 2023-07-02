@@ -4,7 +4,10 @@ plugins {
 
 dependencies {
     // YAML
-    implementation("dev.dejvokep:boosted-yaml:1.3")
+    implementation("dev.dejvokep:boosted-yaml:1.3.1")
+
+    // AMP API
+    implementation('com.github.p0t4t0sandwich:ampapi-java:ampapi-1.0.11')
 
     // LuckPerms
     compileOnly("net.luckperms:api:5.4")
@@ -16,10 +19,18 @@ dependencies {
 shadowJar {
     dependencies {
         // YAML
-        include(dependency("dev.dejvokep:boosted-yaml:1.3"))
+        include(dependency("dev.dejvokep:boosted-yaml:1.3.1"))
+
+        // AMP API
+        include(dependency('com.github.p0t4t0sandwich:ampapi-java:ampapi-1.0.11'))
+        include(dependency('com.google.code.gson:gson:2.10.1'))
     }
     // YAML
-    relocate('dev.dejvokep', 'ca.sperrer.p0t4t0sandwich.lppronouns.lib.dejvokep')
+    relocate('dev.dejvokep', 'dev.neuralnexus.serverpanelmanager.lib.dejvokep')
+
+    // AMP API
+    relocate('com.github.p0t4t0sandwich', 'dev.neuralnexus.serverpanelmanager.lib.p0t4t0sandwich')
+    relocate('com.google.gson', 'dev.neuralnexus.serverpanelmanager.lib.gson')
 
     destinationDir(file('../target'))
     archiveName("ServerPanelManager-${version}-common.jar")

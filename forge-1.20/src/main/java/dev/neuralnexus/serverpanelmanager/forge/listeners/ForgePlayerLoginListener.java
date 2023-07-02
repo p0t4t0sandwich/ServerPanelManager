@@ -1,6 +1,6 @@
 package dev.neuralnexus.serverpanelmanager.forge.listeners;
 
-import dev.neuralnexus.template.common.listneners.TemplatePlayerLoginListener;
+import dev.neuralnexus.serverpanelmanager.common.listneners.TemplatePlayerLoginListener;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 

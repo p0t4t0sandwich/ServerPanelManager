@@ -1,6 +1,6 @@
 package dev.neuralnexus.serverpanelmanager.fabric.mixin.listeners.server;
 
-import dev.neuralnexus.template.fabric.events.server.FabricServerStoppedEvent;
+import dev.neuralnexus.serverpanelmanager.fabric.events.server.FabricServerStoppedEvent;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

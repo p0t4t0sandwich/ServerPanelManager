@@ -7,8 +7,8 @@ depend: []
 softdepend: [LuckPerms]
 folia-supported: true
 commands:
-  psm:
+  spm:
     description: "A command that allows you to manage your Panel's game servers from within minecraft"
-    usage: /psm <command> [args]
+    usage: /spm <command> [args]
     aliases: [amp]
-    permission: psm.amp
+    permission: spm.command

@@ -1,16 +1,17 @@
 package dev.neuralnexus.serverpanelmanager.bungee.commands;
 
-import dev.neuralnexus.template.common.Template;
+import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-import static dev.neuralnexus.template.common.Utils.runTaskAsync;
+import static dev.neuralnexus.serverpanelmanager.common.Utils.ansiiParser;
+import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 
-public class BungeeTemplateCommand extends Command {
-    public BungeeTemplateCommand() {
-        super("template");
+public class BungeeSPMCommand extends Command {
+    public BungeeSPMCommand() {
+        super("spmb");
     }
 
     @Override
@@ -27,11 +28,11 @@ public class BungeeTemplateCommand extends Command {
                         return;
                     }
 
-                    String text = "";
-
+                    String text = args.length == 0 ? "§cUsage: /spmb <command>" : ServerPanelManager.commandHandler.commandMessenger(args);
                     player.sendMessage(new ComponentBuilder(text).create());
                 } else {
-                    Template.useLogger("§cYou must be a player to use this command.");
+                    String text = args.length == 0 ? "§cUsage: /spmb <command>" : ServerPanelManager.commandHandler.commandMessenger(args);
+                    ServerPanelManager.useLogger(ansiiParser(text));
                 }
             } catch (Exception e) {
                 System.err.println(e);

@@ -1,7 +1,11 @@
-package ca.sperrer.p0t4t0sandwich.template.velocity;
+package dev.neuralnexus.serverpanelmanager.velocity;
 
-import ca.sperrer.p0t4t0sandwich.template.velocity.commands.VelocityTemplateCommand;
-import ca.sperrer.p0t4t0sandwich.template.velocity.listeners.player.VelocityPlayerLoginListener;
+import com.velocitypowered.api.plugin.Dependency;
+import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
+import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
+import dev.neuralnexus.serverpanelmanager.velocity.commands.VelocitySPMCommand;
+import dev.neuralnexus.serverpanelmanager.common.ServerPanelManagerPlugin;
+import dev.neuralnexus.serverpanelmanager.velocity.listeners.player.VelocityPlayerLoginListener;
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.event.EventManager;
@@ -10,22 +14,23 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
-import dev.neuralnexus.template.common.TemplatePlugin;
 import org.slf4j.Logger;
 
 /**
- * The TaterAPI Velocity plugin.
+ * The ServerPanelManager Velocity plugin.
  */
 @Plugin(
-        id = "taterapi",
-        name = "TaterAPI",
+        id = "serverpanelmanager",
+        name = "ServerPanelManager",
         version = "1.0.0",
         authors = "p0t4t0sandwich",
-        description = "A cross API code library for various generalizations used in the Tater* plugins",
-        url = "https://github.com/p0t4t0sandwich/TaterAPI",
-        dependencies = {}
+        description = "A plugin that allows you to manage your Panel's game servers from within minecraft",
+        url = "https://github.com/p0t4t0sandwich/ServerPanelManager",
+        dependencies = {
+                @Dependency(id = "luckperms", optional = true)
+        }
 )
-public class VelocitySPMPlugin implements TemplatePlugin {
+public class VelocitySPMPlugin implements ServerPanelManagerPlugin {
     @Inject private ProxyServer server;
     @Inject private Logger logger;
 
@@ -68,10 +73,10 @@ public class VelocitySPMPlugin implements TemplatePlugin {
     @Override
     public void registerHooks() {
         // Register LuckPerms hook
-//        if (server.getPluginManager().getPlugin("LuckPerms").isPresent()) {
-//            useLogger("LuckPerms detected, enabling LuckPerms hook.");
-//            Template.addHook(new LuckPermsHook());
-//        }
+        if (server.getPluginManager().getPlugin("LuckPerms").isPresent()) {
+            useLogger("[ServerPanelManager] LuckPerms detected, enabling LuckPerms hook.");
+            ServerPanelManager.addHook(new LuckPermsHook());
+        }
     }
 
     /**
@@ -89,7 +94,7 @@ public class VelocitySPMPlugin implements TemplatePlugin {
     @Override
     public void registerCommands() {
         CommandManager commandManager = server.getCommandManager();
-        commandManager.register("template", new VelocityTemplateCommand());
+        commandManager.register("spmv", new VelocitySPMCommand());
     }
 
     /**

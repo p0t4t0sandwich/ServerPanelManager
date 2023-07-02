@@ -28,21 +28,13 @@ servers:
   server4:
     name: Minecraft04
 
-# Experimental feature, still a work in progress
+# Server groups
 groups:
   minigames:
     name: Minigames
     servers:
       - server1
       - server3
-    tasks:
-      sendboop:
-        command: send {server} say boop!
-        interval: 60 # in seconds
-        conditions:
-          - placeholder: playercount
-            operator: ==
-            value: 0
 
   community:
     name: Community

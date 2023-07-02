@@ -1,6 +1,6 @@
 package dev.neuralnexus.serverpanelmanager.fabric.mixin.listeners.player;
 
-import dev.neuralnexus.template.common.listneners.TemplatePlayerLoginListener;
+import dev.neuralnexus.serverpanelmanager.common.listneners.TemplatePlayerLoginListener;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;

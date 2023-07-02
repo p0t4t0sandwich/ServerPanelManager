@@ -1,11 +1,11 @@
 package dev.neuralnexus.serverpanelmanager.common;
 
-import static dev.neuralnexus.template.common.Utils.runTaskAsync;
+import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 
 /**
  * The TaterAPI plugin interface.
  */
-public interface TemplatePlugin {
+public interface ServerPanelManagerPlugin {
     /**
      * Gets the logger.
      */
@@ -57,15 +57,15 @@ public interface TemplatePlugin {
     void registerCommands();
 
     /**
-     * Starts the TaterAPI plugin.
+     * Starts the ServerPanelManager plugin.
      */
     default void pluginStart() {
         runTaskAsync(() -> {
             try {
-                useLogger("[TaterAPI] TaterAPI is running on " + getServerType() + "!");
+                useLogger("[ServerPanelManager] ServerPanelManager is running on " + getServerType() + "!");
 
                 // Start the TaterAPI
-                Template.start(pluginConfigPath(), pluginLogger());
+                ServerPanelManager.start(pluginConfigPath(), pluginLogger());
 
                 // Register hooks
                 registerHooks();
@@ -76,7 +76,7 @@ public interface TemplatePlugin {
                 // Register commands
                 registerCommands();
 
-                useLogger("[TaterAPI] TaterAPI has been enabled!");
+                useLogger("[ServerPanelManager] ServerPanelManager has been enabled!");
 
             } catch (Exception e) {
                 System.err.println(e);
@@ -91,8 +91,8 @@ public interface TemplatePlugin {
     default void pluginStop() {
         runTaskAsync(() -> {
             try {
-                Template.stop();
-                useLogger("[TaterAPI] TaterAPI has been disabled!");
+                ServerPanelManager.stop();
+                useLogger("[ServerPanelManager] ServerPanelManager has been disabled!");
             } catch (Exception e) {
                 System.err.println(e);
                 e.printStackTrace();

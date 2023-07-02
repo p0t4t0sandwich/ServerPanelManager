@@ -85,30 +85,7 @@ groups:
     servers:
       - <server name>
       - <server name>
-    tasks:
-      sendboop:
-        command: send {server} say boop!
-        interval: 60 # in seconds
-        conditions:
-          1:
-            placeholder: playercount
-            operator: ==
-            value: 0
 ```
-
-### WatchFerret
-
-```yaml
-groups:
-  <group name>:
-    name: Group1
-    servers:
-      - <server name>
-      - <server name>
-    tasks:
-      watchferret: {} # settings are a work in progress
-```
-
 
 #### Placeholders
 
@@ -118,27 +95,18 @@ groups:
 
 Contributions and suggestions are welcome! Just open an issue or a pull request, and I'll get to it as soon as I can.
 
-### Bugs
-
-- [ ] Tasks don't pause, the thread just keeps running
-
 ### General
 
 - [ ] Add a command to reload the config
-- [x] Forge support
-- [ ] Fabric client side chat listener -- do it like this? https://www.reddit.com/r/fabricmc/comments/wg7jrx/onchat/
-- [ ] Quilt support
-- [ ] Sponge support
-- [ ] Velocity support
-- [x] Set up proper gradle projects for each platform -- need help with this
+- [ ] Fabric client side chat mixin -- do it like this? https://www.reddit.com/r/fabricmc/comments/wg7jrx/onchat/
 - [ ] Add webhook support here and there
 
 ### Permissions
 
-- [ ] Design a permission schema -- `psm.<command>.<server>` - `psm.<command>.<group>`
-- [ ] Add permissions for each command -- `psm.command.<command>`
-- [ ] Add permissions for each command for each server -- `psm.<command>.<server>`
-- [ ] Add permissions for each command for each group -- `psm.<command>.<group>`
+- [ ] Design a permission schema -- `spm.<command>.<server>` - `spm.<command>.<group>`
+- [ ] Add permissions for each command -- `spm.command.<command>`
+- [ ] Add permissions for each command for each server -- `spm.<command>.<server>`
+- [ ] Add permissions for each command for each group -- `spm.<command>.<group>`
 
 - [ ] Set up dynamic permissions checks
   - [ ] Bukkit and BungeeCord will be easy, just use the `hasPermission` method

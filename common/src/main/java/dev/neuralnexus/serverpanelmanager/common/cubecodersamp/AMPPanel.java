@@ -2,7 +2,7 @@ package dev.neuralnexus.serverpanelmanager.common.cubecodersamp;
 
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
 import dev.neuralnexus.serverpanelmanager.common.Panel;
-import dev.neuralnexus.serverpanelmanager.common.PanelServerManager;
+import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -90,7 +90,7 @@ public class AMPPanel extends Panel<AMPAPIHandler> {
                             }
 
                             // Save the id to the config
-                            PanelServerManager.getInstance().addServerID(serverName, instanceId);
+                            ServerPanelManager.getInstance().addServerID(serverName, instanceId);
                             break;
                         }
 

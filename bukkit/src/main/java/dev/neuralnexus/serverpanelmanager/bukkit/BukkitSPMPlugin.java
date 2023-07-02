@@ -1,17 +1,19 @@
 package dev.neuralnexus.serverpanelmanager.bukkit;
 
-import dev.neuralnexus.template.bukkit.commands.BukkitTemplateCommand;
-import dev.neuralnexus.template.bukkit.listeners.BukkitPlayerLoginListener;
-import dev.neuralnexus.template.common.TemplatePlugin;
+import dev.neuralnexus.serverpanelmanager.bukkit.commands.BukkitSPMCommand;
+import dev.neuralnexus.serverpanelmanager.bukkit.listeners.BukkitPlayerLoginListener;
+import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
+import dev.neuralnexus.serverpanelmanager.common.ServerPanelManagerPlugin;
+import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import static dev.neuralnexus.template.common.Utils.getBukkitServerType;
+import static dev.neuralnexus.serverpanelmanager.common.Utils.getBukkitServerType;
 
 /**
- * The Template Bukkit plugin.
+ * The ServerPanelManager Bukkit plugin.
  */
-public class BukkitSPMPlugin extends JavaPlugin implements TemplatePlugin {
+public class BukkitSPMPlugin extends JavaPlugin implements ServerPanelManagerPlugin {
     /**
      * @inheritDoc
      */
@@ -40,7 +42,13 @@ public class BukkitSPMPlugin extends JavaPlugin implements TemplatePlugin {
      * @inheritDoc
      */
     @Override
-    public void registerHooks() {}
+    public void registerHooks() {
+        // Register LuckPerms hook
+        if (getServer().getPluginManager().getPlugin("LuckPerms") != null) {
+            useLogger("[ServerPanelManager] LuckPerms detected, enabling LuckPerms hook.");
+            ServerPanelManager.addHook(new LuckPermsHook());
+        }
+    }
 
     /**
      * @inheritDoc
@@ -56,7 +64,7 @@ public class BukkitSPMPlugin extends JavaPlugin implements TemplatePlugin {
      */
     @Override
     public void registerCommands() {
-        getCommand("template").setExecutor(new BukkitTemplateCommand());
+        getCommand("spm").setExecutor(new BukkitSPMCommand());
     }
 
     /**

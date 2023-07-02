@@ -1,77 +1,66 @@
 package dev.neuralnexus.serverpanelmanager.common;
 
 import ca.sperrer.p0t4t0sandwich.ampapi.AMPAPIHandler;
-import dev.neuralnexus.serverpanelmanager.api.PanelServerManagerProvider;
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.neuralnexus.serverpanelmanager.common.api.ServerPanelManagerAPIProvider;
 import dev.neuralnexus.serverpanelmanager.common.cubecodersamp.AMPPanel;
 import dev.neuralnexus.serverpanelmanager.common.cubecodersamp.AMPServer;
-import dev.dejvokep.boostedyaml.YamlDocument;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import static dev.neuralnexus.serverpanelmanager.common.Utils.repeatTaskAsync;
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 import static java.lang.Thread.sleep;
 
-public class PanelServerManager {
+public class ServerPanelManager {
     /**
-     * Properties of the PanelServerManager class.
+     * Properties of the ServerPanelManager class.
+     * instance: The singleton instance of the ServerPanelManager class
      * config: The config file
      * logger: The logger
-     * panels: A HashMap of panels
-     * servers: A HashMap of instances
-     * groups: A HashMap of groups
-     * singleton: The singleton instance of the PanelServerManager class
-     * commandHandler: The command handler
+     * configPath: The path to the config file
      * STARTED: Whether the PanelServerManager has been started
+     * hooks: The hooks
+     * panels: The panels
+     * servers: The servers
+     * groups: The groups
+     * commandHandler: The command handler
      */
+    private static final ServerPanelManager instance = new ServerPanelManager();
     private static YamlDocument config;
-    private final Object logger;
+    private static Object logger;
+    private static String configPath;
+    private static boolean STARTED = false;
+    private static final ArrayList<Object> hooks = new ArrayList<>();
     private static final HashMap<String, Panel> panels = new HashMap<>();
     private static final HashMap<String, Server> servers = new HashMap<>();
     private static final HashMap<String, Group> groups = new HashMap<>();
-    private static PanelServerManager singleton = null;
-    public final CommandHandler commandHandler = new CommandHandler(this);
-    private boolean STARTED = false;
+
+    public static final CommandHandler commandHandler = new CommandHandler(instance);
 
     /**
-     * Constructor for the PanelServerManager class.
-     * @param configPath The path to the config file
-     * @param logger The logger
+     * Constructor for the ServerPanelManager class.
      */
-    public PanelServerManager(String configPath, Object logger) {
-        singleton = this;
-        this.logger = logger;
-
-        // Register the singleton instance in the PanelServerManagerProvider class
-        PanelServerManagerProvider.register(this);
-
-        // Config
-        try {
-            config = YamlDocument.create(new File("./" + configPath + "/PanelServerManager", "config.yml"),
-                    Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("config.yml"))
-            );
-            config.reload();
-        } catch (IOException e) {
-            useLogger("Failed to load config.yml!\n" + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+    public ServerPanelManager() {}
 
     /**
-     * Getter for the singleton instance of the PanelServerManager class.
+     * Getter for the singleton instance of the ServerPanelManager class.
      * @return The singleton instance
      */
-    public static PanelServerManager getInstance() {
-        return singleton;
+    public static ServerPanelManager getInstance() {
+        return instance;
     }
 
     /**
      * Use whatever logger is being used.
      * @param message The message to log
      */
-    public void useLogger(String message) {
+    public static void useLogger(String message) {
         if (logger instanceof java.util.logging.Logger) {
             ((java.util.logging.Logger) logger).info(message);
         } else if (logger instanceof org.slf4j.Logger) {
@@ -82,15 +71,40 @@ public class PanelServerManager {
     }
 
     /**
-     * Start the PanelServerManager.
+     * Add a hook to the hooks list
+     * @param hook The hook to add
      */
-    public void start() {
+    public static void addHook(Object hook) {
+        hooks.add(hook);
+    }
+
+    /**
+     * Start ServerPanelManager
+     * @param configPath The path to the config file
+     * @param logger The logger
+     */
+    public static void start(String configPath, Object logger) {
+        ServerPanelManager.configPath = configPath;
+        ServerPanelManager.logger = logger;
+
+        // Config
+        try {
+            config = YamlDocument.create(new File("." + File.separator + configPath + File.separator + "ServerPanelManager", "config.yml"),
+                    Objects.requireNonNull(ServerPanelManager.class.getClassLoader().getResourceAsStream("config.yml"))
+            );
+            config.reload();
+        } catch (IOException | NullPointerException e) {
+            useLogger("Failed to load config.yml!\n" + e.getMessage());
+            e.printStackTrace();
+        }
+
         if (STARTED) {
-            useLogger("PanelServerManager is already started!");
+            useLogger("[ServerPanelManager] ServerPanelManager has already started!");
             return;
         }
+        STARTED = true;
+
         runTaskAsync(() -> {
-            STARTED = true;
             // Initialize Panels
             useLogger("Initializing panels...");
             initPanels();
@@ -103,12 +117,36 @@ public class PanelServerManager {
             useLogger("Initializing groups...");
             initGroups();
         });
+
+        useLogger("[ServerPanelManager] ServerPanelManager has been started!");
+        ServerPanelManagerAPIProvider.register(instance);
+    }
+
+    /**
+     * Start TaterAPI
+     */
+    public static void start() {
+        start(configPath, logger);
+    }
+
+    /**
+     * Stop TaterAPI
+     */
+    public static void stop() {
+        if (!STARTED) {
+            useLogger("[ServerPanelManager] ServerPanelManager has already stopped!");
+            return;
+        }
+        STARTED = false;
+
+        useLogger("[ServerPanelManager] ServerPanelManager has been stopped!");
+        ServerPanelManagerAPIProvider.unregister();
     }
 
     /**
      * Initialize panels
      */
-    private void initPanels() {
+    private static void initPanels() {
         HashMap<?, ?> panelConfig = (HashMap<?, ?>) config.getBlock("panels").getStoredValue();
         for (HashMap.Entry<?, ?> entry: panelConfig.entrySet()) {
             // Get panel name and type
@@ -143,7 +181,7 @@ public class PanelServerManager {
     /**
      * Initialize servers
      */
-    private void initServers() {
+    private static void initServers() {
         HashMap<?, ?> serverConfig = (HashMap<?, ?>) config.getBlock("servers").getStoredValue();
         for (HashMap.Entry<?, ?> entry: serverConfig.entrySet()) {
             // Get server and panel information
@@ -279,7 +317,7 @@ public class PanelServerManager {
     /**
      * Initialize groups
      */
-    private void initGroups() {
+    private static void initGroups() {
         HashMap<?, ?> groupConfig = (HashMap<?, ?>) config.getBlock("groups").getStoredValue();
         for (HashMap.Entry<?, ?> entry: groupConfig.entrySet()) {
             // Get group name
@@ -296,58 +334,11 @@ public class PanelServerManager {
                 groupServers.add(serverName);
             }
 
-            // Initialize tasks
-            Group group = new Group(groupName, groupServers, new HashMap<>());
-            HashMap<String, Object> tasksConfig = (HashMap<String, Object>) config.getBlock("groups." + groupName + ".tasks").getStoredValue();
-
-            for (HashMap.Entry<String, Object> taskConfig: tasksConfig.entrySet()) {
-                String taskName = taskConfig.getKey();
-
-                if (Objects.equals(taskName, "watchferret")) {
-                    continue;
-                }
-
-                String taskCommand = (String) config.getBlock("groups." + groupName + ".tasks." + taskName + ".command").getStoredValue();
-                long taskInterval = (long) (int) config.getBlock("groups." + groupName + ".tasks." + taskName + ".interval").getStoredValue();
-
-                if (config.get("groups." + groupName + ".tasks." + taskName + ".conditions") != null) {
-                    // Initialize task conditions
-                    HashMap<String, Condition> taskConditions = new HashMap<>();
-
-                    HashMap<String, Object> conditionsConfig = (HashMap<String, Object>) config.getBlock("groups." + groupName + ".tasks." + taskName + ".conditions").getStoredValue();
-
-                    // loop entries
-                    for (int i = 1; i <= conditionsConfig.size(); i++) {
-                        String conditionNumber = String.valueOf(i);
-                        String conditionPlaceholder = config.getString("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".placeholder");
-                        String conditionOperator = config.getString("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".operator");
-                        String conditionValue = config.getString("groups." + groupName + ".tasks." + taskName + ".conditions." + conditionNumber + ".value");
-
-                        // Build Condition and add to ArrayList
-                        Condition condition = new Condition(conditionPlaceholder, conditionOperator, conditionValue);
-                        taskConditions.put(conditionNumber, condition);
-                    }
-
-                    // Build Task and add to HashMap
-                    Task task = new Task(taskName, taskCommand, taskInterval, taskConditions);
-                    group.setTask(taskName, task);
-                    group.startTask(taskName);
-                    useLogger("Group " + groupName + ": Task " + taskName + " initialized!");
-                } else {
-                    Task task = new Task(taskName, taskCommand, taskInterval, new HashMap<>());
-                    group.setTask(taskName, task);
-                    useLogger("Group " + groupName + ": Task " + taskName + " has no conditions!");
-                }
-            }
+            Group group = new Group(groupName, groupServers);
 
             // Add group to HashMap
             setGroup(groupName, group);
             useLogger("Group " + groupName + " initialized!");
-
-            // Initialize WatchFerret
-            if (config.get("groups." + groupName + ".tasks.watchferret") != null) {
-                initWatchFerret(groupName);
-            }
         }
     }
 
@@ -356,7 +347,7 @@ public class PanelServerManager {
      * @param panelName The name of the panel
      * @return The panel instance
      */
-    public Panel getPanel(String panelName) {
+    public static Panel getPanel(String panelName) {
         return panels.get(panelName);
     }
 
@@ -365,7 +356,7 @@ public class PanelServerManager {
      * @param panelName The name of the panel
      * @param panel The panel instance
      */
-    public void setPanel(String panelName, Panel panel) {
+    public static void setPanel(String panelName, Panel panel) {
         panels.put(panelName, panel);
     }
 
@@ -406,7 +397,7 @@ public class PanelServerManager {
      * @param groupName The name of the group
      * @param group The group instance
      */
-    public void setGroup(String groupName, Group group) {
+    public static void setGroup(String groupName, Group group) {
         groups.put(groupName, group);
     }
 
@@ -449,7 +440,7 @@ public class PanelServerManager {
      * @param serverName The name of the server
      * @param server The server instance
      */
-    public void setServer(String serverName, Server server) {
+    public static void setServer(String serverName, Server server) {
         servers.put(serverName, server);
     }
 
@@ -466,7 +457,7 @@ public class PanelServerManager {
      * @param serverName The name of the server
      * @return Whether the server exists or not
      */
-    public boolean serverExists(String serverName) {
+    public static boolean serverExists(String serverName) {
         return servers.containsKey(serverName);
     }
 
@@ -590,53 +581,6 @@ public class PanelServerManager {
      */
     public void saveGroupServers(String groupName) {
         config.set("groups." + groupName + ".servers", getGroup(groupName).getServers());
-        try {
-            config.save();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Save group tasks to config.
-     * @param groupName The group for which to save the tasks
-     */
-    public void saveGroupTasks(String groupName) {
-        Group group = getGroup(groupName);
-        ArrayList<String> tasks = group.getTasks();
-        for (String taskName : tasks) {
-            config.set("groups." + groupName + ".tasks." + taskName, taskName);
-
-            Task task = group.getTask(taskName);
-            config.set("groups." + groupName + ".tasks." + taskName + ".command", task.getCommand());
-            config.set("groups." + groupName + ".tasks." + taskName + ".interval", task.getInterval());
-
-            // Save Conditions
-            HashMap<String, Condition> conditions = task.getConditions();
-            for (int i = 1; i <= conditions.size(); i++) {
-                Condition condition = conditions.get(Integer.toString(i));
-                if (condition == null) {
-                    continue;
-                }
-                config.set("groups." + groupName + ".tasks." + taskName + ".conditions." + i + ".placeholder", condition.getPlaceholder());
-                config.set("groups." + groupName + ".tasks." + taskName + ".conditions." + i + ".operator", condition.getOperator());
-                config.set("groups." + groupName + ".tasks." + taskName + ".conditions." + i + ".value", condition.getValue());
-            }
-        }
-        try {
-            config.save();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Delete task from group in config.
-     * @param groupName The group for which to delete the task
-     * @param taskName The task to delete
-     */
-    public void deleteTaskConfig(String groupName, String taskName) {
-        config.remove("groups." + groupName + ".tasks." + taskName);
         try {
             config.save();
         } catch (IOException e) {

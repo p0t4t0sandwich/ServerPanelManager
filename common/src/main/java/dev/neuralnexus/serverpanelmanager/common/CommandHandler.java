@@ -7,13 +7,13 @@ import dev.neuralnexus.serverpanelmanager.common.cubecodersamp.AMPServer;
 import java.util.*;
 
 public class CommandHandler {
-    private final PanelServerManager psm;
+    private final ServerPanelManager serverPanelManager;
     /**
      * Constructor for the CommandHandler class
-     * @param psm The PanelServerManager instance
+     * @param serverPanelManager The ServerPanelManager instance
      */
-    public CommandHandler(PanelServerManager psm) {
-        this.psm = psm;
+    public CommandHandler(ServerPanelManager serverPanelManager) {
+        this.serverPanelManager = serverPanelManager;
     }
 
     /**
@@ -36,8 +36,8 @@ public class CommandHandler {
             // Check if there are enough arguments
             if (args.length == 2) {
                 String serverName = args[1];
-                if (psm.serverExists(serverName)) {
-                    Server server = psm.getServer(serverName);
+                if (serverPanelManager.serverExists(serverName)) {
+                    Server server = serverPanelManager.getServer(serverName);
                     Map<String, Object> status = server.getStatus();
                     String state = (String) status.get("State");
 
@@ -83,7 +83,7 @@ public class CommandHandler {
      * @return The response
      */
     private String startServerHandler(String[] args) {
-        return genericHandler(args, "/psm", "start <server>", Arrays.asList("Starting", "Ready"), "§aStarting server...", "§cServer is already running!");
+        return genericHandler(args, "/spm", "start <server>", Arrays.asList("Starting", "Ready"), "§aStarting server...", "§cServer is already running!");
     }
 
     /**
@@ -92,7 +92,7 @@ public class CommandHandler {
      * @return The response
      */
     private String stopServerHandler(String[] args) {
-        return genericHandler(args, "/psm", "stop <server>", Arrays.asList("Stopped", "Stopping"), "§aStopping server...", "§cServer is already stopped!");
+        return genericHandler(args, "/spm", "stop <server>", Arrays.asList("Stopped", "Stopping"), "§aStopping server...", "§cServer is already stopped!");
     }
 
     /**
@@ -101,7 +101,7 @@ public class CommandHandler {
      * @return The response
      */
     private String restartServerHandler(String[] args) {
-        return genericHandler(args, "/psm", "restart <server>", Arrays.asList("Stopped", "Stopping"), "§aRestarting server...", "§cServer is already stopped!");
+        return genericHandler(args, "/spm", "restart <server>", Arrays.asList("Stopped", "Stopping"), "§aRestarting server...", "§cServer is already stopped!");
     }
 
     /**
@@ -110,7 +110,7 @@ public class CommandHandler {
      * @return The response
      */
     private String killServerHandler(String[] args) {
-        return genericHandler(args, "/psm", "kill <server>", Collections.emptyList(), "§aKilling server...", "§cServer is already stopped!");
+        return genericHandler(args, "/spm", "kill <server>", Collections.emptyList(), "§aKilling server...", "§cServer is already stopped!");
     }
 
     /**
@@ -119,7 +119,7 @@ public class CommandHandler {
      * @return The response
      */
     private String sleepServerHandler(String[] args) {
-        return genericHandler(args, "/psm", "sleep <server>", Arrays.asList("Stopped", "Restarting", "Stopping"), "§aPutting server to sleep...", "§cServer is already stopped/sleeping!");
+        return genericHandler(args, "/spm", "sleep <server>", Arrays.asList("Stopped", "Restarting", "Stopping"), "§aPutting server to sleep...", "§cServer is already stopped/sleeping!");
     }
 
     /**
@@ -130,13 +130,13 @@ public class CommandHandler {
     private String sendCommandHandler(String[] args) {
         // Usage
         if (args.length == 1) {
-            return "§cUsage: /psm command <instance> <command>";
+            return "§cUsage: /spm command <instance> <command>";
         }
         // Send command
         if (args.length >= 3) {
             String serverName = args[1];
-            if (psm.serverExists(serverName)) {
-                Server server = psm.getServer(serverName);
+            if (serverPanelManager.serverExists(serverName)) {
+                Server server = serverPanelManager.getServer(serverName);
                 Map<String, Object> status = server.getStatus();
                 String state = (String) status.get("State");
                 if (Objects.equals(state, "Ready")) {
@@ -161,13 +161,13 @@ public class CommandHandler {
     private String getStatusHandler(String[] args) {
         // Usage
         if (args.length == 1) {
-            return "§cUsage: /psm status <instance>";
+            return "§cUsage: /spm status <instance>";
         }
         // Get status
         if (args.length == 2) {
             String serverName = args[1];
-            if (psm.serverExists(serverName)) {
-                Server server = psm.getServer(serverName);
+            if (serverPanelManager.serverExists(serverName)) {
+                Server server = serverPanelManager.getServer(serverName);
                 Map<String, Object> status = server.getStatus();
                 if (status == null) {
                     return "§cServer " + serverName + " is not responding!";
@@ -211,14 +211,14 @@ public class CommandHandler {
     private String backupServerHandler(String[] args) {
         // Usage
         if (args.length == 1) {
-            return "§cUsage: /psm backup <instance>";
+            return "§cUsage: /spm backup <instance>";
         }
         // Backup server
         if (args.length >= 2) {
             String serverName = args[1];
 
-            if (psm.serverExists(serverName)) {
-                Server server = psm.getServer(serverName);
+            if (serverPanelManager.serverExists(serverName)) {
+                Server server = serverPanelManager.getServer(serverName);
                 if (!(server instanceof AMPServer)) {
                     return "§cServer " + serverName + " is not an AMP server!";
                 }
@@ -250,13 +250,13 @@ public class CommandHandler {
     private String playerListHandler(String[] args) {
         // Usage
         if (args.length == 1) {
-            return "§cUsage: /psm players <serverName>";
+            return "§cUsage: /spm players <serverName>";
         }
         // Get player list
         if (args.length == 2) {
             String serverName = args[1];
-            if (psm.serverExists(serverName)) {
-                Server server = psm.getServer(serverName);
+            if (serverPanelManager.serverExists(serverName)) {
+                Server server = serverPanelManager.getServer(serverName);
                 if (!(server instanceof AMPServer)) {
                     return "§cServer " + serverName + " is not an AMP server!";
                 }
@@ -298,16 +298,16 @@ public class CommandHandler {
         // Find player
         if (args.length == 2) {
             String playerName = args[1];
-            List<String> groups = psm.getGroups();
+            List<String> groups = serverPanelManager.getGroups();
             for (String group : groups) {
-                String server = psm.getGroup(group).findPlayer(playerName);
+                String server = serverPanelManager.getGroup(group).findPlayer(playerName);
                 if (!server.equals("")) {
                     return "§6Player " + playerName + " is online on: §5" + server;
                 }
             }
             return "§cCould not find player " + playerName + "!";
         } else {
-            return "§cUsage: /psm find <player>";
+            return "§cUsage: /spm find <player>";
         }
     }
 
@@ -325,12 +325,12 @@ public class CommandHandler {
                 "\npanel edit <panelName> <type> <host> <username> <password> - Edit a panel" +
                 "\npanel remove <panelName> - Remove a panel";
         if (args.length == 1) {
-            return "§cUsage: /psm panel <subcommand>";
+            return "§cUsage: /spm panel <subcommand>";
         }
         switch (args[1].toLowerCase()) {
             // panel list
             case "list":
-                message = "§6Available panels: §5\n" + String.join("\n", psm.getPanels());
+                message = "§6Available panels: §5\n" + String.join("\n", serverPanelManager.getPanels());
                 break;
             // panel add <panelName> <type> <host> <username> <password>
             case "add":
@@ -341,7 +341,7 @@ public class CommandHandler {
                     String username = args[5];
                     String password = args[6];
 
-                    if (psm.panelExists(panelName)) {
+                    if (serverPanelManager.panelExists(panelName)) {
                         message = "§cPanel " + panelName + " already exists!";
                         break;
                     }
@@ -349,33 +349,33 @@ public class CommandHandler {
                     switch (type) {
                         case "cubecodersamp":
                             panel = new AMPPanel(panelName, host, username, password);
-                            psm.setPanel(panelName, panel);
+                            serverPanelManager.setPanel(panelName, panel);
                     }
                     // Check if server is online
                     if (panel != null && panel.isOnline()) {
-                        psm.setPanel(panelName, panel);
-                        psm.savePanelConfig(panelName);
+                        serverPanelManager.setPanel(panelName, panel);
+                        serverPanelManager.savePanelConfig(panelName);
                         message = "§aServer " + panelName + " added!";
                     } else {
                         message = "§cServer " + panelName + " is offline!";
                     }
                 } else {
-                    message = "§cUsage: /psm panel add <panelName> <type> <host> <username> <password>";
+                    message = "§cUsage: /spm panel add <panelName> <type> <host> <username> <password>";
                 }
                 break;
             // panel remove <panelName>
             case "remove":
                 if (args.length == 3) {
                     String panelName = args[2];
-                    if (psm.panelExists(panelName)) {
-                        psm.removePanel(panelName);
-                        psm.deletePanelConfig(panelName);
+                    if (serverPanelManager.panelExists(panelName)) {
+                        serverPanelManager.removePanel(panelName);
+                        serverPanelManager.deletePanelConfig(panelName);
                         message = "§aPanel " + panelName + " removed!";
                     } else {
                         message = "§cPanel " + panelName + " does not exist!";
                     }
                 } else {
-                    message = "§cUsage: /psm panel remove <panelName>";
+                    message = "§cUsage: /spm panel remove <panelName>";
                 }
                 break;
             // panel edit <panelName> <type> <host> <username> <password>
@@ -387,7 +387,7 @@ public class CommandHandler {
                     String username = args[5];
                     String password = args[6];
 
-                    if (!psm.panelExists(panelName)) {
+                    if (!serverPanelManager.panelExists(panelName)) {
                         message = "§cPanel " + panelName + " does not exist!";
                         break;
                     }
@@ -395,23 +395,23 @@ public class CommandHandler {
                     switch (type) {
                         case "cubecodersamp":
                             panel = new AMPPanel(panelName, host, username, password);
-                            psm.setPanel(panelName, panel);
+                            serverPanelManager.setPanel(panelName, panel);
                     }
                     // Check if server is online
                     if (panel != null && panel.isOnline()) {
                         // Remove old panel
-                        psm.removeServer(panelName);
-                        psm.deleteServerConfig(panelName);
+                        serverPanelManager.removeServer(panelName);
+                        serverPanelManager.deleteServerConfig(panelName);
 
                         // Add edited panel
-                        psm.setPanel(panelName, panel);
-                        psm.savePanelConfig(panelName);
+                        serverPanelManager.setPanel(panelName, panel);
+                        serverPanelManager.savePanelConfig(panelName);
                         message = "§aPanel " + panelName + " edited!";
                     } else {
                         message = "§cPanel " + panelName + " is offline!";
                     }
                 } else {
-                    message = "§cUsage: /psm panel edit <panelName> <type> <host> <username> <password>";
+                    message = "§cUsage: /spm panel edit <panelName> <type> <host> <username> <password>";
                 }
                 break;
             default:
@@ -435,12 +435,12 @@ public class CommandHandler {
                     "\nserver remove <serverName> - Remove a server" +
                     "\nserver edit <serverName> <panelName> <InstanceName> <InstanceId> - Edit a server";
         if (args.length == 1) {
-            return "§cUsage: /psm server <subcommand>";
+            return "§cUsage: /spm server <subcommand>";
         }
         switch (args[1].toLowerCase()) {
             // server list
             case "list":
-                message = "§6Available servers: §5\n" + String.join("\n", psm.getServers());
+                message = "§6Available servers: §5\n" + String.join("\n", serverPanelManager.getServers());
                 break;
             // server add <serverName> <panelName> <InstanceName> <InstanceId>
             case "add":
@@ -449,15 +449,15 @@ public class CommandHandler {
                     String panelName = args[3];
                     String instanceName = args[4];
                     String instanceId = args.length == 6 ? args[5] : null;
-                    if (!psm.panelExists(panelName)) {
+                    if (!serverPanelManager.panelExists(panelName)) {
                         message = "§cPanel " + panelName + " does not exist!";
                         break;
                     }
-                    if (psm.serverExists(serverName)) {
+                    if (serverPanelManager.serverExists(serverName)) {
                         message = "§cServer " + serverName + " already exists!";
                         break;
                     }
-                    Panel panel = psm.getPanel(panelName);
+                    Panel panel = serverPanelManager.getPanel(panelName);
                     Server server = null;
                     switch (panel.getPanelType().toLowerCase()) {
                         case "ampstandalone":
@@ -469,14 +469,14 @@ public class CommandHandler {
                     }
                     // Check if server is online
                     if (server != null && server.isOnline()) {
-                        psm.setServer(serverName, server);
-                        psm.saveServerConfig(serverName);
+                        serverPanelManager.setServer(serverName, server);
+                        serverPanelManager.saveServerConfig(serverName);
                         message = "§aServer " + serverName + " added!";
                     } else {
                         message = "§cServer " + serverName + " is offline!";
                     }
                 } else {
-                    message = "§cUsage: /psm server add <serverName> <panelName> <InstanceName> <InstanceId>";
+                    message = "§cUsage: /spm server add <serverName> <panelName> <InstanceName> <InstanceId>";
                 }
                 break;
 
@@ -484,15 +484,15 @@ public class CommandHandler {
             case "remove":
                 if (args.length == 3) {
                     String serverName = args[2];
-                    if (psm.serverExists(serverName)) {
-                        psm.removeServer(serverName);
-                        psm.deleteServerConfig(serverName);
+                    if (serverPanelManager.serverExists(serverName)) {
+                        serverPanelManager.removeServer(serverName);
+                        serverPanelManager.deleteServerConfig(serverName);
                         message = "§aServer " + serverName + " removed!";
                     } else {
                         message = "§cServer " + serverName + " does not exist!";
                     }
                 } else {
-                    message = "§cUsage: /psm server remove <serverName>";
+                    message = "§cUsage: /spm server remove <serverName>";
                 }
                 break;
             default:
@@ -506,15 +506,15 @@ public class CommandHandler {
                     String panelName = args[3];
                     String instanceName = args[4];
                     String instanceId = args.length == 6 ? args[5] : null;
-                    if (!psm.panelExists(panelName)) {
+                    if (!serverPanelManager.panelExists(panelName)) {
                         message = "§cPanel " + panelName + " does not exist!";
                         break;
                     }
-                    if (!psm.serverExists(serverName)) {
+                    if (!serverPanelManager.serverExists(serverName)) {
                         message = "§cServer " + serverName + " does not exist!";
                         break;
                     }
-                    Panel panel = psm.getPanel(panelName);
+                    Panel panel = serverPanelManager.getPanel(panelName);
                     Server server = null;
                     switch (panel.getPanelType().toLowerCase()) {
                         case "ampstandalone":
@@ -527,18 +527,18 @@ public class CommandHandler {
                     // Check if server is online
                     if (server != null && server.isOnline()) {
                         // Remove old server
-                        psm.removeServer(serverName);
-                        psm.deleteServerConfig(serverName);
+                        serverPanelManager.removeServer(serverName);
+                        serverPanelManager.deleteServerConfig(serverName);
 
                         // Add edited server
-                        psm.setServer(serverName, server);
-                        psm.saveServerConfig(serverName);
+                        serverPanelManager.setServer(serverName, server);
+                        serverPanelManager.saveServerConfig(serverName);
                         message = "§aServer " + serverName + " edited!";
                     } else {
                         message = "§cServer " + serverName + " is offline!";
                     }
                 } else {
-                    message = "§cUsage: /psm server edit <serverName> <panelName> <InstanceName> <InstanceId>";
+                    message = "§cUsage: /spm server edit <serverName> <panelName> <InstanceName> <InstanceId>";
                 }
                 break;
         }
@@ -565,18 +565,18 @@ public class CommandHandler {
         switch (args[1].toLowerCase()) {
             // group list
             case "list":
-                message = "§6Available groups: §5\n" + String.join("\n", psm.getGroups());
+                message = "§6Available groups: §5\n" + String.join("\n", serverPanelManager.getGroups());
                 break;
             // group find <groupName> <playerName>
             case "find":
                 if (args.length == 4) {
                     String groupName = args[2];
                     String playerName = args[3];
-                    if (!psm.groupExists(groupName)) {
+                    if (!serverPanelManager.groupExists(groupName)) {
                         message = "§cGroup " + groupName + " does not exist!";
                         break;
                     }
-                    Group group = psm.getGroup(groupName);
+                    Group group = serverPanelManager.getGroup(groupName);
                     String serverName = group.findPlayer(playerName);
                     if (serverName.equals("")) {
                         message = "§cPlayer " + playerName + " is not on any server in group " + groupName + "!";
@@ -584,19 +584,19 @@ public class CommandHandler {
                     }
                     message = "§6Player " + playerName + " is on server " + serverName + "!";
                 } else {
-                    message = "§cUsage: /psm group find <groupName> <playerName>";
+                    message = "§cUsage: /spm group find <groupName> <playerName>";
                 }
                 break;
             // group command <groupName> <command>
             case "command":
                 if (args.length >= 4) {
                     String groupName = args[2];
-                    if (!psm.groupExists(groupName)) {
+                    if (!serverPanelManager.groupExists(groupName)) {
                         message = "§cGroup " + groupName + " does not exist!";
                         break;
                     }
                     StringBuilder stringBuilder = new StringBuilder();
-                    Group group = psm.getGroup(groupName);
+                    Group group = serverPanelManager.getGroup(groupName);
                     ArrayList<String> servers = group.getServers();
                     for (String serverName : servers) {
                         String[] command = new String[args.length - 2];
@@ -609,19 +609,19 @@ public class CommandHandler {
                     }
                     message = stringBuilder.toString();
                 } else {
-                    message = "§cUsage: /psm group command <groupName> <command>";
+                    message = "§cUsage: /spm group command <groupName> <command>";
                 }
                 break;
             // group players <groupName>
             case "players":
                 if (args.length == 3) {
                     String groupName = args[2];
-                    if (!psm.groupExists(groupName)) {
+                    if (!serverPanelManager.groupExists(groupName)) {
                         message = "§cGroup " + groupName + " does not exist!";
                         break;
                     }
                     StringBuilder stringBuilder = new StringBuilder();
-                    Group group = psm.getGroup(groupName);
+                    Group group = serverPanelManager.getGroup(groupName);
                     ArrayList<String> servers = group.getServers();
                     for (String serverName : servers) {
                         stringBuilder.append("§6Players on server ")
@@ -630,7 +630,7 @@ public class CommandHandler {
                     }
                     message = stringBuilder.toString();
                 } else {
-                    message = "§cUsage: /psm group players <groupName>";
+                    message = "§cUsage: /spm group players <groupName>";
                 }
                 break;
             // group server <subcommand>
@@ -640,14 +640,14 @@ public class CommandHandler {
                     case "list":
                         if (args.length == 4) {
                             String groupName = args[3];
-                            if (psm.groupExists(groupName)) {
-                                Group group = psm.getGroup(groupName);
+                            if (serverPanelManager.groupExists(groupName)) {
+                                Group group = serverPanelManager.getGroup(groupName);
                                 message = "§6Servers in group " + groupName + ": §5\n" + String.join("\n", group.getServers());
                             } else {
                                 message = "§cGroup " + groupName + " does not exist!";
                             }
                         } else {
-                            message = "§cUsage: /psm group server list <groupName>";
+                            message = "§cUsage: /spm group server list <groupName>";
                         }
                         break;
                     // group server add <serverName> <groupName>
@@ -655,12 +655,12 @@ public class CommandHandler {
                         if (args.length == 5) {
                             String groupName = args[4];
                             String serverName = args[3];
-                            if (psm.groupExists(groupName)) {
-                                if (psm.serverExists(serverName)) {
-                                    Group group = psm.getGroup(groupName);
+                            if (serverPanelManager.groupExists(groupName)) {
+                                if (serverPanelManager.serverExists(serverName)) {
+                                    Group group = serverPanelManager.getGroup(groupName);
                                     if (!group.containsServer(serverName)) {
                                         group.addServer(serverName);
-                                        psm.saveGroupServers(groupName);
+                                        serverPanelManager.saveGroupServers(groupName);
                                         message = "§aAdded server " + serverName + " to group " + groupName + "!";
                                     } else {
                                         message = "§cServer " + serverName + " is already in group " + groupName + "!";
@@ -672,7 +672,7 @@ public class CommandHandler {
                                 message = "§cGroup " + groupName + " does not exist!";
                             }
                         } else {
-                            message = "§cUsage: /psm group server add <serverName> <groupName>";
+                            message = "§cUsage: /spm group server add <serverName> <groupName>";
                         }
                         break;
                     // group server remove <serverName> <groupName>
@@ -680,12 +680,12 @@ public class CommandHandler {
                         if (args.length == 5) {
                             String groupName = args[4];
                             String serverName = args[3];
-                            if (psm.groupExists(groupName)) {
-                                if (psm.serverExists(serverName)) {
-                                    Group group = psm.getGroup(groupName);
+                            if (serverPanelManager.groupExists(groupName)) {
+                                if (serverPanelManager.serverExists(serverName)) {
+                                    Group group = serverPanelManager.getGroup(groupName);
                                     if (group.containsServer(serverName)) {
                                         group.removeServer(serverName);
-                                        psm.saveGroupServers(groupName);
+                                        serverPanelManager.saveGroupServers(groupName);
                                         message = "§aRemoved server " + serverName + " from group " + groupName + "!";
                                     } else {
                                         message =  "§cServer " + serverName + " is not in group " + groupName + "!";
@@ -697,7 +697,7 @@ public class CommandHandler {
                                 message =  "§cGroup " + groupName + " does not exist!";
                             }
                         } else {
-                            message = "§cUsage: /psm group server remove <serverName> <groupName>";
+                            message = "§cUsage: /spm group server remove <serverName> <groupName>";
                         }
                         break;
                     default:
@@ -709,373 +709,12 @@ public class CommandHandler {
                         break;
                 }
                 return message;
-            // group task <subcommand>
-            case "task":
-                switch (args[2].toLowerCase()) {
-                    // group task list
-                    case "list":
-                        if (args.length == 4) {
-                            String groupName = args[3];
-                            if (psm.groupExists(groupName)) {
-                                Group group = psm.getGroup(groupName);
-                                message = "§6Tasks in group " + groupName + ": §5\n" + String.join("\n", group.getTasks());
-                            } else {
-                                message = "§cGroup " + groupName + " does not exist!";
-                            }
-                        } else {
-                            message = "§cUsage: /psm group task list <groupName>";
-                        }
-                        break;
-                    // group task create <groupName> <taskName> <command> <interval>
-                    case "create":
-                    // group task remove <groupName> <taskName>
-                    case "remove":
-                        message = "§cNot implemented yet!";
-                        break;
-                    default:
-                        message = "§6Available subcommands:" +
-                                "\ngroup task help - Show this message" +
-                                "\ngroup task list <groupName>" +
-                                "\ngroup task add <taskName> <groupName>" +
-                                "\ngroup task remove <taskName> <groupName>";
-                        break;
-                }
-                return message;
             default:
                 message = "§6Available subcommands:" +
                         "\nhelp - Show this message" +
                         "\ngroup list - List available groups" +
                         "\ngroup find <groupName> <playerName> - Find player in group" +
-                        "\ngroup task <subcommand> - Manage group tasks" +
                         "\ngroup server <subcommand> - Manage group servers";
-                break;
-        }
-        return message;
-    }
-
-    /**
-     * Task Command Handler
-     * @param args The command arguments
-     * @return The response
-     */
-    private String taskCommand(String[] args) {
-        String message;
-        String helpMessage = "§6Available subcommands:" +
-                "\ntask help - Show this message" +
-                "\ntask list <groupName> - List tasks in group" +
-                "\ntask create <groupName> <taskName> <interval> <command> - Create a task" +
-                "\ntask remove <groupName> <taskName> - Remove a task" +
-                "\ntask edit <groupName> <taskName> <interval> <command> - Edit a task" +
-                "\ntask pause <groupName> <taskName> - Pause a task" +
-                "\ntask resume <groupName> <taskName> - Resume a task";
-        if (args.length == 1) {
-            return helpMessage;
-        }
-        switch (args[1].toLowerCase()) {
-            // task list <groupName>
-            case "list":
-                if (args.length == 3) {
-                    String groupName = args[2];
-                    if (psm.groupExists(groupName)) {
-                        Group group = psm.getGroup(groupName);
-                        message = "§6Tasks in group " + groupName + ": §5\n" + String.join("\n", group.getTasks());
-                    } else {
-                        message = "§cGroup " + groupName + " does not exist!";
-                    }
-                } else {
-                    message = "§cUsage: /psm task list <groupName>";
-                }
-                break;
-            // task create <groupName> <taskName> <interval> <command>
-            case "create":
-                if (args.length >= 6) {
-                    String groupName = args[2];
-                    String taskName = args[3];
-                    int interval = Integer.parseInt(args[4]);
-                    String command = String.join(" ", Arrays.copyOfRange(args, 4, args.length - 1));
-                    if (psm.groupExists(groupName)) {
-                        Group group = psm.getGroup(groupName);
-                        if (!group.containsTask(taskName)) {
-                            Task task = new Task(taskName, command, interval, new HashMap<>());
-                            group.setTask(taskName, task);
-                            group.startTask(taskName);
-                            psm.saveGroupTasks(groupName);
-                            message = "§aCreated task " + taskName + " in group " + groupName + "!";
-                        } else {
-                            message = "§cTask " + taskName + " already exists in group " + groupName + "!";
-                        }
-                    } else {
-                        message = "§cGroup " + groupName + " does not exist!";
-                    }
-                } else {
-                    message = "§cUsage: /psm task create <groupName> <taskName> <interval> <command>";
-                }
-                break;
-            // task remove <groupName> <taskName>
-            case "remove":
-                if (args.length == 4) {
-                    String groupName = args[2];
-                    String taskName = args[3];
-                    if (psm.groupExists(groupName)) {
-                        Group group = psm.getGroup(groupName);
-                        if (group.containsTask(taskName)) {
-                            group.stopTask(taskName);
-                            group.removeTask(taskName);
-                            psm.deleteTaskConfig(groupName, taskName);
-                            message = "§aRemoved task " + taskName + " from group " + groupName + "!";
-                        } else {
-                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
-                        }
-                    } else {
-                        message = "§cGroup " + groupName + " does not exist!";
-                    }
-                } else {
-                    message = "§cUsage: /psm task remove <groupName> <taskName>";
-                }
-                break;
-            // task edit <groupName> <taskName> <interval> <command>
-            case "edit":
-                if (args.length >= 6) {
-                    String groupName = args[2];
-                    String taskName = args[3];
-                    int interval = Integer.parseInt(args[4]);
-                    String command = String.join(" ", Arrays.copyOfRange(args, 4, args.length - 1));
-                    if (psm.groupExists(groupName)) {
-                        Group group = psm.getGroup(groupName);
-                        if (group.containsTask(taskName)) {
-                            Task task = new Task(taskName, command, interval, new HashMap<>());
-                            group.setTask(taskName, task);
-                            group.startTask(taskName);
-
-                            // Delete old config
-                            psm.deleteTaskConfig(groupName, taskName);
-
-                            // Save new config
-                            psm.saveGroupTasks(groupName);
-
-                            // Restart task
-                            group.stopTask(taskName);
-                            group.startTask(taskName);
-
-                            message = "§aEdited task " + taskName + " in group " + groupName + "!";
-                        } else {
-                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
-                        }
-                    } else {
-                        message = "§cGroup " + groupName + " does not exist!";
-                    }
-                } else {
-                    message = "§cUsage: /psm task edit <groupName> <taskName> <interval> <command>";
-                }
-                break;
-            // task pause <groupName> <taskName>
-            case "pause":
-                if (args.length == 4) {
-                    String groupName = args[2];
-                    String taskName = args[3];
-                    if (psm.groupExists(groupName)) {
-                        Group group = psm.getGroup(groupName);
-                        if (group.containsTask(taskName)) {
-                            boolean stopped = group.stopTask(taskName);
-                            if (stopped) {
-                                message = "§aPaused task " + taskName + " in group " + groupName + "! -- this is probably a lie, tis broken";
-                            } else {
-                                message = "§cCould not pause task " + taskName + " in group " + groupName + "!";
-                            }
-                        } else {
-                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
-                        }
-                    } else {
-                        message = "§cGroup " + groupName + " does not exist!";
-                    }
-                } else {
-                    message = "§cUsage: /psm task pause <groupName> <taskName>";
-                }
-                break;
-            // task resume <groupName> <taskName>
-            case "resume":
-                if (args.length == 4) {
-                    String groupName = args[2];
-                    String taskName = args[3];
-                    if (psm.groupExists(groupName)) {
-                        Group group = psm.getGroup(groupName);
-                        if (group.containsTask(taskName)) {
-                            group.startTask(taskName);
-                            message = "§aResumed task " + taskName + " in group " + groupName + "!";
-                        } else {
-                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
-                        }
-                    } else {
-                        message = "§cGroup " + groupName + " does not exist!";
-                    }
-                } else {
-                    message = "§cUsage: /psm task resume <groupName> <taskName>";
-                }
-                break;
-            // task help
-            default:
-                message = helpMessage;
-        }
-        return message;
-    }
-
-    /**
-     * Condition Command Handler
-     * @param args The command arguments
-     * @return The response
-     */
-    private String conditionCommand(String[] args) {
-        String message;
-        String helpMessage = "§6Available subcommands:" +
-                "\ncondition list <groupName> <taskName> - List conditions" +
-                "\ncondition add <groupName> <taskName> <placeholder> <operator> <value> - Add condition" +
-                "\ncondition remove <groupName> <taskName> <conditionNumber> - Remove condition" +
-                "\ncondition edit <groupName> <taskName> <conditionNumber> <placeholder> <operator> <value> - Edit condition";
-        switch (args[1]) {
-            // condition list <groupName> <taskName>
-            case "list":
-                if (args.length == 4) {
-                    String groupName = args[2];
-                    String taskName = args[3];
-                    if (psm.groupExists(groupName)) {
-                        Group group = psm.getGroup(groupName);
-                        if (group.containsTask(taskName)) {
-                            Task task = group.getTask(taskName);
-                            HashMap<String, Condition> conditions = task.getConditions();
-                            if (conditions.size() > 0) {
-                                message = "§6Conditions for task " + taskName + " in group " + groupName + ":";
-                                for (int i = 1; i <= conditions.size(); i++) {
-                                    Condition condition = conditions.get(Integer.toString(i));
-                                    message += "\n§e" + i + " - " + condition.getPlaceholder() + " " + condition.getOperator() + " " + condition.getValue();
-                                }
-                            } else {
-                                message = "§cNo conditions found for task " + taskName + " in group " + groupName + "!";
-                            }
-                        } else {
-                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
-                        }
-                    } else {
-                        message = "§cGroup " + groupName + " does not exist!";
-                    }
-                } else {
-                    message = "§cUsage: /psm condition list <groupName> <taskName>";
-                }
-                break;
-            // condition add <groupName> <taskName> <placeholder> <operator> <value>
-            case "add":
-                if (args.length == 7) {
-                    String groupName = args[2];
-                    String taskName = args[3];
-                    String placeholder = args[4];
-                    String operator = args[5];
-                    String value = args[6];
-                    if (psm.groupExists(groupName)) {
-                        Group group = psm.getGroup(groupName);
-                        if (group.containsTask(taskName)) {
-                            Task task = group.getTask(taskName);
-                            HashMap<String, Condition> conditions = task.getConditions();
-                            Condition condition = new Condition(placeholder, operator, value);
-                            int conditionNumber = conditions.size() + 1;
-                            task.setCondition(conditionNumber, condition);
-
-                            // Delete old config
-                            psm.deleteTaskConfig(groupName, taskName);
-
-                            // Save new config
-                            psm.saveGroupTasks(groupName);
-                            message = "§aAdded condition to task " + taskName + " in group " + groupName + "!";
-                        } else {
-                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
-                        }
-                    } else {
-                        message = "§cGroup " + groupName + " does not exist!";
-                    }
-                } else {
-                    message = "§cUsage: /psm condition add <groupName> <taskName> <placeholder> <operator> <value>";
-                }
-                break;
-            // condition remove <groupName> <taskName> <conditionNumber>
-            case "remove":
-                if (args.length == 5) {
-                    String groupName = args[2];
-                    String taskName = args[3];
-                    int conditionNumber = Integer.parseInt(args[4]);
-                    if (psm.groupExists(groupName)) {
-                        Group group = psm.getGroup(groupName);
-                        if (group.containsTask(taskName)) {
-                            Task task = group.getTask(taskName);
-                            HashMap<String, Condition> conditions = task.getConditions();
-                            if (conditions.size() >= conditionNumber) {
-                                conditions.remove(Integer.toString(conditionNumber));
-
-                                // Reorder conditions
-                                HashMap<String, Condition> newConditions = new HashMap<>();
-                                int i = 1;
-                                for (Condition condition : conditions.values()) {
-                                    newConditions.put(Integer.toString(i), condition);
-                                    i++;
-                                }
-                                task.setConditions(newConditions);
-
-                                // Delete old config
-                                psm.deleteTaskConfig(groupName, taskName);
-
-                                // Save new config
-                                psm.saveGroupTasks(groupName);
-                                message = "§aRemoved condition " + conditionNumber + " from task " + taskName + " in group " + groupName + "!";
-                            } else {
-                                message = "§cCondition " + conditionNumber + " does not exist in task " + taskName + " in group " + groupName + "!";
-                            }
-                        } else {
-                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
-                        }
-                    } else {
-                        message = "§cGroup " + groupName + " does not exist!";
-                    }
-                } else {
-                    message = "§cUsage: /psm condition remove <groupName> <taskName> <conditionNumber>";
-                }
-                break;
-            // condition edit <groupName> <taskName> <conditionNumber> <placeholder> <operator> <value>
-            case "edit":
-                if (args.length == 8) {
-                    String groupName = args[2];
-                    String taskName = args[3];
-                    int conditionNumber = Integer.parseInt(args[4]);
-                    String placeholder = args[5];
-                    String operator = args[6];
-                    String value = args[7];
-                    if (psm.groupExists(groupName)) {
-                        Group group = psm.getGroup(groupName);
-                        if (group.containsTask(taskName)) {
-                            Task task = group.getTask(taskName);
-                            HashMap<String, Condition> conditions = task.getConditions();
-                            if (conditions.size() >= conditionNumber) {
-                                Condition condition = new Condition(placeholder, operator, value);
-                                conditions.put(Integer.toString(conditionNumber), condition);
-
-                                // Delete old config
-                                psm.deleteTaskConfig(groupName, taskName);
-
-                                // Save new config
-                                psm.saveGroupTasks(groupName);
-                                message = "§aEdited condition " + conditionNumber + " in task " + taskName + " in group " + groupName + "!";
-                            } else {
-                                message = "§cCondition " + conditionNumber + " does not exist in task " + taskName + " in group " + groupName + "!";
-                            }
-                        } else {
-                            message = "§cTask " + taskName + " does not exist in group " + groupName + "!";
-                        }
-                    } else {
-                        message = "§cGroup " + groupName + " does not exist!";
-                    }
-                } else {
-                    message = "§cUsage: /psm condition edit <groupName> <taskName> <conditionNumber> <placeholder> <operator> <value>";
-                }
-                break;
-            // condition help
-            default:
-                message = helpMessage;
                 break;
         }
         return message;
@@ -1103,8 +742,7 @@ public class CommandHandler {
                 "\n\nOther Commands:" +
                 "\npanel <subcommand>" +
                 "\nserver <subcommand>" +
-                "\ngroup <subcommand>" +
-                "\ntask <subcommand>";
+                "\ngroup <subcommand>";
     }
 
     /**
@@ -1168,14 +806,6 @@ public class CommandHandler {
                 case "group":
                     message = groupCommand(args);
                     break;
-                // task <subcommand>
-                case "task":
-                    message = taskCommand(args);
-                    break;
-                // condition <subcommand>
-                case "condition":
-                    message = conditionCommand(args);
-                    break;
                 // help
                 default:
                     message = helpHandler();
@@ -1184,7 +814,7 @@ public class CommandHandler {
         } catch (Exception e) {
             System.out.println("An error occurred while executing the command!\n" + e.getMessage());
             e.printStackTrace();
-            Server server = psm.getServer(args[1]);
+            Server server = serverPanelManager.getServer(args[1]);
             boolean result = server.reLog();
             if (result) {
                 message = "§cAn error occurred while executing the command!";

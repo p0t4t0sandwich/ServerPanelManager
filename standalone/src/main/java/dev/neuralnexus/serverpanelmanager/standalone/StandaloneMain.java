@@ -1,6 +1,6 @@
 package dev.neuralnexus.serverpanelmanager.standalone;
 
-import dev.neuralnexus.serverpanelmanager.common.PanelServerManager;
+import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
 import dev.neuralnexus.serverpanelmanager.common.Utils;
 
 import java.awt.GraphicsEnvironment;
@@ -25,7 +25,7 @@ public class StandaloneMain {
             // Normal execution
         } else if (console != null) {
             // Logger
-            Logger logger = Logger.getLogger("ampservermanager");
+            Logger logger = Logger.getLogger("serverpanelmanager");
             logger.setLevel(Level.FINE);
 
             // Log formatter
@@ -45,9 +45,8 @@ public class StandaloneMain {
             });
             logger.addHandler(handler);
 
-            // Start AMPAPAI Server Manager
-            PanelServerManager panelServerManager = new PanelServerManager("./", logger);
-            panelServerManager.start();
+            // Start Server Panel Manager
+            ServerPanelManager.start("./", logger);
 
             // Start terminal application
             while (true) {
@@ -57,7 +56,7 @@ public class StandaloneMain {
                     break;
                 } else {
                     Utils.runTaskAsync(() -> {
-                        String response = Utils.ansiiParser(panelServerManager.commandHandler.commandMessenger(input));
+                        String response = Utils.ansiiParser(ServerPanelManager.commandHandler.commandMessenger(input));
                         if (response.equals("")) {
                             response = "Use 'help' to see a list of commands.";
                         }

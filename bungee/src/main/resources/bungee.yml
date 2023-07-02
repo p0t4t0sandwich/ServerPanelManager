@@ -6,8 +6,8 @@ main: dev.neuralnexus.serverpanelmanager.bungee.BungeeSPMPlugin
 depend: []
 softDepends: [LuckPerms]
 commands:
-  psmb:
+  spmb:
     description: "A command that allows you to manage your Panel's game servers from within minecraft"
-    usage: /psmb <command> [args]
+    usage: /spmb <command> [args]
     aliases: [ampb]
-    permission: psm
+    permission: spm.command

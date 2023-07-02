@@ -1,8 +1,8 @@
-package ca.sperrer.p0t4t0sandwich.template.velocity.listeners.player;
+package dev.neuralnexus.serverpanelmanager.velocity.listeners.player;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
-import dev.neuralnexus.template.common.listneners.TemplatePlayerLoginListener;
+import dev.neuralnexus.serverpanelmanager.common.listneners.TemplatePlayerLoginListener;
 
 /**
  * Listens for player logins and adds the TaterPlayer to the cache.

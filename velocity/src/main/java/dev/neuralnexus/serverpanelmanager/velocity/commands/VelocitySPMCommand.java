@@ -1,34 +1,35 @@
-package ca.sperrer.p0t4t0sandwich.template.velocity.commands;
+package dev.neuralnexus.serverpanelmanager.velocity.commands;
 
-import ca.sperrer.p0t4t0sandwich.template.velocity.VelocityMain;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
+import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
 import net.kyori.adventure.text.Component;
 
-import static ca.sperrer.p0t4t0sandwich.template.common.Utils.runTaskAsync;
+import static dev.neuralnexus.serverpanelmanager.common.Utils.ansiiParser;
+import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 
-public class VelocityTemplateCommand implements SimpleCommand {
-    private final VelocityMain plugin = VelocityMain.getInstance();
-
+public class VelocitySPMCommand implements SimpleCommand {
     @Override
     public void execute(Invocation invocation) {
 //        runTaskAsync(() -> {
             try {
+                String[] args = invocation.arguments();
+
                 // Check if sender is a player
                 if ((invocation.source() instanceof Player)) {
                     Player player = (Player) invocation.source();
 
                     // Permission check
-                    if (!player.hasPermission("template.command")) {
+                    if (!player.hasPermission("spm.command")) {
                         player.sendMessage(Component.text("§cYou do not have permission to use this command."));
                         return;
                     }
 
-                    String text = "";
-
+                    String text = args.length == 0 ? "§cUsage: /spm <command>" : ServerPanelManager.commandHandler.commandMessenger(args);;
                     player.sendMessage(Component.text(text));
                 } else {
-                    plugin.getLogger().info("§cYou must be a player to use this command.");
+                    String text = args.length == 0 ? "§cUsage: /spm <command>" : ServerPanelManager.commandHandler.commandMessenger(args);;
+                    ServerPanelManager.useLogger(ansiiParser(text));
                 }
             } catch (Exception e) {
                 System.out.println(e);

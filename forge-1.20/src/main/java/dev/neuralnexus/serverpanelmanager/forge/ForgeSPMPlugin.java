@@ -1,20 +1,23 @@
 package dev.neuralnexus.serverpanelmanager.forge;
 
 import com.mojang.logging.LogUtils;
-import dev.neuralnexus.template.common.TemplatePlugin;
-import dev.neuralnexus.template.forge.commands.ForgeTemplateCommand;
-import dev.neuralnexus.template.forge.listeners.ForgePlayerLoginListener;
+import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
+import dev.neuralnexus.serverpanelmanager.common.ServerPanelManagerPlugin;
+import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
+import dev.neuralnexus.serverpanelmanager.forge.commands.ForgeSPMCommand;
+import dev.neuralnexus.serverpanelmanager.forge.listeners.ForgePlayerLoginListener;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 /**
  * The TaterAPI Forge plugin.
  */
-@Mod("taterapi")
-public class ForgeSPMPlugin implements TemplatePlugin {
+@Mod("serverpanelmanager")
+public class ForgeSPMPlugin implements ServerPanelManagerPlugin {
     /**
      * @inheritDoc
      */
@@ -52,10 +55,10 @@ public class ForgeSPMPlugin implements TemplatePlugin {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         // Register LuckPerms hook
-//        if (ModList.get().isLoaded("luckperms")) {
-//            useLogger("LuckPerms detected, enabling LuckPerms hook.");
-//            Template.addHook(new LuckPermsHook());
-//        }
+        if (ModList.get().isLoaded("luckperms")) {
+            useLogger("[ServerPanelManager] LuckPerms detected, enabling LuckPerms hook.");
+            ServerPanelManager.addHook(new LuckPermsHook());
+        }
     }
 
     /**
@@ -81,7 +84,7 @@ public class ForgeSPMPlugin implements TemplatePlugin {
         MinecraftForge.EVENT_BUS.register(new ForgePlayerLoginListener());
 
         // Register commands
-        MinecraftForge.EVENT_BUS.register(ForgeTemplateCommand.class);
+        MinecraftForge.EVENT_BUS.register(ForgeSPMCommand.class);
         pluginStart();
     }
 
