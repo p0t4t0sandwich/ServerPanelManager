@@ -1,15 +1,15 @@
-# PanelServerManagerPlugin
+# ServerPanelManager
 
 ## About
 
-A plugin that allows you to manage your Panel's game servers from within minecraft. This plugin is still in development and is not quite ready for production use. Feel free to mess around with it and report any bugs you find, or any features you would like to see.
+A plugin that allows you to manage your Panel's game servers from within minecraft.
 
 Feel free to create an issue/PR if:
 
 - you find a bug
 - you need to port this mod/plugin to an unsupported platform/version. Older MC implementations are built on an as-needed basis.
 - your panel isn't supported yet. We can do some digging to see if it's possible to add support for it.
-- you have suggestions around the group/task system
+- the game event you want to listen for hasn't been implemented yet.
 
 ## Commands
 
@@ -85,30 +85,7 @@ groups:
     servers:
       - <server name>
       - <server name>
-    tasks:
-      sendboop:
-        command: send {server} say boop!
-        interval: 60 # in seconds
-        conditions:
-          1:
-            placeholder: playercount
-            operator: ==
-            value: 0
 ```
-
-### WatchFerret
-
-```yaml
-groups:
-  <group name>:
-    name: Group1
-    servers:
-      - <server name>
-      - <server name>
-    tasks:
-      watchferret: {} # settings are a work in progress
-```
-
 
 #### Placeholders
 
@@ -118,27 +95,18 @@ groups:
 
 Contributions and suggestions are welcome! Just open an issue or a pull request, and I'll get to it as soon as I can.
 
-### Bugs
-
-- [ ] Tasks don't pause, the thread just keeps running
-
 ### General
 
 - [ ] Add a command to reload the config
-- [x] Forge support
-- [ ] Fabric client side chat listener -- do it like this? https://www.reddit.com/r/fabricmc/comments/wg7jrx/onchat/
-- [ ] Quilt support
-- [ ] Sponge support
-- [ ] Velocity support
-- [x] Set up proper gradle projects for each platform -- need help with this
+- [ ] Fabric client side chat mixin -- do it like this? https://www.reddit.com/r/fabricmc/comments/wg7jrx/onchat/
 - [ ] Add webhook support here and there
 
 ### Permissions
 
-- [ ] Design a permission scema -- `psm.<command>.<server>` - `psm.<command>.<group>`
-- [ ] Add permissions for each command -- `psm.command.<command>`
-- [ ] Add permissions for each command for each server -- `psm.<command>.<server>`
-- [ ] Add permissions for each command for each group -- `psm.<command>.<group>`
+- [ ] Design a permission schema -- `spm.<command>.<server>` - `spm.<command>.<group>`
+- [ ] Add permissions for each command -- `spm.command.<command>`
+- [ ] Add permissions for each command for each server -- `spm.<command>.<server>`
+- [ ] Add permissions for each command for each group -- `spm.<command>.<group>`
 
 - [ ] Set up dynamic permissions checks
   - [ ] Bukkit and BungeeCord will be easy, just use the `hasPermission` method
@@ -160,6 +128,3 @@ Contributions and suggestions are welcome! Just open an issue or a pull request,
 
 - [ ] Add the ability to sync the config with a database? -- would need one AMPServerManager process to act as a main process and handle all the group tasks.
   - [ ] hot reload the config when it changes -- how? -- LuckPerms does it, maybe subscribe to database changes?
-
-- [x] WatchFerret?
-  - [x] Should be able to hook into the Groups system and run the checks on a timer -- maybe add a `watch` command to the group system? -- Store in Groups class in some sort of variables property

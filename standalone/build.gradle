@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id('com.github.johnrengelman.shadow') version('7.1.2')
 }
 
 dependencies {
@@ -9,19 +9,28 @@ dependencies {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'ca.sperrer.p0t4t0sandwich.panelservermanager.standalone.StandaloneMain'
+                'Main-Class': 'dev.neuralnexus.serverpanelmanager.standalone.StandaloneMain'
         )
     }
 }
 
 shadowJar {
-    classifier = ''
-
     dependencies {
         include(project(":common"))
     }
+
+    destinationDir(file('../target'))
+    archiveName("ServerPanelManager-${version}-standalone.jar")
+    classifier('')
+}
+shadowJar.doLast {
+    task ->
+        ant.checksum(file: task.archivePath) {
+            hashAlgorithm = 'md5'
+            property = 'md5sum'
+        }
 }
 
 artifacts {
-    archives shadowJar
+    archives(shadowJar)
 }

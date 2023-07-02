@@ -1,9 +1,13 @@
-name: AMPServerManager
+name: ServerPanelManager
 version: '${version}'
-main: ca.sperrer.p0t4t0sandwich.panelservermanager.bungee.BungeeMain
+author: p0t4t0sandwich
+description: A plugin that allows you to manage your Panel's game servers from within minecraft
+main: dev.neuralnexus.serverpanelmanager.bungee.BungeeSPMPlugin
+depend: []
+softDepends: [LuckPerms]
 commands:
-  psmb:
-    description: "PanelServerManager is a plugin that allows you to manage your Panel's servers from within Minecraft."
-    usage: /psmb <command> [args]
+  spmb:
+    description: "A command that allows you to manage your Panel's game servers from within minecraft"
+    usage: /spmb <command> [args]
     aliases: [ampb]
-    permission: psm
+    permission: spm.command
