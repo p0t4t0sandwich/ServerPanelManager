@@ -2,12 +2,14 @@ package dev.neuralnexus.serverpanelmanager.velocity.listeners.player;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
-import dev.neuralnexus.serverpanelmanager.common.listneners.TemplatePlayerLoginListener;
+import com.velocitypowered.api.proxy.Player;
+import dev.neuralnexus.serverpanelmanager.common.listneners.player.SPMPlayerLoginListener;
+import dev.neuralnexus.serverpanelmanager.velocity.player.VelocityPlayer;
 
 /**
- * Listens for player logins and adds the TaterPlayer to the cache.
+ * Listens for player logins.
  */
-public class VelocityPlayerLoginListener implements TemplatePlayerLoginListener {
+public class VelocityPlayerLoginListener implements SPMPlayerLoginListener {
     /**
      * Called when a player logs in.
      * @param event The player login event
@@ -17,6 +19,14 @@ public class VelocityPlayerLoginListener implements TemplatePlayerLoginListener 
         // If player is switching servers, don't run this function
         if (event.getPreviousServer().isPresent()) return;
 
-        // Do stuff
+        // Get Player and current server
+        Player player = event.getPlayer();
+        String toServer = event.getServer().getServerInfo().getName();
+
+        VelocityPlayer abstractPlayer = new VelocityPlayer(player);
+        abstractPlayer.setServerName(toServer);
+
+        // Pass player to helper function
+        SPMPlayerLogin(abstractPlayer);
     }
 }

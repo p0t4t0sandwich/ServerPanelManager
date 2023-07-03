@@ -1,6 +1,7 @@
 package dev.neuralnexus.serverpanelmanager.bungee.commands;
 
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
+import dev.neuralnexus.serverpanelmanager.common.commands.SPMCommand;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -9,7 +10,7 @@ import net.md_5.bungee.api.plugin.Command;
 import static dev.neuralnexus.serverpanelmanager.common.Utils.ansiiParser;
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 
-public class BungeeSPMCommand extends Command {
+public class BungeeSPMCommand extends Command implements SPMCommand {
     public BungeeSPMCommand() {
         super("spmb");
     }
@@ -23,16 +24,14 @@ public class BungeeSPMCommand extends Command {
                     ProxiedPlayer player = (ProxiedPlayer) sender;
 
                     // Permission check
-                    if (!player.hasPermission("template.command")) {
+                    if (!player.hasPermission(SPMCommand.getCommandPermission())) {
                         player.sendMessage(new ComponentBuilder("§cYou do not have permission to use this command.").create());
                         return;
                     }
+                    player.sendMessage(new ComponentBuilder(SPMCommand.executeCommand(args)).create());
 
-                    String text = args.length == 0 ? "§cUsage: /spmb <command>" : ServerPanelManager.commandHandler.commandMessenger(args);
-                    player.sendMessage(new ComponentBuilder(text).create());
                 } else {
-                    String text = args.length == 0 ? "§cUsage: /spmb <command>" : ServerPanelManager.commandHandler.commandMessenger(args);
-                    ServerPanelManager.useLogger(ansiiParser(text));
+                    sender.sendMessage(new ComponentBuilder(SPMCommand.executeCommand(args)).create());
                 }
             } catch (Exception e) {
                 System.err.println(e);

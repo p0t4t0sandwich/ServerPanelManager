@@ -3,6 +3,8 @@ package dev.neuralnexus.serverpanelmanager.fabric.mixin.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
+import dev.neuralnexus.serverpanelmanager.common.commands.SPMCommand;
+import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.CommandManager;
@@ -22,16 +24,21 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 @Mixin(CommandManager.class)
-public class FabricSPMCommand {
+public class FabricSPMCommand implements SPMCommand {
     @Shadow @Final private CommandDispatcher<ServerCommandSource> dispatcher;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;setConsumer(Lcom/mojang/brigadier/ResultConsumer;)V"))
     private void registerTaterAPICommand(CommandManager.RegistrationEnvironment environment, CommandRegistryAccess commandRegistryAccess, CallbackInfo ci) {
-        // Check if LuckPerms is hooked
-//        int permissionLevel = LuckPermsHook.isHooked() ? 0 : 4;
-
-        String commandName = environment.name().equals("DEDICATED") ? "spm" : "spmc";
-        int permissionLevel = environment.name().equals("DEDICATED") ? 4 : 0;
+        int permissionLevel;
+        String commandName;
+        if (environment.name().equals("DEDICATED")) {
+            // Check if LuckPerms is hooked
+            permissionLevel = LuckPermsHook.isHooked() ? 0 : 4;
+            commandName = "spm";
+        } else {
+            permissionLevel = 0;
+            commandName = "spmc";
+        }
 
         // Register command
         this.dispatcher.register(literal(commandName)
@@ -45,11 +52,9 @@ public class FabricSPMCommand {
                                     // Send message to player or console
                                     Entity entity = context.getSource().getEntity();
                                     if (entity instanceof ServerPlayerEntity) {
-                                        String text = ServerPanelManager.commandHandler.commandMessenger(args);
-                                        entity.sendMessage(Text.of(text));
+                                        ((ServerPlayerEntity) entity).sendMessage(Text.of(SPMCommand.executeCommand(args)), false);
                                     } else {
-                                        String text = ServerPanelManager.commandHandler.commandMessenger(args);
-                                        ServerPanelManager.useLogger(ansiiParser(text));
+                                        ServerPanelManager.useLogger((ansiiParser(SPMCommand.executeCommand(args))));
                                     }
                                 } catch (Exception e) {
                                     System.err.println(e);
