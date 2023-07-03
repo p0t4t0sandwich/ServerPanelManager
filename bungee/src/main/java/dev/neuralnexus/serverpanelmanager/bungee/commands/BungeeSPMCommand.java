@@ -1,7 +1,9 @@
 package dev.neuralnexus.serverpanelmanager.bungee.commands;
 
+import dev.neuralnexus.serverpanelmanager.bungee.player.BungeePlayer;
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
 import dev.neuralnexus.serverpanelmanager.common.commands.SPMCommand;
+import dev.neuralnexus.serverpanelmanager.common.player.AbstractPlayer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -20,19 +22,11 @@ public class BungeeSPMCommand extends Command implements SPMCommand {
         runTaskAsync(() -> {
             try {
                 // Check if sender is a player
-                if ((sender instanceof ProxiedPlayer)) {
-                    ProxiedPlayer player = (ProxiedPlayer) sender;
+                boolean isPlayer = sender instanceof ProxiedPlayer;
+                BungeePlayer player = isPlayer ? new BungeePlayer((ProxiedPlayer) sender) : null;
 
-                    // Permission check
-                    if (!player.hasPermission(SPMCommand.getCommandPermission())) {
-                        player.sendMessage(new ComponentBuilder("§cYou do not have permission to use this command.").create());
-                        return;
-                    }
-                    player.sendMessage(new ComponentBuilder(SPMCommand.executeCommand(args)).create());
-
-                } else {
-                    sender.sendMessage(new ComponentBuilder(SPMCommand.executeCommand(args)).create());
-                }
+                // Execute command
+                SPMCommand.executeCommand(player, isPlayer, args);
             } catch (Exception e) {
                 System.err.println(e);
                 e.printStackTrace();

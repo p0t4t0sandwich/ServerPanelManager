@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
 import dev.neuralnexus.serverpanelmanager.common.commands.SPMCommand;
 import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
+import dev.neuralnexus.serverpanelmanager.fabric.player.FabricPlayer;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.CommandManager;
@@ -49,13 +50,12 @@ public class FabricSPMCommand implements SPMCommand {
                                 try {
                                     String[] args = new String[] {context.getArgument("command", String.class)};
 
-                                    // Send message to player or console
-                                    Entity entity = context.getSource().getEntity();
-                                    if (entity instanceof ServerPlayerEntity) {
-                                        ((ServerPlayerEntity) entity).sendMessage(Text.of(SPMCommand.executeCommand(args)), false);
-                                    } else {
-                                        ServerPanelManager.useLogger((ansiiParser(SPMCommand.executeCommand(args))));
-                                    }
+                                    // Check if sender is a player
+                                    boolean isPlayer = context.getSource().getEntity() instanceof ServerPlayerEntity;
+                                    FabricPlayer player = isPlayer ? new FabricPlayer((ServerPlayerEntity) context.getSource().getEntity()) : null;
+
+                                    // Execute command
+                                    SPMCommand.executeCommand(player, isPlayer, args);
                                 } catch (Exception e) {
                                     System.err.println(e);
                                     e.printStackTrace();

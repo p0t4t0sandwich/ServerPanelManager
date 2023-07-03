@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
 import dev.neuralnexus.serverpanelmanager.common.commands.SPMCommand;
 import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
+import dev.neuralnexus.serverpanelmanager.forge.player.ForgePlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -41,13 +42,12 @@ public final class ForgeSPMCommand {
                         try {
                             String[] args = new String[] {context.getArgument("command", String.class)};
 
-                            // Send message to player or console
-                            Entity entity = context.getSource().getEntity();
-                            if (entity instanceof ServerPlayer) {
-                                ((ServerPlayer) entity).displayClientMessage(Component.empty().append(SPMCommand.executeCommand(args)), false);
-                            } else {
-                                ServerPanelManager.useLogger((ansiiParser(SPMCommand.executeCommand(args))));
-                            }
+                            // Check if sender is a player
+                            boolean isPlayer = context.getSource().getEntity() instanceof ServerPlayer;
+                            ForgePlayer player = isPlayer ? new ForgePlayer((ServerPlayer) context.getSource().getEntity()) : null;
+
+                            // Execute command
+                            SPMCommand.executeCommand(player, isPlayer, args);
                         } catch (Exception e) {
                             System.err.println(e);
                             e.printStackTrace();

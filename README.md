@@ -121,17 +121,12 @@ groups:
   - integrate with the AMP scheduler
   - webhooks
 
-### Permissions
+### Additional Panels
 
-- Design a permission schema -- `spm.<command>.<server>` - `spm.<command>.<group>`
-- Add permissions for each command -- `spm.command.<command>`
-- Add permissions for each command for each server -- `spm.<command>.<server>`
-- Add permissions for each command for each group -- `spm.<command>.<group>`
-
-- Set up dynamic permissions checks
-  - Bukkit and BungeeCord will be easy, just use the `hasPermission` method
-  - Fabric will be more fun to implement -- either look into how Fabric does it, or require LuckPerms to doll out specific permissions
-  - Similar dealio for Forge
+- Pterodactyl: https://github.com/mattmalec/Pterodactyl4J
+- Multicraft: https://github.com/pavog/Multicraft-api / https://www.multicraft.org/site/docs/api
+- Pebblehost: https://panel.pebblehost.com/support/apiDocs / https://help.pebblehost.com/en/minecraft/using-the-pebblehost-game-panel-api
+- PufferPanel: https://speca.io/PufferPanel/pufferd/2.0
 
 ### Misc
 
@@ -146,3 +141,7 @@ groups:
   - hot reload the config when it changes -- how? -- LuckPerms does it, maybe subscribe to database changes?
 
 ## Release Notes
+- Near complete rewrite
+- Implemented game events across all platforms
+- Generalized the command a bit better
+- Created Abstract player class to handle permissions and anything player related

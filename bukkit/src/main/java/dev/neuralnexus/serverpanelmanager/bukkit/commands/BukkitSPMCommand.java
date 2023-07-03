@@ -1,6 +1,6 @@
 package dev.neuralnexus.serverpanelmanager.bukkit.commands;
 
-import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
+import dev.neuralnexus.serverpanelmanager.bukkit.player.BukkitPlayer;
 import dev.neuralnexus.serverpanelmanager.common.commands.SPMCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static dev.neuralnexus.serverpanelmanager.common.Utils.ansiiParser;
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 
 public class BukkitSPMCommand implements CommandExecutor, SPMCommand {
@@ -19,19 +18,12 @@ public class BukkitSPMCommand implements CommandExecutor, SPMCommand {
         runTaskAsync(() -> {
             try {
                 // Check if sender is a player
-                if ((sender instanceof Player)) {
-                    Player player = (Player) sender;
+                boolean isPlayer = sender instanceof Player;
+                BukkitPlayer player = isPlayer ? new BukkitPlayer((Player) sender) : null;
 
-                    // Permission check
-                    if (!player.hasPermission(SPMCommand.getCommandPermission())) {
-                        player.sendMessage("§cYou do not have permission to use this command.");
-                        return;
-                    }
-                    player.sendMessage(SPMCommand.executeCommand(args));
+                // Execute command
+                SPMCommand.executeCommand(player, isPlayer, args);
 
-                } else {
-                    ServerPanelManager.useLogger(ansiiParser(SPMCommand.executeCommand(args)));
-                }
                 success.set(true);
             } catch (Exception e) {
                 success.set(false);
