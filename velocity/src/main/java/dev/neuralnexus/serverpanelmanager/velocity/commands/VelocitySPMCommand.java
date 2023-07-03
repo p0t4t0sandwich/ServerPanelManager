@@ -3,12 +3,13 @@ package dev.neuralnexus.serverpanelmanager.velocity.commands;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
+import dev.neuralnexus.serverpanelmanager.common.commands.SPMCommand;
 import net.kyori.adventure.text.Component;
 
 import static dev.neuralnexus.serverpanelmanager.common.Utils.ansiiParser;
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 
-public class VelocitySPMCommand implements SimpleCommand {
+public class VelocitySPMCommand implements SimpleCommand, SPMCommand {
     @Override
     public void execute(Invocation invocation) {
 //        runTaskAsync(() -> {
@@ -20,16 +21,13 @@ public class VelocitySPMCommand implements SimpleCommand {
                     Player player = (Player) invocation.source();
 
                     // Permission check
-                    if (!player.hasPermission("spm.command")) {
+                    if (!player.hasPermission(SPMCommand.getCommandPermission())) {
                         player.sendMessage(Component.text("§cYou do not have permission to use this command."));
                         return;
                     }
-
-                    String text = args.length == 0 ? "§cUsage: /spm <command>" : ServerPanelManager.commandHandler.commandMessenger(args);;
-                    player.sendMessage(Component.text(text));
+                    player.sendMessage(Component.text(SPMCommand.executeCommand(args)));
                 } else {
-                    String text = args.length == 0 ? "§cUsage: /spm <command>" : ServerPanelManager.commandHandler.commandMessenger(args);;
-                    ServerPanelManager.useLogger(ansiiParser(text));
+                    ServerPanelManager.useLogger(ansiiParser(SPMCommand.executeCommand(args)));
                 }
             } catch (Exception e) {
                 System.out.println(e);

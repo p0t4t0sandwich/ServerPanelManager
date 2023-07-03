@@ -14,7 +14,15 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
+import dev.neuralnexus.serverpanelmanager.velocity.listeners.player.VelocityPlayerLogoutListener;
+import dev.neuralnexus.serverpanelmanager.velocity.listeners.player.VelocityPlayerMessageListener;
+import dev.neuralnexus.serverpanelmanager.velocity.listeners.player.VelocityPlayerServerSwitchListener;
+import dev.neuralnexus.serverpanelmanager.velocity.listeners.server.VelocityServerStartedListener;
+import dev.neuralnexus.serverpanelmanager.velocity.listeners.server.VelocityServerStartingListener;
+import dev.neuralnexus.serverpanelmanager.velocity.listeners.server.VelocityServerStoppedListener;
 import org.slf4j.Logger;
+
+import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskLaterAsync;
 
 /**
  * The ServerPanelManager Velocity plugin.
@@ -85,7 +93,17 @@ public class VelocitySPMPlugin implements ServerPanelManagerPlugin {
     @Override
     public void registerEventListeners() {
         EventManager eventManager = server.getEventManager();
+
+        // Register player event listeners
         eventManager.register(this, new VelocityPlayerLoginListener());
+        eventManager.register(this, new VelocityPlayerLogoutListener());
+        eventManager.register(this, new VelocityPlayerMessageListener());
+        eventManager.register(this, new VelocityPlayerServerSwitchListener());
+
+        // Register server event listeners
+        eventManager.register(this, new VelocityServerStoppedListener());
+        new VelocityServerStartingListener().onServerStarting();
+        runTaskLaterAsync(() -> new VelocityServerStartedListener().onServerStarted(), 100L);
     }
 
     /**

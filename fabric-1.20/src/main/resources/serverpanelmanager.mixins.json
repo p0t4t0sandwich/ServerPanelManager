@@ -9,7 +9,12 @@
   "client": [
   ],
   "server": [
+    "listeners.player.FabricPlayerAdvancementListener",
+    "listeners.player.FabricPlayerDeathListener",
     "listeners.player.FabricPlayerLoginListener",
+    "listeners.player.FabricPlayerLogoutListener",
+    "listeners.player.FabricPlayerMessageListener",
+    "listeners.server.FabricServerStartedListener",
     "listeners.server.FabricServerStartingListener",
     "listeners.server.FabricServerStoppedListener"
   ],

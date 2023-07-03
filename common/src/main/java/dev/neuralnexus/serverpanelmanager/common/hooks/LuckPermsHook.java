@@ -14,6 +14,7 @@ import java.util.UUID;
 public class LuckPermsHook {
     private final LuckPerms luckPerms;
     private static LuckPermsHook instance;
+    private static boolean isHooked = false;
 
     /**
      * Create a new LuckPermsHook
@@ -21,6 +22,7 @@ public class LuckPermsHook {
     public LuckPermsHook() {
         instance = this;
         this.luckPerms = LuckPermsProvider.get();
+        isHooked = true;
     }
 
     /**
@@ -29,6 +31,14 @@ public class LuckPermsHook {
      */
     public static LuckPermsHook getInstance() {
         return instance;
+    }
+
+    /**
+     * Check if the hook is enabled
+     * @return If the hook is enabled
+     */
+    public static boolean isHooked() {
+        return isHooked;
     }
 
     /**
@@ -60,5 +70,17 @@ public class LuckPermsHook {
     public String getSuffix(UUID playerUuid) {
         CachedMetaData metaData = getMetaData(playerUuid);
         return metaData != null ? metaData.getSuffix() : "";
+    }
+
+    /**
+     * Player has permission
+     * @param playerUuid The player to check
+     * @param permission The permission to check
+     * @return If the player has the permission
+     */
+    public boolean playerHasPermission(UUID playerUuid, String permission) {
+        if (this.luckPerms == null) return false;
+        User user = luckPerms.getUserManager().getUser(playerUuid);
+        return user != null && user.getCachedData().getPermissionData().checkPermission(permission).asBoolean();
     }
 }

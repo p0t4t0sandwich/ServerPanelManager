@@ -1,5 +1,6 @@
 package dev.neuralnexus.serverpanelmanager.fabric.mixin.listeners.server;
 
+import dev.neuralnexus.serverpanelmanager.common.listneners.server.SPMServerStartingListener;
 import dev.neuralnexus.serverpanelmanager.fabric.events.server.FabricServerStartingEvent;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * Listens for server start and emits an event.
  */
 @Mixin(MinecraftServer.class)
-public class FabricServerStartingListener {
+public class FabricServerStartingListener implements SPMServerStartingListener {
     /**
      * Called when the server is starting.
      * @param ci The callback info.
@@ -22,5 +23,8 @@ public class FabricServerStartingListener {
 
         // Fire the server starting event
         FabricServerStartingEvent.EVENT.invoker().onServerStarting(server);
+
+        // Pass server starting to the helper function
+        SPMServerStarting();
     }
 }

@@ -10,7 +10,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Template Fabric plugin.
+ * The ServerPanelManager Fabric plugin.
  */
 public class FabricSPMPlugin implements DedicatedServerModInitializer, ServerPanelManagerPlugin {
     /**

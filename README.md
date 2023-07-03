@@ -11,13 +11,38 @@ Feel free to create an issue/PR if:
 - your panel isn't supported yet. We can do some digging to see if it's possible to add support for it.
 - the game event you want to listen for hasn't been implemented yet.
 
-## Commands
+## Download
 
-### /psm
+- [GitHub](https://github.com/p0t4t0sandwich/ServerPanelManager/releases)
+- [Spigot](https://www.spigotmc.org/resources/template.xxxxxx/)
+- [Hangar](https://hangar.papermc.io/p0t4t0sandwich/Template)
+- [Modrinth](https://modrinth.com/plugin/template)
+- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/template)
 
-`/psmb` for BungeeCord
+### Compatibility Cheatsheet
 
-`/psmc` for Client-side
+| Server type | Versions    | Jar Name                                       |
+|-------------|-------------|------------------------------------------------|
+| All 1.19    | 1.19-1.19.4 | `ServerPanelManager-<version>-1.19.jar`        |
+| All 1.20    | 1.20-1.20.1 | `ServerPanelManager-<version>-1.20.jar`        |
+| Bukkit      | 1.8-1.20.1  | `ServerPanelManager-<version>-bukkit.jar`      |
+| BungeeCord  | 1.20-1.20.1 | `ServerPanelManager-<version>-bungee.jar`      |
+| Velocity    | API v3      | `ServerPanelManager-<version>-velocity.jar`    |
+| Fabric 1.17 | 1.17-1.19.4 | `ServerPanelManager-<version>-fabric-1.17.jar` |
+| Fabric 1.20 | 1.20-1.20.1 | `ServerPanelManager-<version>-fabric-1.20.jar` |
+| Forge 1.19  | 1.19-1.19.4 | `ServerPanelManager-<version>-forge-1.19.jar`  |
+| Forge 1.20  | 1.20-1.20.1 | `ServerPanelManager-<version>-forge-1.20.jar`  |
+
+## Commands and Permissions
+
+| Command | Permission    | Description                 |
+|---------|---------------|-----------------------------|
+| `/spm`  | `spm.command` | Main command for the plugin |
+| `/spmb` | `spm.command` | Main command for the plugin |
+| `/spmv` | `spm.command` | Main command for the plugin |
+| `/spmc` | `N/A`         | Main command for the plugin |
+
+### Usage
 
 ```
 # General
@@ -32,12 +57,6 @@ status <server>
 sleep <server>
 players <server>
 backup <server> [name] [description] [sticky <- true or false]
-```
-
-## Permissions
-
-```
-psm -- Allows access to all commands
 ```
 
 ## Configuration
@@ -93,38 +112,37 @@ groups:
 
 ## TODO:
 
-Contributions and suggestions are welcome! Just open an issue or a pull request, and I'll get to it as soon as I can.
-
 ### General
 
-- [ ] Add a command to reload the config
-- [ ] Fabric client side chat mixin -- do it like this? https://www.reddit.com/r/fabricmc/comments/wg7jrx/onchat/
-- [ ] Add webhook support here and there
+- Add a command to reload the config
+- Fabric client side chat mixin -- do it like this? https://www.reddit.com/r/fabricmc/comments/wg7jrx/onchat/
+- Add webhook support here and there
+- various in-game event triggers
+  - integrate with the AMP scheduler
+  - webhooks
 
 ### Permissions
 
-- [ ] Design a permission schema -- `spm.<command>.<server>` - `spm.<command>.<group>`
-- [ ] Add permissions for each command -- `spm.command.<command>`
-- [ ] Add permissions for each command for each server -- `spm.<command>.<server>`
-- [ ] Add permissions for each command for each group -- `spm.<command>.<group>`
+- Design a permission schema -- `spm.<command>.<server>` - `spm.<command>.<group>`
+- Add permissions for each command -- `spm.command.<command>`
+- Add permissions for each command for each server -- `spm.<command>.<server>`
+- Add permissions for each command for each group -- `spm.<command>.<group>`
 
-- [ ] Set up dynamic permissions checks
-  - [ ] Bukkit and BungeeCord will be easy, just use the `hasPermission` method
-  - [ ] Fabric will be more fun to implement -- either look into how Fabric does it, or require LuckPerms to doll out specific permissions
-  - [ ] Similar dealio for Forge
+- Set up dynamic permissions checks
+  - Bukkit and BungeeCord will be easy, just use the `hasPermission` method
+  - Fabric will be more fun to implement -- either look into how Fabric does it, or require LuckPerms to doll out specific permissions
+  - Similar dealio for Forge
 
 ### Misc
 
-- [ ] various in-game event triggers
-  - [ ] integrate with the AMP scheduler
-  - [ ] set up webhook support
+- Update mods/plugins from url? -- maybe add a `update` command to the group system?
+  - Optional: include regex to delete old files
 
-- [ ] Update mods/plugins from url? -- maybe add a `update` command to the group system?
-  - [ ] Optional: include regex to delete old files
+- Server console regex trigger -- maybe add a `regex` command to the group system?
 
-- [ ] Server console regex trigger -- maybe add a `regex` command to the group system?
+- No-start status fix -- plop a proper `server started` message in the console -- Fix for Forge 1.12.2 v14.23.5.2858 and FTB Revelation
 
-- [ ] No-start status fix -- plop a proper `server started` message in the console -- Fix for Forge 1.12.2 v14.23.5.2858 and FTB Revelation
+- Add the ability to sync the config with a database? -- would need one AMPServerManager process to act as a main process and handle all the group tasks.
+  - hot reload the config when it changes -- how? -- LuckPerms does it, maybe subscribe to database changes?
 
-- [ ] Add the ability to sync the config with a database? -- would need one AMPServerManager process to act as a main process and handle all the group tasks.
-  - [ ] hot reload the config when it changes -- how? -- LuckPerms does it, maybe subscribe to database changes?
+## Release Notes
