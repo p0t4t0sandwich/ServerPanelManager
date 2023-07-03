@@ -1,6 +1,7 @@
 package dev.neuralnexus.serverpanelmanager.common.player;
 
 import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
+import dev.neuralnexus.serverpanelmanager.common.placeholder.PlaceholderParser;
 
 import java.util.UUID;
 
@@ -75,5 +76,20 @@ public interface AbstractPlayer {
         if (!LuckPermsHook.isHooked()) return false;
         LuckPermsHook luckPermsHook = LuckPermsHook.getInstance();
         return luckPermsHook.playerHasPermission(getUUID(), permission);
+    }
+
+    /**
+     * Parse placeholders in a string
+     * @param input The string to parse
+     * @return The parsed string
+     */
+    default PlaceholderParser parsePlaceholders(String input) {
+        return new PlaceholderParser(input)
+                .parseString("player", this.getName())
+                .parseString("displayname", this.getDisplayName())
+                .parseString("prefix", this.getPrefix())
+                .parseString("suffix", this.getSuffix())
+                .parseString("server", this.getServerName())
+                .parseSectionSign();
     }
 }

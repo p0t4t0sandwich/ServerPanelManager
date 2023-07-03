@@ -4,6 +4,8 @@
 
 A plugin that allows you to manage your Panel's game servers from within minecraft.
 
+Link to our support: [Discord](https://discord.gg/NffvJd95tk)
+
 Feel free to create an issue/PR if:
 
 - you find a bug
@@ -32,6 +34,16 @@ Feel free to create an issue/PR if:
 | Fabric 1.20 | 1.20-1.20.1 | `ServerPanelManager-<version>-fabric-1.20.jar` |
 | Forge 1.19  | 1.19-1.19.4 | `ServerPanelManager-<version>-forge-1.19.jar`  |
 | Forge 1.20  | 1.20-1.20.1 | `ServerPanelManager-<version>-forge-1.20.jar`  |
+
+## Dependencies
+
+### Required Dependencies
+
+- [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) - For Fabric
+
+### Optional Dependencies
+
+- [LuckPerms](https://luckperms.net/) - For user prefix/suffix support and permission support on Forge/Fabric
 
 ## Supported Panels
 
@@ -160,5 +172,5 @@ groups:
 - Implemented game events across all platforms
 - Generalized the command a bit better
 - Created Abstract player class to handle permissions and anything player related
-- Created dynamic permission system
+- Created dynamic permission system to allow for more granular permissions
 - Added a reload command
