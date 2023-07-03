@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 
-public class BukkitSPMCommand implements CommandExecutor, SPMCommand {
+public class BukkitSPMCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         AtomicBoolean success = new AtomicBoolean(false);

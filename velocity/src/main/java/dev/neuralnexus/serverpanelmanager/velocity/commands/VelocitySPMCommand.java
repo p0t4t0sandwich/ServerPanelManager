@@ -10,7 +10,7 @@ import net.kyori.adventure.text.Component;
 import static dev.neuralnexus.serverpanelmanager.common.Utils.ansiiParser;
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 
-public class VelocitySPMCommand implements SimpleCommand, SPMCommand {
+public class VelocitySPMCommand implements SimpleCommand {
     @Override
     public void execute(Invocation invocation) {
 //        runTaskAsync(() -> {

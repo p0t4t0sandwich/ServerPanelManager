@@ -144,6 +144,30 @@ public class ServerPanelManager {
     }
 
     /**
+     * Reload ServerPanelManager
+     */
+    public static void reload() {
+        if (!STARTED) {
+            useLogger("[ServerPanelManager] ServerPanelManager has not been started!");
+            return;
+        }
+
+        // Remove references to config, panels, servers, and groups
+        config = null;
+        panels.clear();
+        servers.clear();
+        groups.clear();
+
+        // Stop ServerPanelManager
+        stop();
+
+        // Start ServerPanelManager
+        start(configPath, logger);
+
+        useLogger("[ServerPanelManager] ServerPanelManager has been reloaded!");
+    }
+
+    /**
      * Initialize panels
      */
     private static void initPanels() {

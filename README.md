@@ -33,6 +33,22 @@ Feel free to create an issue/PR if:
 | Forge 1.19  | 1.19-1.19.4 | `ServerPanelManager-<version>-forge-1.19.jar`  |
 | Forge 1.20  | 1.20-1.20.1 | `ServerPanelManager-<version>-forge-1.20.jar`  |
 
+## Supported Panels
+
+- [CubeCoders AMP](https://cubecoders.com/AMP)
+
+## Supported Game Events
+
+- Player Advancement
+- Player Death
+- Player Join
+- Player Leave
+- Player Message
+- Player Server Change (BungeeCord and Velocity only)
+- Server Start
+- Server Starting
+- Server Stop
+
 ## Commands and Permissions
 
 | Command | Permission    | Description                 |
@@ -114,7 +130,6 @@ groups:
 
 ### General
 
-- Add a command to reload the config
 - Fabric client side chat mixin -- do it like this? https://www.reddit.com/r/fabricmc/comments/wg7jrx/onchat/
 - Add webhook support here and there
 - various in-game event triggers
@@ -145,3 +160,5 @@ groups:
 - Implemented game events across all platforms
 - Generalized the command a bit better
 - Created Abstract player class to handle permissions and anything player related
+- Created dynamic permission system
+- Added a reload command

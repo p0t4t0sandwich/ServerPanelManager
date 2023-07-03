@@ -6,6 +6,8 @@ import dev.neuralnexus.serverpanelmanager.common.cubecodersamp.AMPServer;
 
 import java.util.*;
 
+import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
+
 public class CommandHandler {
     private final ServerPanelManager serverPanelManager;
     /**
@@ -721,6 +723,15 @@ public class CommandHandler {
     }
 
     /**
+     * Reload Handler
+     * @return The response
+     */
+    private String reloadHandler() {
+        runTaskAsync(ServerPanelManager::reload);
+        return "§aServerPanelManager has been reloaded!";
+    }
+
+    /**
      * Help Handler
      * @return The response
      */
@@ -754,6 +765,10 @@ public class CommandHandler {
         String message;
         try {
             switch (args[0].toLowerCase()) {
+                // reload
+                case "reload":
+                    message = reloadHandler();
+                    break;
                 // start <serverName>
                 case "start":
                     message = startServerHandler(args);

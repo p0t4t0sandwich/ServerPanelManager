@@ -12,7 +12,7 @@ import net.md_5.bungee.api.plugin.Command;
 import static dev.neuralnexus.serverpanelmanager.common.Utils.ansiiParser;
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 
-public class BungeeSPMCommand extends Command implements SPMCommand {
+public class BungeeSPMCommand extends Command {
     public BungeeSPMCommand() {
         super("spmb");
     }
