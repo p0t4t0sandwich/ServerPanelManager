@@ -3,9 +3,10 @@ package dev.neuralnexus.serverpanelmanager.velocity;
 import com.velocitypowered.api.plugin.Dependency;
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
 import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
+import dev.neuralnexus.serverpanelmanager.common.listneners.server.SPMServerStartedListener;
+import dev.neuralnexus.serverpanelmanager.common.listneners.server.SPMServerStartingListener;
 import dev.neuralnexus.serverpanelmanager.velocity.commands.VelocitySPMCommand;
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManagerPlugin;
-import dev.neuralnexus.serverpanelmanager.velocity.listeners.player.VelocityPlayerLoginListener;
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.event.EventManager;
@@ -14,12 +15,8 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
-import dev.neuralnexus.serverpanelmanager.velocity.listeners.player.VelocityPlayerLogoutListener;
-import dev.neuralnexus.serverpanelmanager.velocity.listeners.player.VelocityPlayerMessageListener;
-import dev.neuralnexus.serverpanelmanager.velocity.listeners.player.VelocityPlayerServerSwitchListener;
-import dev.neuralnexus.serverpanelmanager.velocity.listeners.server.VelocityServerStartedListener;
-import dev.neuralnexus.serverpanelmanager.velocity.listeners.server.VelocityServerStartingListener;
-import dev.neuralnexus.serverpanelmanager.velocity.listeners.server.VelocityServerStoppedListener;
+import dev.neuralnexus.serverpanelmanager.velocity.listeners.player.VelocityPlayerListener;
+import dev.neuralnexus.serverpanelmanager.velocity.listeners.server.VelocityServerListener;
 import org.slf4j.Logger;
 
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskLaterAsync;
@@ -95,15 +92,11 @@ public class VelocitySPMPlugin implements ServerPanelManagerPlugin {
         EventManager eventManager = server.getEventManager();
 
         // Register player event listeners
-        eventManager.register(this, new VelocityPlayerLoginListener());
-        eventManager.register(this, new VelocityPlayerLogoutListener());
-        eventManager.register(this, new VelocityPlayerMessageListener());
-        eventManager.register(this, new VelocityPlayerServerSwitchListener());
+        eventManager.register(this, new VelocityPlayerListener());
 
         // Register server event listeners
-        eventManager.register(this, new VelocityServerStoppedListener());
-        new VelocityServerStartingListener().onServerStarting();
-        runTaskLaterAsync(() -> new VelocityServerStartedListener().onServerStarted(), 100L);
+        eventManager.register(this, new VelocityServerListener());
+        runTaskLaterAsync(SPMServerStartedListener::onServerStarted, 100L);
     }
 
     /**

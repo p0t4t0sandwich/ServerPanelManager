@@ -13,7 +13,7 @@ public interface SPMPlayerLogoutListener {
      * Called when a player logs out.
      * @param player The player.
      */
-    default void SPMPlayerLogout(AbstractPlayer player) {
+    static void onPlayerLogout(AbstractPlayer player) {
         runTaskAsync(() -> {
             try {
                 // Remove the player from the cache

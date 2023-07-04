@@ -13,7 +13,7 @@ public interface SPMPlayerServerSwitchListener {
      * Called when a player logs out, and sends it to the message relay.
      * @param player The player.
      */
-    default void SPMServerSwitch(AbstractPlayer player, String toServer) {
+    static void onServerSwitch(AbstractPlayer player, String toServer) {
         runTaskAsync(() -> {
             try {
                 // Get TaterPlayer from cache

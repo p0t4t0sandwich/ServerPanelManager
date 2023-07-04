@@ -13,7 +13,7 @@ public interface SPMPlayerLoginListener {
      * Called when a player logs in.
      * @param player The player.
      */
-    default void SPMPlayerLogin(AbstractPlayer player) {
+    static void onPlayerLogin(AbstractPlayer player) {
         runTaskAsync(() -> {
             try {
                 // Add the player to the cache

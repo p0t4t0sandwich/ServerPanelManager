@@ -4,19 +4,13 @@
   "package": "dev.neuralnexus.serverpanelmanager.fabric.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "commands.FabricSPMCommand"
   ],
   "client": [
   ],
   "server": [
-    "listeners.player.FabricPlayerAdvancementListener",
-    "listeners.player.FabricPlayerDeathListener",
-    "listeners.player.FabricPlayerLoginListener",
-    "listeners.player.FabricPlayerLogoutListener",
-    "listeners.player.FabricPlayerMessageListener",
-    "listeners.server.FabricServerStartedListener",
-    "listeners.server.FabricServerStartingListener",
-    "listeners.server.FabricServerStoppedListener"
+    "listeners.player.FabricPlayerAdvancementMixin",
+    "listeners.player.FabricPlayerDeathMixin",
+    "listeners.player.FabricPlayerMessageMixin"
   ],
   "injectors": {
     "defaultRequire": 1

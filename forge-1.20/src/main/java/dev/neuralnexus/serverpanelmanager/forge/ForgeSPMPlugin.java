@@ -5,10 +5,8 @@ import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManagerPlugin;
 import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
 import dev.neuralnexus.serverpanelmanager.forge.commands.ForgeSPMCommand;
-import dev.neuralnexus.serverpanelmanager.forge.listeners.player.*;
-import dev.neuralnexus.serverpanelmanager.forge.listeners.server.ForgeServerStartedListener;
-import dev.neuralnexus.serverpanelmanager.forge.listeners.server.ForgeServerStartingListener;
-import dev.neuralnexus.serverpanelmanager.forge.listeners.server.ForgeServerStoppedListener;
+import dev.neuralnexus.serverpanelmanager.forge.listeners.player.ForgePlayerListener;
+import dev.neuralnexus.serverpanelmanager.forge.listeners.server.ForgeServerListener;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
@@ -84,16 +82,10 @@ public class ForgeSPMPlugin implements ServerPanelManagerPlugin {
         MinecraftForge.EVENT_BUS.register(this);
 
         // Register player event listeners
-        MinecraftForge.EVENT_BUS.register(new ForgePlayerAdvancementListener());
-        MinecraftForge.EVENT_BUS.register(new ForgePlayerDeathListener());
-        MinecraftForge.EVENT_BUS.register(new ForgePlayerLoginListener());
-        MinecraftForge.EVENT_BUS.register(new ForgePlayerLogoutListener());
-        MinecraftForge.EVENT_BUS.register(new ForgePlayerMessageListener());
+        MinecraftForge.EVENT_BUS.register(new ForgePlayerListener());
 
         // Register server event listeners
-        MinecraftForge.EVENT_BUS.register(new ForgeServerStartedListener());
-        MinecraftForge.EVENT_BUS.register(new ForgeServerStartingListener());
-        MinecraftForge.EVENT_BUS.register(new ForgeServerStoppedListener());
+        MinecraftForge.EVENT_BUS.register(new ForgeServerListener());
 
         // Register commands
         MinecraftForge.EVENT_BUS.register(ForgeSPMCommand.class);

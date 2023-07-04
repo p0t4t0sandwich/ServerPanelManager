@@ -1,8 +1,6 @@
 package dev.neuralnexus.serverpanelmanager.fabric.mixin.listeners.player;
 
-import dev.neuralnexus.serverpanelmanager.common.listneners.player.SPMPlayerDeathListener;
-import dev.neuralnexus.serverpanelmanager.fabric.events.player.FabricPlayerDeathEvent;
-import dev.neuralnexus.serverpanelmanager.fabric.player.FabricPlayer;
+import dev.neuralnexus.serverpanelmanager.fabric.events.player.FabricPlayerEvents;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * Listens for player deaths and emits an event.
  */
 @Mixin(PlayerEntity.class)
-public class FabricPlayerDeathListener implements SPMPlayerDeathListener {
+public class FabricPlayerDeathMixin {
     /**
      * Called when a player dies.
      * @param source The source of the damage.
@@ -25,9 +23,6 @@ public class FabricPlayerDeathListener implements SPMPlayerDeathListener {
         PlayerEntity player = (PlayerEntity) (Object) this;
 
         // Fire the death event
-        FabricPlayerDeathEvent.EVENT.invoker().onPlayerDeath(player, source);
-
-        // Pass the death to the helper function
-        SPMPlayerDeath(new FabricPlayer(player), source.getDeathMessage(player).getString());
+        FabricPlayerEvents.DEATH.invoker().onPlayerDeath(player, source);
     }
 }

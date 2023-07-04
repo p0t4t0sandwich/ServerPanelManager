@@ -1,23 +1,25 @@
 package dev.neuralnexus.serverpanelmanager.forge.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
-import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
 import dev.neuralnexus.serverpanelmanager.common.commands.SPMCommand;
 import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
 import dev.neuralnexus.serverpanelmanager.forge.player.ForgePlayer;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import static dev.neuralnexus.serverpanelmanager.common.Utils.ansiiParser;
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
-
-public final class ForgeSPMCommand {
+/**
+ * Forge implementation of the SPM command.
+ */
+public class ForgeSPMCommand {
+    /**
+     * Registers the command.
+     * @param event The command registration event.
+     */
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
 //        int permissionLevel;

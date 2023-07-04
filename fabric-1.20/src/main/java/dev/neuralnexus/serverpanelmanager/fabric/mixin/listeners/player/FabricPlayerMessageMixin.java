@@ -1,8 +1,7 @@
 package dev.neuralnexus.serverpanelmanager.fabric.mixin.listeners.player;
 
 import dev.neuralnexus.serverpanelmanager.common.listneners.player.SPMPlayerMessageListener;
-import dev.neuralnexus.serverpanelmanager.fabric.events.player.FabricPlayerMessageEvent;
-import dev.neuralnexus.serverpanelmanager.fabric.player.FabricPlayer;
+import dev.neuralnexus.serverpanelmanager.fabric.events.player.FabricPlayerEvents;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -16,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * Listens for player messages and emits an event.
  */
 @Mixin(ServerPlayNetworkHandler.class)
-public abstract class FabricPlayerMessageListener implements SPMPlayerMessageListener {
+public abstract class FabricPlayerMessageMixin implements SPMPlayerMessageListener {
     @Shadow public abstract ServerPlayerEntity getPlayer();
 
     /**
@@ -28,10 +27,7 @@ public abstract class FabricPlayerMessageListener implements SPMPlayerMessageLis
     public void onPlayerMessage(ChatMessageC2SPacket packet, CallbackInfo ci) {
         if (packet.chatMessage().startsWith("/")) return;
 
-        // Pass message to helper function
-        SPMPlayerMessage(new FabricPlayer(getPlayer()), packet.chatMessage(), ci.isCancelled());
-
         // Fire the message event
-        FabricPlayerMessageEvent.EVENT.invoker().onPlayerMessage(getPlayer(), packet.chatMessage(), ci.isCancelled());
+        FabricPlayerEvents.MESSAGE.invoker().onPlayerMessage(getPlayer(), packet.chatMessage(), ci.isCancelled());
     }
 }

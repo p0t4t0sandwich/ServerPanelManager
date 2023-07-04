@@ -13,7 +13,7 @@ public interface SPMPlayerDeathListener {
      * @param player The player.
      * @param deathMessage The death message.
      */
-    default void SPMPlayerDeath(AbstractPlayer player, String deathMessage) {
+    static void onPlayerDeath(AbstractPlayer player, String deathMessage) {
         runTaskAsync(() -> {
             try {
                 // TODO: Add trigger/task system

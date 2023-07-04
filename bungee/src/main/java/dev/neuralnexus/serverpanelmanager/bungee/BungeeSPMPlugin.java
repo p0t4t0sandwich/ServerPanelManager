@@ -1,16 +1,11 @@
 package dev.neuralnexus.serverpanelmanager.bungee;
 
 import dev.neuralnexus.serverpanelmanager.bungee.commands.BungeeSPMCommand;
-import dev.neuralnexus.serverpanelmanager.bungee.listeners.player.BungeePlayerLoginListener;
-import dev.neuralnexus.serverpanelmanager.bungee.listeners.player.BungeePlayerLogoutListener;
-import dev.neuralnexus.serverpanelmanager.bungee.listeners.player.BungeePlayerMessageListener;
-import dev.neuralnexus.serverpanelmanager.bungee.listeners.player.BungeePlayerServerSwitchListener;
-import dev.neuralnexus.serverpanelmanager.bungee.listeners.server.BungeeServerStartedListener;
-import dev.neuralnexus.serverpanelmanager.bungee.listeners.server.BungeeServerStartingListener;
-import dev.neuralnexus.serverpanelmanager.bungee.listeners.server.BungeeServerStoppedListener;
+import dev.neuralnexus.serverpanelmanager.bungee.listeners.player.BungeePlayerListener;
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManagerPlugin;
 import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
+import dev.neuralnexus.serverpanelmanager.common.listneners.server.*;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -73,14 +68,11 @@ public class BungeeSPMPlugin extends Plugin implements ServerPanelManagerPlugin 
     public void registerEventListeners() {
         // Register player event listeners
         PluginManager pluginManager = getProxy().getPluginManager();
-        pluginManager.registerListener(this, new BungeePlayerLoginListener());
-        pluginManager.registerListener(this, new BungeePlayerLogoutListener());
-        pluginManager.registerListener(this, new BungeePlayerMessageListener());
-        pluginManager.registerListener(this, new BungeePlayerServerSwitchListener());
+        pluginManager.registerListener(this, new BungeePlayerListener());
 
         // Register server event listeners
-        new BungeeServerStartingListener().onServerStarting();
-        runTaskLaterAsync(() -> new BungeeServerStartedListener().onServerStarted(), 100L);
+        SPMServerStartingListener.onServerStarting();
+        runTaskLaterAsync(SPMServerStartedListener::onServerStarted, 100L);
     }
 
     /**
@@ -107,7 +99,7 @@ public class BungeeSPMPlugin extends Plugin implements ServerPanelManagerPlugin 
     @Override
     public void onDisable() {
         // Server stopped listener
-        new BungeeServerStoppedListener().onServerStopped();
+        SPMServerStoppedListener.onServerStopped();
 
         pluginStop();
     }

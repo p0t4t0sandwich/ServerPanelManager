@@ -14,7 +14,7 @@ public interface SPMPlayerMessageListener {
      * @param message The message
      * @param isCancelled Whether the message was cancelled
      */
-    default void SPMPlayerMessage(AbstractPlayer player, String message, boolean isCancelled) {
+    static void onPlayerMessage(AbstractPlayer player, String message, boolean isCancelled) {
         runTaskAsync(() -> {
             try {
                 // TODO: Add trigger/task system

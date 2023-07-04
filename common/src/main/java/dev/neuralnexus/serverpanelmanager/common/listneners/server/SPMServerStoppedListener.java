@@ -9,7 +9,7 @@ public interface SPMServerStoppedListener {
     /**
      * Called when a server stops.
      */
-    default void SPMServerStopped() {
+    static void onServerStopped() {
         runTaskAsync(() -> {
             try {
                 // TODO: Add trigger/task system

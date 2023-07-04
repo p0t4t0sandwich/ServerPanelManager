@@ -11,7 +11,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 
+/**
+ * Bukkit implementation of the SPM command.
+ */
 public class BukkitSPMCommand implements CommandExecutor {
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         AtomicBoolean success = new AtomicBoolean(false);

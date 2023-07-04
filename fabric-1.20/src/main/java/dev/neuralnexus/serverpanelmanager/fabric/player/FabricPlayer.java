@@ -5,7 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 
 /**
- * Abstracts a Fabric player to a TaterPlayer.
+ * Abstracts a Fabric player to an AbstractPlayer.
  */
 public class FabricPlayer implements AbstractPlayer {
     private final PlayerEntity player;

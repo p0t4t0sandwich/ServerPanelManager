@@ -13,7 +13,7 @@ public interface SPMPlayerAdvancementListener {
      * @param player The player.
      * @param advancement The advancement.
      */
-    default void SPMPlayerAdvancement(AbstractPlayer player, String advancement) {
+    static void onPlayerAdvancement(AbstractPlayer player, String advancement) {
         runTaskAsync(() -> {
             try {
                 // TODO: Add trigger/task system

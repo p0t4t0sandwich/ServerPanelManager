@@ -9,7 +9,7 @@ public interface SPMServerStartingListener {
     /**
      * Called when a server is starting.
      */
-    default void SPMServerStarting() {
+    static void onServerStarting() {
         runTaskAsync(() -> {
             try {
                 // TODO: Add trigger/task system

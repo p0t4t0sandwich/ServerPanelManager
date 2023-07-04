@@ -51,15 +51,15 @@ Feel free to create an issue/PR if:
 
 ## Supported Game Events
 
-- Player Advancement
-- Player Death
-- Player Join
-- Player Leave
-- Player Message
-- Player Server Change (BungeeCord and Velocity only)
-- Server Start
-- Server Starting
-- Server Stop
+- PlayerAdvancement
+- PlayerDeath
+- PlayerLogin
+- PlayerLogout
+- PlayerMessage
+- PlayerServerSwitch (BungeeCord and Velocity only)
+- ServerStarted
+- ServerStarting
+- ServerStopped
 
 ## Commands and Permissions
 

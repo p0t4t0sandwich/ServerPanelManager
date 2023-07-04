@@ -6,6 +6,9 @@ import dev.neuralnexus.serverpanelmanager.common.player.AbstractPlayer;
 
 import static dev.neuralnexus.serverpanelmanager.common.Utils.ansiiParser;
 
+/**
+ * Root command for Server Panel Manager.
+ */
 public interface SPMCommand {
     static String getCommandName() {
         return "spm";
