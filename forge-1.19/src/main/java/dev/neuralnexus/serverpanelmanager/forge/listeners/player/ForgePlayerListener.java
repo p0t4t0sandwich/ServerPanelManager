@@ -67,6 +67,6 @@ public class ForgePlayerListener {
     @SubscribeEvent
     void onPlayerMessage(ServerChatEvent event) {
         // Pass message to helper function
-        SPMPlayerMessageListener.onPlayerMessage(new ForgePlayer(event.getPlayer()), event.getMessage().getString(), event.isCanceled());
+        SPMPlayerMessageListener.onPlayerMessage(new ForgePlayer(event.getPlayer()), event.getMessage(), event.isCanceled());
     }
 }

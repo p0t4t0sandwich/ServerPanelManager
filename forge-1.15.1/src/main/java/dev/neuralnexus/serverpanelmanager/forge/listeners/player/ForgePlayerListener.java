@@ -3,8 +3,8 @@ package dev.neuralnexus.serverpanelmanager.forge.listeners.player;
 import dev.neuralnexus.serverpanelmanager.common.listneners.player.*;
 import dev.neuralnexus.serverpanelmanager.forge.player.ForgePlayer;
 import net.minecraft.advancements.DisplayInfo;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
@@ -22,9 +22,9 @@ public class ForgePlayerListener {
     @SubscribeEvent
     public void onPlayerAdvancement(AdvancementEvent event) {
         DisplayInfo display = event.getAdvancement().getDisplay();
-        if (display != null && display.shouldAnnounceChat()) {
+        if (display != null && display.shouldAnnounceToChat()) {
             // Pass advancement to helper function
-            SPMPlayerAdvancementListener.onPlayerAdvancement(new ForgePlayer(event.getEntity()), display.getTitle().getString());
+            SPMPlayerAdvancementListener.onPlayerAdvancement(new ForgePlayer(event.getPlayer()), display.getTitle().getString());
         }
     }
 
@@ -34,10 +34,10 @@ public class ForgePlayerListener {
      */
     @SubscribeEvent
     public void onPlayerDeath(LivingDeathEvent event) {
-        LivingEntity entity = event.getEntity();
-        if (!(entity instanceof Player)) return;
+        LivingEntity entity = event.getEntityLiving();
+        if (!(entity instanceof PlayerEntity)) return;
         // Pass death message to helper function
-        SPMPlayerDeathListener.onPlayerDeath(new ForgePlayer((Player) entity), event.getSource().getLocalizedDeathMessage(entity).getString());
+        SPMPlayerDeathListener.onPlayerDeath(new ForgePlayer((PlayerEntity) entity), event.getSource().getDeathMessage(entity).getString());
     }
 
     /**
@@ -47,7 +47,7 @@ public class ForgePlayerListener {
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         // Pass player to helper function
-        SPMPlayerLoginListener.onPlayerLogin(new ForgePlayer(event.getEntity()));
+        SPMPlayerLoginListener.onPlayerLogin(new ForgePlayer(event.getPlayer()));
     }
 
     /**
@@ -57,7 +57,7 @@ public class ForgePlayerListener {
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         // Pass player to helper function
-        SPMPlayerLogoutListener.onPlayerLogout(new ForgePlayer(event.getEntity()));
+        SPMPlayerLogoutListener.onPlayerLogout(new ForgePlayer(event.getPlayer()));
     }
 
     /**
@@ -67,6 +67,6 @@ public class ForgePlayerListener {
     @SubscribeEvent
     void onPlayerMessage(ServerChatEvent event) {
         // Pass message to helper function
-        SPMPlayerMessageListener.onPlayerMessage(new ForgePlayer(event.getPlayer()), event.getMessage().getString(), event.isCanceled());
+        SPMPlayerMessageListener.onPlayerMessage(new ForgePlayer(event.getPlayer()), event.getMessage(), event.isCanceled());
     }
 }

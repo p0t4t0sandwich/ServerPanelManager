@@ -1,0 +1,43 @@
+# https://files.minecraftforge.net/net/minecraftforge/forge/
+modLoader = "javafml"
+loaderVersion = "[34,)"
+license = "GPL-3"
+issueTrackerURL="https://github.com/p0t4t0sandwich/ServerPanelManager/issues"
+
+[[mods]]
+modId = "serverpanelmanager"
+version = "${file.jarVersion}"
+displayName = "ServerPanelManager"
+updateJSONURL="https://raw.githubusercontent.com/p0t4t0sandwich/ServerPanelManager/main/forgeUpdates.json"
+displayURL="https://github.com/p0t4t0sandwich/ServerPanelManager"
+logoFile="ServerPanelManager.png"
+credits="p0t4t0sandwich"
+authors="p0t4t0sandwich"
+displayTest="IGNORE_SERVER_VERSION"
+description = '''
+A plugin that allows you to manage your Panel's game servers from within minecraft
+'''
+
+# Forge Dependency
+[[dependencies.serverpanelmanager]]
+modId = "forge"
+mandatory = true
+versionRange = "[34,)"
+ordering = "NONE"
+side = "BOTH"
+
+# Minecraft Dependency
+[[dependencies.serverpanelmanager]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16,1.17)"
+ordering = "NONE"
+side = "BOTH"
+
+# LuckPerms Dependency
+[[dependencies.serverpanelmanager]]
+modId = "luckperms"
+mandatory = false
+versionRange = "[5.3.0,)"
+ordering = "NONE"
+side = "SERVER"

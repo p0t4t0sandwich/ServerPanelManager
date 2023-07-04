@@ -24,7 +24,7 @@ public class ForgePlayerListener {
         DisplayInfo display = event.getAdvancement().getDisplay();
         if (display != null && display.shouldAnnounceChat()) {
             // Pass advancement to helper function
-            SPMPlayerAdvancementListener.onPlayerAdvancement(new ForgePlayer(event.getEntity()), display.getTitle().getString());
+            SPMPlayerAdvancementListener.onPlayerAdvancement(new ForgePlayer(event.getPlayer()), display.getTitle().getString());
         }
     }
 
@@ -34,7 +34,7 @@ public class ForgePlayerListener {
      */
     @SubscribeEvent
     public void onPlayerDeath(LivingDeathEvent event) {
-        LivingEntity entity = event.getEntity();
+        LivingEntity entity = event.getEntityLiving();
         if (!(entity instanceof Player)) return;
         // Pass death message to helper function
         SPMPlayerDeathListener.onPlayerDeath(new ForgePlayer((Player) entity), event.getSource().getLocalizedDeathMessage(entity).getString());
@@ -47,7 +47,7 @@ public class ForgePlayerListener {
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         // Pass player to helper function
-        SPMPlayerLoginListener.onPlayerLogin(new ForgePlayer(event.getEntity()));
+        SPMPlayerLoginListener.onPlayerLogin(new ForgePlayer(event.getPlayer()));
     }
 
     /**
@@ -57,7 +57,7 @@ public class ForgePlayerListener {
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         // Pass player to helper function
-        SPMPlayerLogoutListener.onPlayerLogout(new ForgePlayer(event.getEntity()));
+        SPMPlayerLogoutListener.onPlayerLogout(new ForgePlayer(event.getPlayer()));
     }
 
     /**
@@ -67,6 +67,6 @@ public class ForgePlayerListener {
     @SubscribeEvent
     void onPlayerMessage(ServerChatEvent event) {
         // Pass message to helper function
-        SPMPlayerMessageListener.onPlayerMessage(new ForgePlayer(event.getPlayer()), event.getMessage().getString(), event.isCanceled());
+        SPMPlayerMessageListener.onPlayerMessage(new ForgePlayer(event.getPlayer()), event.getMessage(), event.isCanceled());
     }
 }
