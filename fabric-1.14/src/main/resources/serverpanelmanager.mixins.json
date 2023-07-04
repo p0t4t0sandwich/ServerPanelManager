@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.neuralnexus.serverpanelmanager.fabric.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "server": [
+    "listeners.player.FabricPlayerAdvancementMixin",
+    "listeners.player.FabricPlayerDeathMixin",
+    "listeners.player.FabricPlayerMessageMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
