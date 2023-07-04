@@ -146,6 +146,13 @@ groups:
 - Add webhook support here and there
 - various in-game event triggers
   - integrate with the AMP scheduler
+    - Create a list of scheduler triggers
+      - Refresh on startup
+      - Refresh via command
+      - Core_GetScheduleData() -> to list
+      - Core_SetTriggerEnabled(id, enabled)
+      - Core_RunEventTriggerImmediately(id, data)
+      - Core_SetTriggerData(id, data)
   - webhooks
 
 ### Additional Panels
