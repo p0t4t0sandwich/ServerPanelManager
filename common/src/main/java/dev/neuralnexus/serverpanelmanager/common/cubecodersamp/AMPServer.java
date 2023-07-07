@@ -283,4 +283,24 @@ public class AMPServer extends Server {
         Map<?, ?> playerList = runMethod((args) -> (Map<?, ?>) API.Core_GetUserList().get("result"));
         return parsePlayerList(playerList);
     }
+
+    /**
+     * Get a list of schedule triggers
+     * @return A list of schedule triggers
+     */
+    public List<String> getScheduleTriggers() {
+        Map<?, ?> scheduleTriggers = runMethod((args) -> (Map<?, ?>) API.Core_GetScheduleData().get("result"));
+    }
+
+    /**
+     * Run a schedule trigger
+     * @param triggerId The ID of the trigger to run
+     * @return The result of the trigger
+     */
+    public Map<?, ?> runScheduleTrigger(String triggerId) {
+        API.Core_SetTriggerEnabled(triggerId, true);
+        Map result = runMethod((args) -> API.Core_RunEventTriggerImmediately(triggerId));
+        API.Core_SetTriggerEnabled(triggerId, false);
+        return result;
+    }
 }
