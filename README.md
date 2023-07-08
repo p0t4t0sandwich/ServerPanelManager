@@ -25,13 +25,26 @@ Feel free to create an issue/PR if:
 
 | Server type | Versions    | Jar Name                                       |
 |-------------|-------------|------------------------------------------------|
-| All 1.19    | 1.19-1.19.4 | `ServerPanelManager-<version>-1.19.jar`        |
-| All 1.20    | 1.20-1.20.1 | `ServerPanelManager-<version>-1.20.jar`        |
+| All 1.14    | 1.14.x      | `ServerPanelManager-<version>-1.14.jar`        |
+| All 1.15    | 1.15.x      | `ServerPanelManager-<version>-1.15.jar`        |
+| All 1.16    | 1.16.x      | `ServerPanelManager-<version>-1.16.jar`        |
+| All 1.17    | 1.17.x      | `ServerPanelManager-<version>-1.17.jar`        |
+| All 1.18    | 1.18.x      | `ServerPanelManager-<version>-1.18.jar`        |
+| All 1.19    | 1.19.x      | `ServerPanelManager-<version>-1.19.jar`        |
+| All 1.20    | 1.20.x      | `ServerPanelManager-<version>-1.20.jar`        |
 | Bukkit      | 1.8-1.20.1  | `ServerPanelManager-<version>-bukkit.jar`      |
 | BungeeCord  | 1.20-1.20.1 | `ServerPanelManager-<version>-bungee.jar`      |
 | Velocity    | API v3      | `ServerPanelManager-<version>-velocity.jar`    |
+| Fabric 1.14 | 1.14-1.14.4 | `ServerPanelManager-<version>-fabric-1.14.jar` |
+| Fabric 1.15 | 1.15-1.15.2 | `ServerPanelManager-<version>-fabric-1.15.jar` |
+| Fabric 1.16 | 1.16-1.16.5 | `ServerPanelManager-<version>-fabric-1.16.jar` |
 | Fabric 1.17 | 1.17-1.19.4 | `ServerPanelManager-<version>-fabric-1.17.jar` |
 | Fabric 1.20 | 1.20-1.20.1 | `ServerPanelManager-<version>-fabric-1.20.jar` |
+| Forge 1.14  | 1.14-1.14.4 | `ServerPanelManager-<version>-forge-1.14.jar`  |
+| Forge 1.15  | 1.15-1.15.2 | `ServerPanelManager-<version>-forge-1.15.jar`  |
+| Forge 1.16  | 1.16-1.16.5 | `ServerPanelManager-<version>-forge-1.16.jar`  |
+| Forge 1.17  | 1.17-1.17.1 | `ServerPanelManager-<version>-forge-1.17.jar`  |
+| Forge 1.18  | 1.18-1.18.2 | `ServerPanelManager-<version>-forge-1.18.jar`  |
 | Forge 1.19  | 1.19-1.19.4 | `ServerPanelManager-<version>-forge-1.19.jar`  |
 | Forge 1.20  | 1.20-1.20.1 | `ServerPanelManager-<version>-forge-1.20.jar`  |
 
