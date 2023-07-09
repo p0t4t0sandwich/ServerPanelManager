@@ -6,12 +6,12 @@ A plugin that allows you to manage your Panel's game servers from within minecra
 
 Link to our support: [Discord](https://discord.gg/NffvJd95tk)
 
-Feel free to create an issue/PR if:
+Feel free to create an issue/PR:
 
-- you find a bug
-- you need to port this mod/plugin to an unsupported platform/version. Older MC implementations are built on an as-needed basis.
-- your panel isn't supported yet. We can do some digging to see if it's possible to add support for it.
-- the game event you want to listen for hasn't been implemented yet.
+- if you find a bug
+- if you need to port this mod/plugin to an unsupported platform/version. Older MC implementations are built on an as-needed basis.
+- if your panel isn't supported yet. We can do some digging to see if it's possible to add support for it.
+- if the game event you want to listen for hasn't been implemented yet.
 
 ## Download
 
@@ -35,28 +35,28 @@ Feel free to create an issue/PR if:
 | Bukkit      | 1.8-1.20.1  | `ServerPanelManager-<version>-bukkit.jar`      |
 | BungeeCord  | 1.20-1.20.1 | `ServerPanelManager-<version>-bungee.jar`      |
 | Velocity    | API v3      | `ServerPanelManager-<version>-velocity.jar`    |
-| Fabric 1.14 | 1.14-1.14.4 | `ServerPanelManager-<version>-fabric-1.14.jar` |
-| Fabric 1.15 | 1.15-1.15.2 | `ServerPanelManager-<version>-fabric-1.15.jar` |
-| Fabric 1.16 | 1.16-1.16.5 | `ServerPanelManager-<version>-fabric-1.16.jar` |
+| Fabric 1.14 | 1.14.x      | `ServerPanelManager-<version>-fabric-1.14.jar` |
+| Fabric 1.15 | 1.15.x      | `ServerPanelManager-<version>-fabric-1.15.jar` |
+| Fabric 1.16 | 1.16.x      | `ServerPanelManager-<version>-fabric-1.16.jar` |
 | Fabric 1.17 | 1.17-1.19.4 | `ServerPanelManager-<version>-fabric-1.17.jar` |
-| Fabric 1.20 | 1.20-1.20.1 | `ServerPanelManager-<version>-fabric-1.20.jar` |
-| Forge 1.14  | 1.14-1.14.4 | `ServerPanelManager-<version>-forge-1.14.jar`  |
-| Forge 1.15  | 1.15-1.15.2 | `ServerPanelManager-<version>-forge-1.15.jar`  |
-| Forge 1.16  | 1.16-1.16.5 | `ServerPanelManager-<version>-forge-1.16.jar`  |
-| Forge 1.17  | 1.17-1.17.1 | `ServerPanelManager-<version>-forge-1.17.jar`  |
-| Forge 1.18  | 1.18-1.18.2 | `ServerPanelManager-<version>-forge-1.18.jar`  |
-| Forge 1.19  | 1.19-1.19.4 | `ServerPanelManager-<version>-forge-1.19.jar`  |
-| Forge 1.20  | 1.20-1.20.1 | `ServerPanelManager-<version>-forge-1.20.jar`  |
+| Fabric 1.20 | 1.20.x      | `ServerPanelManager-<version>-fabric-1.20.jar` |
+| Forge 1.14  | 1.14.x      | `ServerPanelManager-<version>-forge-1.14.jar`  |
+| Forge 1.15  | 1.15.x      | `ServerPanelManager-<version>-forge-1.15.jar`  |
+| Forge 1.16  | 1.16.x      | `ServerPanelManager-<version>-forge-1.16.jar`  |
+| Forge 1.17  | 1.17.x      | `ServerPanelManager-<version>-forge-1.17.jar`  |
+| Forge 1.18  | 1.18.x      | `ServerPanelManager-<version>-forge-1.18.jar`  |
+| Forge 1.19  | 1.19.x      | `ServerPanelManager-<version>-forge-1.19.jar`  |
+| Forge 1.20  | 1.20.x      | `ServerPanelManager-<version>-forge-1.20.jar`  |
 
 ## Dependencies
 
 ### Required Dependencies
 
-- [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) - For Fabric
+- [Fabric API](https://modrinth.com/mod/fabric-api) - For Fabric
 
 ### Optional Dependencies
 
-- [LuckPerms](https://luckperms.net/) - For user prefix/suffix support and permission support on Forge/Fabric
+- [LuckPerms](https://luckperms.net/download) - For user prefix/suffix support and permission support on Forge/Fabric
 
 ## Supported Panels
 

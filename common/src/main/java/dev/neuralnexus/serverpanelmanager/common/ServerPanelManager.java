@@ -8,14 +8,9 @@ import dev.neuralnexus.serverpanelmanager.common.cubecodersamp.AMPServer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-import static dev.neuralnexus.serverpanelmanager.common.Utils.repeatTaskAsync;
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
-import static java.lang.Thread.sleep;
 
 public class ServerPanelManager {
     /**
@@ -99,7 +94,7 @@ public class ServerPanelManager {
         }
 
         if (STARTED) {
-            useLogger("[ServerPanelManager] ServerPanelManager has already started!");
+            useLogger("ServerPanelManager has already started!");
             return;
         }
         STARTED = true;
@@ -118,7 +113,7 @@ public class ServerPanelManager {
             initGroups();
         });
 
-        useLogger("[ServerPanelManager] ServerPanelManager has been started!");
+        useLogger("ServerPanelManager has been started!");
         ServerPanelManagerAPIProvider.register(instance);
     }
 
@@ -134,12 +129,12 @@ public class ServerPanelManager {
      */
     public static void stop() {
         if (!STARTED) {
-            useLogger("[ServerPanelManager] ServerPanelManager has already stopped!");
+            useLogger("ServerPanelManager has already stopped!");
             return;
         }
         STARTED = false;
 
-        useLogger("[ServerPanelManager] ServerPanelManager has been stopped!");
+        useLogger("ServerPanelManager has been stopped!");
         ServerPanelManagerAPIProvider.unregister();
     }
 
@@ -148,7 +143,7 @@ public class ServerPanelManager {
      */
     public static void reload() {
         if (!STARTED) {
-            useLogger("[ServerPanelManager] ServerPanelManager has not been started!");
+            useLogger("ServerPanelManager has not been started!");
             return;
         }
 
@@ -164,40 +159,45 @@ public class ServerPanelManager {
         // Start ServerPanelManager
         start(configPath, logger);
 
-        useLogger("[ServerPanelManager] ServerPanelManager has been reloaded!");
+        useLogger("ServerPanelManager has been reloaded!");
     }
 
     /**
      * Initialize panels
      */
     private static void initPanels() {
-        HashMap<?, ?> panelConfig = (HashMap<?, ?>) config.getBlock("panels").getStoredValue();
-        for (HashMap.Entry<?, ?> entry: panelConfig.entrySet()) {
-            // Get panel name and type
-            String panelName = (String) entry.getKey();
-            String panelType = config.getString("panels." + panelName + ".type");
-            Panel panel = null;
+        Set<String> panelConfig = ((HashMap<String, ?>) config.getBlock("panels").getStoredValue()).keySet();
+        for (String panelName : panelConfig) {
+            try {
+                // Get panel name and type
+                String panelType = config.getString("panels." + panelName + ".type");
+                Panel panel = null;
 
-            switch (panelType) {
-                case "cubecodersamp":
-                    String host = config.getString("panels." + panelName + ".host");
-                    String username = config.getString("panels." + panelName + ".username");
-                    String password = config.getString("panels." + panelName + ".password");
-                    panel = new AMPPanel(panelName, host, username, password);
-                    break;
-                case "pterodactyl":
-                    break;
-                default:
-                    useLogger("Panel " + panelName + " has an invalid type!");
-                    break;
-            }
+                switch (panelType) {
+                    case "cubecodersamp":
+                        String host = config.getString("panels." + panelName + ".host");
+                        String username = config.getString("panels." + panelName + ".username");
+                        String password = config.getString("panels." + panelName + ".password");
+                        panel = new AMPPanel(panelName, host, username, password);
+                        break;
+                    case "pterodactyl":
+                        break;
+                    default:
+                        useLogger("Panel " + panelName + " has an invalid type!");
+                        break;
+                }
 
-            // Check if panel is online
-            if (panel != null && panel.isOnline()) {
-                setPanel(panelName, panel);
-                useLogger("Panel " + panelName + " is online!");
-            } else {
-                useLogger("Panel " + panelName + " is offline!");
+                // Check if panel is online
+                if (panel != null && panel.isOnline()) {
+                    setPanel(panelName, panel);
+                    useLogger("Panel " + panelName + " is online!");
+                } else {
+                    useLogger("Panel " + panelName + " is offline!");
+                }
+            } catch (Exception e) {
+                useLogger("Failed to initialize panel " + panelName + "!");
+                System.err.println(e);
+                e.printStackTrace();
             }
         }
     }
@@ -206,11 +206,9 @@ public class ServerPanelManager {
      * Initialize servers
      */
     private static void initServers() {
-        HashMap<?, ?> serverConfig = (HashMap<?, ?>) config.getBlock("servers").getStoredValue();
-        for (HashMap.Entry<?, ?> entry: serverConfig.entrySet()) {
+        Set<String> serverConfig = ((HashMap<String, ?>) config.getBlock("servers").getStoredValue()).keySet();
+        for (String serverName: serverConfig) {
             // Get server and panel information
-            String serverName = (String) entry.getKey();
-
             String panelName = config.getString("servers." + serverName + ".panel");
             String instanceName;
             String instanceId;
@@ -247,7 +245,7 @@ public class ServerPanelManager {
             Panel panel = getPanel(panelName);
             if (panel == null) {
                 useLogger("Server " + serverName + "'s panel is offline or defined incorrectly!");
-                return;
+                continue;
             }
             String panelType = config.getString("panels." + panelName + ".type");
 
@@ -259,6 +257,27 @@ public class ServerPanelManager {
 
                     AMPAPIHandler instanceAPI = ((AMPPanel) panel).getInstanceAPI(serverName, instanceName, instanceId);
                     server = new AMPServer(serverName, panelName, instanceName, instanceId, instanceAPI);
+
+                    // Get scheduler information
+                    boolean schedulerEnabled = server.isOnline()
+                            && config.getBoolean("scheduler.enabled") != null
+                            && config.getBoolean("scheduler.enabled")
+                            && config.getString("scheduler.serverName").equals(serverName);
+
+                    // Save schedule names and ids to the server config
+                    if (schedulerEnabled) {
+                        Map<String, String> triggers = ((AMPServer) server).getScheduleTriggers();
+
+                        // Save schedule names and ids to the server config
+                        config.set("scheduler.triggers", triggers);
+                        try {
+                            config.save();
+                        } catch (IOException e) {
+                            System.err.println(e);
+                            e.printStackTrace();
+                        }
+                    }
+
                     break;
             }
 
@@ -273,80 +292,11 @@ public class ServerPanelManager {
     }
 
     /**
-     * Initialize WatchFerret
-     */
-    private void initWatchFerret(String groupName) {
-        // Start WatchFerret
-        repeatTaskAsync(() -> {
-            useLogger("Running WatchFerret for group " + groupName + "...");
-            // Get group
-            Group group = getGroup(groupName);
-            if (group == null) {
-                useLogger("Group " + groupName + " does not exist!");
-                return;
-            }
-
-            // Get servers
-            ArrayList<String> servers = group.getServers();
-            if (servers.size() == 0) {
-                useLogger("Group " + groupName + " has no servers!");
-                return;
-            }
-
-            // Loop through servers
-            for (String serverName: servers) {
-                Server server = getServer(serverName);
-                if (!(server instanceof AMPServer)) {
-                    useLogger("Server " + serverName + " does not exist!");
-                    continue;
-                }
-
-                // Get server status
-                Map<String, Object> status = server.getStatus();
-                if (status == null) {
-                    useLogger("Server " + serverName + " is offline!");
-                    continue;
-                }
-
-                if (status.containsKey("State")) {
-                    String state = (String) status.get("State");
-                    if (state.equals("Restarting")) {
-                        if (group.getVariable("restart") == null) {
-                            group.setVariable("restart", 1);
-                        } else {
-                            int restartPings = (int) group.getVariable("restart");
-                            useLogger("Server " + serverName + " is restarting! + " + restartPings + " restart pings");
-                            if (restartPings >= 3) {
-                                useLogger("Rescuing server " + serverName + "...");
-                                server.killServer();
-                                try {
-                                    sleep(1000L);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                server.startServer();
-                                group.setVariable("restart", 0);
-                                useLogger("Server " + serverName + " has been rescued!");
-                            }
-                            group.setVariable("restart", restartPings + 1);
-                        }
-                    } else if (state.equals("Running")) {
-                        group.setVariable("restart", 0);
-                    }
-                }
-            }
-        }, 0L, 20*300L);
-    }
-
-    /**
      * Initialize groups
      */
     private static void initGroups() {
-        HashMap<?, ?> groupConfig = (HashMap<?, ?>) config.getBlock("groups").getStoredValue();
-        for (HashMap.Entry<?, ?> entry: groupConfig.entrySet()) {
-            // Get group name
-            String groupName = (String) entry.getKey();
-
+        Set<String> groupConfig = ((HashMap<String, ?>) config.getBlock("groups").getStoredValue()).keySet();
+        for (String groupName: groupConfig) {
             // Check if servers exist
             ArrayList<String> servers = (ArrayList<String>) config.getBlock("groups." + groupName + ".servers").getStoredValue();
             ArrayList<String> groupServers = new ArrayList<>();

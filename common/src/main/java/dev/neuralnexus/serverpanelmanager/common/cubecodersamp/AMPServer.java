@@ -285,11 +285,21 @@ public class AMPServer extends Server {
     }
 
     /**
-     * Get a list of schedule triggers
-     * @return A list of schedule triggers
+     * Get a Map of schedule triggers
+     * @return A Map of schedule triggers
      */
-    public List<String> getScheduleTriggers() {
+    public Map<String, String> getScheduleTriggers() {
+        // Get the raw triggers
         Map<?, ?> scheduleTriggers = runMethod((args) -> (Map<?, ?>) API.Core_GetScheduleData().get("result"));
+        ArrayList<Map<String, Object>> rawTriggers = (ArrayList<Map<String, Object>>) scheduleTriggers.get("PopulatedTriggers");
+
+        // Convert the raw triggers into a Map
+        Map<String, String> triggers = new HashMap<>();
+        for (Map<String, Object> trigger : rawTriggers) {
+            triggers.put((String) trigger.get("Description"), (String) trigger.get("Id"));
+        }
+
+        return triggers;
     }
 
     /**

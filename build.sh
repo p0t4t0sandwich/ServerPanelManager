@@ -110,21 +110,93 @@ rm -rf ./standalone
 
 # --------------------------- Prepare Forge and Fabric --------------------------------
 
+# Prepare Fabric 1.14 files
+FABRIC_VERSION=1.14
+prepareFiles fabric-$FABRIC_VERSION
+
+# Prepare Fabric 1.15 files
+FABRIC_VERSION=1.15
+prepareFiles fabric-$FABRIC_VERSION
+
+# Prepare Fabric 1.16 files
+FABRIC_VERSION=1.16
+prepareFiles fabric-$FABRIC_VERSION
+
 # Prepare Fabric 1.17 files
 FABRIC_VERSION=1.17
-#prepareFiles fabric-$FABRIC_VERSION
+prepareFiles fabric-$FABRIC_VERSION
 
 # Prepare Fabric 1.20 files
 FABRIC_VERSION=1.20
 prepareFiles fabric-$FABRIC_VERSION
 
+# Prepare Forge 1.14.3 files
+FORGE_VERSION=1.14.3
+prepareFiles forge-$FORGE_VERSION
+
+# Prepare Forge 1.15.1 files
+FORGE_VERSION=1.15.1
+prepareFiles forge-$FORGE_VERSION
+
+# Prepare Forge 1.16.3 files
+FORGE_VERSION=1.16.3
+prepareFiles forge-$FORGE_VERSION
+
+# Prepare Forge 1.17.1 files
+FORGE_VERSION=1.17.1
+prepareFiles forge-$FORGE_VERSION
+
+# Prepare Forge 1.18 files
+FORGE_VERSION=1.18
+prepareFiles forge-$FORGE_VERSION
+
 # Prepare Forge 1.19 files
 FORGE_VERSION=1.19
-#prepareFiles forge-$FORGE_VERSION
+prepareFiles forge-$FORGE_VERSION
 
 # Prepare Forge 1.20 files
 FORGE_VERSION=1.20
 prepareFiles forge-$FORGE_VERSION
+
+# --------------------------- Build 1.14 --------------------------------
+MC_VERSION=1.14
+FABRIC_VERSION=1.14
+FORGE_VERSION=1.14.3
+OUT_FILE=$PROJ_NAME-$VERSION-$MC_VERSION
+
+build $FABRIC_VERSION $FORGE_VERSION $OUT_FILE
+
+# --------------------------- Build 1.15 --------------------------------
+MC_VERSION=1.15
+FABRIC_VERSION=1.15
+FORGE_VERSION=1.15.1
+OUT_FILE=$PROJ_NAME-$VERSION-$MC_VERSION
+
+build $FABRIC_VERSION $FORGE_VERSION $OUT_FILE
+
+# --------------------------- Build 1.16 --------------------------------
+MC_VERSION=1.16
+FABRIC_VERSION=1.16
+FORGE_VERSION=1.16.3
+OUT_FILE=$PROJ_NAME-$VERSION-$MC_VERSION
+
+build $FABRIC_VERSION $FORGE_VERSION $OUT_FILE
+
+# --------------------------- Build 1.17 --------------------------------
+MC_VERSION=1.17
+FABRIC_VERSION=1.17
+FORGE_VERSION=1.17.1
+OUT_FILE=$PROJ_NAME-$VERSION-$MC_VERSION
+
+build $FABRIC_VERSION $FORGE_VERSION $OUT_FILE
+
+# --------------------------- Build 1.18 --------------------------------
+MC_VERSION=1.18
+FABRIC_VERSION=1.17
+FORGE_VERSION=1.18
+OUT_FILE=$PROJ_NAME-$VERSION-$MC_VERSION
+
+build $FABRIC_VERSION $FORGE_VERSION $OUT_FILE
 
 # --------------------------- Build 1.19 --------------------------------
 MC_VERSION=1.19
@@ -132,7 +204,7 @@ FABRIC_VERSION=1.17
 FORGE_VERSION=1.19
 OUT_FILE=$PROJ_NAME-$VERSION-$MC_VERSION
 
-#build $FABRIC_VERSION $FORGE_VERSION $OUT_FILE
+build $FABRIC_VERSION $FORGE_VERSION $OUT_FILE
 
 # --------------------------- Build 1.20 --------------------------------
 MC_VERSION=1.20
