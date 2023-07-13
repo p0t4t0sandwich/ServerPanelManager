@@ -130,6 +130,10 @@ prepareFiles fabric-$FABRIC_VERSION
 FABRIC_VERSION=1.20
 prepareFiles fabric-$FABRIC_VERSION
 
+# Prepare Forge 1.13.2 files
+FORGE_VERSION=1.13.2
+prepareFiles forge-$FORGE_VERSION
+
 # Prepare Forge 1.14.3 files
 FORGE_VERSION=1.14.3
 prepareFiles forge-$FORGE_VERSION
@@ -157,6 +161,14 @@ prepareFiles forge-$FORGE_VERSION
 # Prepare Forge 1.20 files
 FORGE_VERSION=1.20
 prepareFiles forge-$FORGE_VERSION
+
+# --------------------------- Build 1.13 --------------------------------
+MC_VERSION=1.13
+FABRIC_VERSION=NA
+FORGE_VERSION=1.13.2
+OUT_FILE=$PROJ_NAME-$VERSION-$MC_VERSION
+
+build $FABRIC_VERSION $FORGE_VERSION $OUT_FILE
 
 # --------------------------- Build 1.14 --------------------------------
 MC_VERSION=1.14

@@ -29,7 +29,7 @@ shadowJar {
     relocate('dev.dejvokep', 'dev.neuralnexus.serverpanelmanager.lib.dejvokep')
 
     // AMP API
-    relocate('com.github.p0t4t0sandwich', 'dev.neuralnexus.serverpanelmanager.lib.p0t4t0sandwich')
+    relocate('ca.sperrer.p0t4t0sandwich', 'dev.neuralnexus.serverpanelmanager.lib.p0t4t0sandwich')
     relocate('com.google.gson', 'dev.neuralnexus.serverpanelmanager.lib.gson')
 
     destinationDir(file('../target'))

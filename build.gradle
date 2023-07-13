@@ -1,13 +1,13 @@
 plugins {
-    id 'java'
+    id('java')
 }
 
-defaultTasks 'build'
+defaultTasks('build')
 
 subprojects {
-    apply plugin: 'java'
+    apply(plugin: 'java')
 
-    group = 'ca.sperrer.p0t4t0sandwich'
+    group = 'dev.neuralnexus'
     version = '1.0.3'
 
     sourceCompatibility = 1.8
@@ -42,4 +42,8 @@ subprojects {
             url = "https://repo.papermc.io/repository/maven-public/"
         }
     }
+}
+
+clean {
+    delete "target"
 }
