@@ -1,6 +1,7 @@
 package dev.neuralnexus.serverpanelmanager.bukkit;
 
 import dev.neuralnexus.serverpanelmanager.bukkit.commands.BukkitSPMCommand;
+import dev.neuralnexus.serverpanelmanager.bukkit.listeners.paper.server.PaperServerListener;
 import dev.neuralnexus.serverpanelmanager.bukkit.listeners.player.BukkitPlayerListener;
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManagerPlugin;
@@ -63,7 +64,12 @@ public class BukkitSPMPlugin extends JavaPlugin implements ServerPanelManagerPlu
 
         // Register server event listeners
         SPMServerStartingListener.onServerStarting();
-        runTaskLaterAsync(SPMServerStartedListener::onServerStarted, 100L);
+
+        if (getServerType().equals("Paper")) {
+            pluginManager.registerEvents(new PaperServerListener(), this);
+        } else {
+            runTaskLaterAsync(SPMServerStartedListener::onServerStarted, 100L);
+        }
     }
 
     /**

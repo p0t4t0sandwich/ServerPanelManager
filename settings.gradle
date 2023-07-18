@@ -15,6 +15,7 @@ rootProject.name = 'ServerPanelManager'
 include(
         'bukkit',
         'bungee',
+        'common',
         'fabric-1.14',
         'fabric-1.15',
         'fabric-1.16',
@@ -28,7 +29,6 @@ include(
         'forge-1.18',
         'forge-1.19',
         'forge-1.20',
-        'velocity',
-        'common',
-        'standalone'
+        'standalone',
+        'velocity'
 )
