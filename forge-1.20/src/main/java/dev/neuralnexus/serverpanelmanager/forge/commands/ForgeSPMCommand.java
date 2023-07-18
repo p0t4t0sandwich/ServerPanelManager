@@ -4,9 +4,11 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.neuralnexus.serverpanelmanager.common.commands.SPMCommand;
 import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
 import dev.neuralnexus.serverpanelmanager.forge.player.ForgePlayer;
+import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 import static net.minecraft.commands.Commands.argument;
@@ -15,6 +17,7 @@ import static net.minecraft.commands.Commands.literal;
 /**
  * Forge implementation of the SPM command.
  */
+@Mod.EventBusSubscriber(modid = "serverpanelmanager")
 public class ForgeSPMCommand {
     /**
      * Registers the command.
@@ -22,19 +25,16 @@ public class ForgeSPMCommand {
      */
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
-//        int permissionLevel;
-//        String commandName;
-//        if (event.getEnvironment() == RegisterCommandsEvent.EnvironmentType.DEDICATED) {
-//            // Check if LuckPerms is hooked
-//            permissionLevel = LuckPermsHook.isHooked() ? 0 : 4;
-//            commandName = "spm";
-//        } else {
-//            permissionLevel = 0;
-//            commandName = "spmc";
-//        }
-
-        int permissionLevel = LuckPermsHook.isHooked() ? 0 : 4;
-        String commandName = "spm";
+        int permissionLevel;
+        String commandName;
+        if (event.getCommandSelection() == Commands.CommandSelection.DEDICATED) {
+            // Check if LuckPerms is hooked
+            permissionLevel = LuckPermsHook.isHooked() ? 0 : 4;
+            commandName = "spm";
+        } else {
+            permissionLevel = 0;
+            commandName = "spmc";
+        }
 
         event.getDispatcher().register(literal(commandName)
             .requires(source -> source.hasPermission(permissionLevel))

@@ -6,6 +6,7 @@ import dev.neuralnexus.serverpanelmanager.common.hooks.LuckPermsHook;
 import dev.neuralnexus.serverpanelmanager.forge.player.ForgePlayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
@@ -15,6 +16,7 @@ import static net.minecraft.command.Commands.literal;
 /**
  * Forge implementation of the SPM command.
  */
+@Mod.EventBusSubscriber(modid = "serverpanelmanager")
 public class ForgeSPMCommand {
     /**
      * Registers the command.
