@@ -1,5 +1,5 @@
 plugins {
-    id('com.github.johnrengelman.shadow') version('7.1.2')
+    id('com.github.johnrengelman.shadow') version('8.1.1')
 }
 
 dependencies {
@@ -19,9 +19,8 @@ shadowJar {
         include(project(":common"))
     }
 
-    destinationDir(file('../target'))
-    archiveName("ServerPanelManager-${version}-standalone.jar")
-    classifier('')
+    destinationDirectory = file('../target')
+    archiveFileName = "ServerPanelManager-${version}-standalone.jar"
 }
 shadowJar.doLast {
     task ->
