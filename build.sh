@@ -130,24 +130,24 @@ prepareFiles fabric-$FABRIC_VERSION
 FABRIC_VERSION=1.20
 prepareFiles fabric-$FABRIC_VERSION
 
-# Prepare Forge 1.13.2 files
-FORGE_VERSION=1.13.2
+# Prepare Forge 1.13 files
+FORGE_VERSION=1.13
 prepareFiles forge-$FORGE_VERSION
 
-# Prepare Forge 1.14.3 files
-FORGE_VERSION=1.14.3
+# Prepare Forge 1.14 files
+FORGE_VERSION=1.14
 prepareFiles forge-$FORGE_VERSION
 
-# Prepare Forge 1.15.1 files
-FORGE_VERSION=1.15.1
+# Prepare Forge 1.15 files
+FORGE_VERSION=1.15
 prepareFiles forge-$FORGE_VERSION
 
-# Prepare Forge 1.16.3 files
-FORGE_VERSION=1.16.3
+# Prepare Forge 1.16 files
+FORGE_VERSION=1.16
 prepareFiles forge-$FORGE_VERSION
 
-# Prepare Forge 1.17.1 files
-FORGE_VERSION=1.17.1
+# Prepare Forge 1.17 files
+FORGE_VERSION=1.17
 prepareFiles forge-$FORGE_VERSION
 
 # Prepare Forge 1.18 files

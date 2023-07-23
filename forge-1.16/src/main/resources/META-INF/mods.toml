@@ -1,6 +1,6 @@
 # https://files.minecraftforge.net/net/minecraftforge/forge/
 modLoader = "javafml"
-loaderVersion = "[30,)"
+loaderVersion = "[32,)"
 license = "GPL-3"
 issueTrackerURL="https://github.com/p0t4t0sandwich/ServerPanelManager/issues"
 
@@ -22,7 +22,7 @@ A plugin that allows you to manage your Panel's game servers from within minecra
 [[dependencies.serverpanelmanager]]
 modId = "forge"
 mandatory = true
-versionRange = "[30,)"
+versionRange = "[32,)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -30,7 +30,7 @@ side = "BOTH"
 [[dependencies.serverpanelmanager]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.15,1.16)"
+versionRange = "[1.16,1.17)"
 ordering = "NONE"
 side = "BOTH"
 
