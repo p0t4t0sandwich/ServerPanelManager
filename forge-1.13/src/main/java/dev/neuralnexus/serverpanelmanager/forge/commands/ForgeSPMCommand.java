@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
 import static net.minecraft.command.Commands.argument;
@@ -24,19 +25,16 @@ public class ForgeSPMCommand {
      */
     @SubscribeEvent
     public static void registerCommand(FMLServerStartingEvent event) {
-//        int permissionLevel;
-//        String commandName;
-//        if (event.getEnvironment() == RegisterCommandsEvent.EnvironmentType.DEDICATED) {
-//            // Check if LuckPerms is hooked
-//            permissionLevel = LuckPermsHook.isHooked() ? 0 : 4;
-//            commandName = "spm";
-//        } else {
-//            permissionLevel = 0;
-//            commandName = "spmc";
-//        }
-
-        int permissionLevel = LuckPermsHook.isHooked() ? 0 : 4;
-        String commandName = "spm";
+        int permissionLevel;
+        String commandName;
+        if (FMLLoader.getDist().isDedicatedServer()) {
+            // Check if LuckPerms is hooked
+            permissionLevel = LuckPermsHook.isHooked() ? 0 : 4;
+            commandName = "spm";
+        } else {
+            permissionLevel = 0;
+            commandName = "spmc";
+        }
 
         event.getCommandDispatcher().register(literal(commandName)
             .requires(source -> source.hasPermissionLevel(permissionLevel))
