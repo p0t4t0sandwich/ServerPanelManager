@@ -49,7 +49,16 @@ public class ForgeSPMPlugin implements ServerPanelManagerPlugin {
      */
     @Override
     public String getServerVersion() {
-        return FMLLoader.getMcpVersion();
+        // Reflect to get the Minecraft and Forge versions from FMLLoader
+        String mcVersion = null;
+        String forgeVersion = null;
+        try {
+            mcVersion = (String) FMLLoader.class.getDeclaredField("mcVersion").get(null);
+            forgeVersion = (String) FMLLoader.class.getDeclaredField("forgeVersion").get(null);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return mcVersion + "-" + forgeVersion;
     }
 
     /**
