@@ -41,6 +41,14 @@ public interface ServerPanelManagerPlugin {
     }
 
     /**
+     * Gets the server version.
+     * @return The server version
+     */
+    default String getServerVersion() {
+        return "unknown";
+    }
+
+    /**
      * Register hooks.
      */
     void registerHooks();
@@ -62,7 +70,7 @@ public interface ServerPanelManagerPlugin {
     default void pluginStart() {
         runTaskAsync(() -> {
             try {
-                useLogger("[ServerPanelManager] ServerPanelManager is running on " + getServerType() + "!");
+                useLogger("ServerPanelManager is running on " + getServerType() + " " + getServerVersion() + "!");
 
                 // Start the TaterAPI
                 ServerPanelManager.start(pluginConfigPath(), pluginLogger());
@@ -76,7 +84,7 @@ public interface ServerPanelManagerPlugin {
                 // Register commands
                 registerCommands();
 
-                useLogger("[ServerPanelManager] ServerPanelManager has been enabled!");
+                useLogger("ServerPanelManager has been enabled!");
 
             } catch (Exception e) {
                 System.err.println(e);
@@ -92,7 +100,7 @@ public interface ServerPanelManagerPlugin {
         runTaskAsync(() -> {
             try {
                 ServerPanelManager.stop();
-                useLogger("[ServerPanelManager] ServerPanelManager has been disabled!");
+                useLogger("ServerPanelManager has been disabled!");
             } catch (Exception e) {
                 System.err.println(e);
                 e.printStackTrace();

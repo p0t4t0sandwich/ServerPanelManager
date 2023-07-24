@@ -12,6 +12,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
+import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.logging.log4j.LogManager;
 
 /**
@@ -41,6 +42,14 @@ public class ForgeSPMPlugin implements ServerPanelManagerPlugin {
     @Override
     public String getServerType() {
         return "Forge";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public String getServerVersion() {
+        return FMLLoader.getMcpVersion();
     }
 
     /**
