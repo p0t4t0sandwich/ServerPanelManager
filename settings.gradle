@@ -25,6 +25,12 @@ pluginManagement {
             name = 'ParchmentMC'
             url = 'https://maven.parchmentmc.org'
         }
+
+        // Sponge
+        maven {
+            name = 'Sponge'
+            url = 'https://repo.spongepowered.org/maven'
+        }
     }
 }
 
@@ -43,6 +49,7 @@ include(
         'fabric-1.16',
         'fabric-1.17',
         'fabric-1.20',
+        'forge-1.12',
         'forge-1.13',
         'forge-1.14',
         'forge-1.15',
