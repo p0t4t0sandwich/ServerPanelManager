@@ -52,20 +52,6 @@ public class ServerPanelManager {
     }
 
     /**
-     * Use whatever logger is being used.
-     * @param message The message to log
-     */
-    public static void useLogger(String message) {
-        if (logger instanceof java.util.logging.Logger) {
-            ((java.util.logging.Logger) logger).info(message);
-        } else if (logger instanceof org.slf4j.Logger) {
-            ((org.slf4j.Logger) logger).info(message);
-        } else {
-            System.out.println(message);
-        }
-    }
-
-    /**
      * Add a hook to the hooks list
      * @param hook The hook to add
      */
@@ -89,31 +75,31 @@ public class ServerPanelManager {
             );
             config.reload();
         } catch (IOException | NullPointerException e) {
-            useLogger("Failed to load config.yml!\n" + e.getMessage());
+            ServerPanelManagerPlugin.useLogger("Failed to load config.yml!\n" + e.getMessage());
             e.printStackTrace();
         }
 
         if (STARTED) {
-            useLogger("ServerPanelManager has already started!");
+            ServerPanelManagerPlugin.useLogger("ServerPanelManager has already started!");
             return;
         }
         STARTED = true;
 
         runTaskAsync(() -> {
             // Initialize Panels
-            useLogger("Initializing panels...");
+            ServerPanelManagerPlugin.useLogger("Initializing panels...");
             initPanels();
 
             // Initialize servers
-            useLogger("Initializing servers...");
+            ServerPanelManagerPlugin.useLogger("Initializing servers...");
             initServers();
 
             // Initialize groups
-            useLogger("Initializing groups...");
+            ServerPanelManagerPlugin.useLogger("Initializing groups...");
             initGroups();
         });
 
-        useLogger("ServerPanelManager has been started!");
+        ServerPanelManagerPlugin.useLogger("ServerPanelManager has been started!");
         ServerPanelManagerAPIProvider.register(instance);
     }
 
@@ -129,12 +115,12 @@ public class ServerPanelManager {
      */
     public static void stop() {
         if (!STARTED) {
-            useLogger("ServerPanelManager has already stopped!");
+            ServerPanelManagerPlugin.useLogger("ServerPanelManager has already stopped!");
             return;
         }
         STARTED = false;
 
-        useLogger("ServerPanelManager has been stopped!");
+        ServerPanelManagerPlugin.useLogger("ServerPanelManager has been stopped!");
         ServerPanelManagerAPIProvider.unregister();
     }
 
@@ -143,7 +129,7 @@ public class ServerPanelManager {
      */
     public static void reload() {
         if (!STARTED) {
-            useLogger("ServerPanelManager has not been started!");
+            ServerPanelManagerPlugin.useLogger("ServerPanelManager has not been started!");
             return;
         }
 
@@ -159,7 +145,7 @@ public class ServerPanelManager {
         // Start ServerPanelManager
         start(configPath, logger);
 
-        useLogger("ServerPanelManager has been reloaded!");
+        ServerPanelManagerPlugin.useLogger("ServerPanelManager has been reloaded!");
     }
 
     /**
@@ -183,19 +169,19 @@ public class ServerPanelManager {
                     case "pterodactyl":
                         break;
                     default:
-                        useLogger("Panel " + panelName + " has an invalid type!");
+                        ServerPanelManagerPlugin.useLogger("Panel " + panelName + " has an invalid type!");
                         break;
                 }
 
                 // Check if panel is online
                 if (panel != null && panel.isOnline()) {
                     setPanel(panelName, panel);
-                    useLogger("Panel " + panelName + " is online!");
+                    ServerPanelManagerPlugin.useLogger("Panel " + panelName + " is online!");
                 } else {
-                    useLogger("Panel " + panelName + " is offline!");
+                    ServerPanelManagerPlugin.useLogger("Panel " + panelName + " is offline!");
                 }
             } catch (Exception e) {
-                useLogger("Failed to initialize panel " + panelName + "!");
+                ServerPanelManagerPlugin.useLogger("Failed to initialize panel " + panelName + "!");
                 System.err.println(e);
                 e.printStackTrace();
             }
@@ -235,16 +221,16 @@ public class ServerPanelManager {
                 // Check if server is online
                 if (server.isOnline()) {
                     setServer(serverName, server);
-                    useLogger("Server " + serverName + " is online!");
+                    ServerPanelManagerPlugin.useLogger("Server " + serverName + " is online!");
                 } else {
-                    useLogger("Server " + serverName + " is offline!");
+                    ServerPanelManagerPlugin.useLogger("Server " + serverName + " is offline!");
                 }
                 return;
             }
 
             Panel panel = getPanel(panelName);
             if (panel == null) {
-                useLogger("Server " + serverName + "'s panel is offline or defined incorrectly!");
+                ServerPanelManagerPlugin.useLogger("Server " + serverName + "'s panel is offline or defined incorrectly!");
                 continue;
             }
             String panelType = config.getString("panels." + panelName + ".type");
@@ -284,9 +270,9 @@ public class ServerPanelManager {
             // Check if server is online
             if (server != null && server.isOnline()) {
                 setServer(serverName, server);
-                useLogger("Server " + serverName + " is online!");
+                ServerPanelManagerPlugin.useLogger("Server " + serverName + " is online!");
             } else {
-                useLogger("Server " + serverName + " is offline!");
+                ServerPanelManagerPlugin.useLogger("Server " + serverName + " is offline!");
             }
         }
     }
@@ -302,7 +288,7 @@ public class ServerPanelManager {
             ArrayList<String> groupServers = new ArrayList<>();
             for (String serverName: servers) {
                 if (!serverExists(serverName)) {
-                    useLogger("Server " + serverName + " does not exist!");
+                    ServerPanelManagerPlugin.useLogger("Server " + serverName + " does not exist!");
                     continue;
                 }
                 groupServers.add(serverName);
@@ -312,7 +298,7 @@ public class ServerPanelManager {
 
             // Add group to HashMap
             setGroup(groupName, group);
-            useLogger("Group " + groupName + " initialized!");
+            ServerPanelManagerPlugin.useLogger("Group " + groupName + " initialized!");
         }
     }
 
@@ -471,7 +457,7 @@ public class ServerPanelManager {
         try {
             config.save();
         } catch (Exception e) {
-            useLogger("Failed to save config!\n" + e.getMessage());
+            ServerPanelManagerPlugin.useLogger("Failed to save config!\n" + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -499,7 +485,7 @@ public class ServerPanelManager {
         try {
             config.save();
         } catch (Exception e) {
-            useLogger("Failed to save config!\n" + e.getMessage());
+            ServerPanelManagerPlugin.useLogger("Failed to save config!\n" + e.getMessage());
             e.printStackTrace();
         }
     }

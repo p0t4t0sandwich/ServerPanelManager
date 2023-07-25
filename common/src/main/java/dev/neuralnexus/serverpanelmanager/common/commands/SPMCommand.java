@@ -1,7 +1,7 @@
 package dev.neuralnexus.serverpanelmanager.common.commands;
 
 import dev.neuralnexus.serverpanelmanager.common.ServerPanelManager;
-import dev.neuralnexus.serverpanelmanager.common.Utils;
+import dev.neuralnexus.serverpanelmanager.common.ServerPanelManagerPlugin;
 import dev.neuralnexus.serverpanelmanager.common.player.AbstractPlayer;
 
 import static dev.neuralnexus.serverpanelmanager.common.Utils.ansiiParser;
@@ -42,7 +42,7 @@ public interface SPMCommand {
                 player.sendMessage(executeCommand(args));
             }
         } else {
-            ServerPanelManager.useLogger(ansiiParser(executeCommand(args)));
+            ServerPanelManagerPlugin.useLogger(ansiiParser(executeCommand(args)));
         }
     }
 }
