@@ -16,6 +16,8 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.Field;
+
 /**
  * The ServerPanelManager Forge plugin.
  */
@@ -55,9 +57,14 @@ public class ForgeSPMPlugin implements ServerPanelManagerPlugin {
         // Reflect to get the Minecraft and Forge versions from FMLLoader
         String mcVersion = null;
         String forgeVersion = null;
+
         try {
-            mcVersion = (String) FMLLoader.class.getDeclaredField("mcVersion").get(null);
-            forgeVersion = (String) FMLLoader.class.getDeclaredField("forgeVersion").get(null);
+            Field mcVersionField = FMLLoader.class.getDeclaredField("mcVersion");
+            mcVersionField.setAccessible(true);
+            mcVersion = (String) mcVersionField.get(null);
+            Field forgeVersionField = FMLLoader.class.getDeclaredField("forgeVersion");
+            forgeVersionField.setAccessible(true);
+            forgeVersion = (String) forgeVersionField.get(null);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
         }
