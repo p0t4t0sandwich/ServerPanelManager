@@ -49,11 +49,11 @@ public class VelocitySPMPlugin implements ServerPanelManagerPlugin {
     }
 
     /**
-     * @inheritDoc
+     * Use whatever logger is being used.
+     * @param message The message to log
      */
-    @Override
-    public Object pluginLogger() {
-        return logger;
+    public void useLogger(String message) {
+        logger.info(message);
     }
 
     /**

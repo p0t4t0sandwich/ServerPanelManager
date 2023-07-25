@@ -7,11 +7,6 @@ import static dev.neuralnexus.serverpanelmanager.common.Utils.runTaskAsync;
  */
 public interface ServerPanelManagerPlugin {
     /**
-     * Gets the logger.
-     */
-    Object pluginLogger();
-
-    /**
      * Gets the config path.
      */
     String pluginConfigPath();
@@ -65,7 +60,7 @@ public interface ServerPanelManagerPlugin {
                 useLogger("ServerPanelManager is running on " + getServerType() + " " + getServerVersion() + "!");
 
                 // Start the TaterAPI
-                ServerPanelManager.start(pluginConfigPath(), pluginLogger());
+                ServerPanelManager.start(pluginConfigPath());
 
                 // Register hooks
                 registerHooks();

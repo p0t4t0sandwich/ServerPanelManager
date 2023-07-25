@@ -46,7 +46,7 @@ public class StandaloneMain {
             logger.addHandler(handler);
 
             // Start Server Panel Manager
-            ServerPanelManager.start("./", logger);
+            ServerPanelManager.start("./");
 
             // Start terminal application
             while (true) {

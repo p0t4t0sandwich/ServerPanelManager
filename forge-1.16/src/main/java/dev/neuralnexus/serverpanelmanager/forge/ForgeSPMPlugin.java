@@ -23,21 +23,14 @@ import java.lang.reflect.Field;
  */
 @Mod("serverpanelmanager")
 public class ForgeSPMPlugin implements ServerPanelManagerPlugin {
-    public static final Logger logger = LogManager.getLogger();
+    Logger logger = LogManager.getLogger("serverpanelmanager");
 
     /**
-     * @inheritDoc
-     */
-    @Override
-    public Object pluginLogger() {
-        return logger;
-    }
-
-    /**
-     * @inheritDoc
+     * Use whatever logger is being used.
+     * @param message The message to log
      */
     public void useLogger(String message) {
-        logger.info(message);
+        logger.info("[ServerPanelManager] " + message);
     }
 
     /**
@@ -92,7 +85,7 @@ public class ForgeSPMPlugin implements ServerPanelManagerPlugin {
     public void onServerStarting(FMLServerStartingEvent event) {
         // Register LuckPerms hook
         if (ModList.get().isLoaded("luckperms")) {
-            useLogger("[ServerPanelManager] LuckPerms detected, enabling LuckPerms hook.");
+            useLogger("LuckPerms detected, enabling LuckPerms hook.");
             ServerPanelManager.addHook(new LuckPermsHook());
         }
     }

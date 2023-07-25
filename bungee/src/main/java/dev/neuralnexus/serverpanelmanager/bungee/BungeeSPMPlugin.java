@@ -26,11 +26,11 @@ public class BungeeSPMPlugin extends Plugin implements ServerPanelManagerPlugin 
     }
 
     /**
-     * @inheritDoc
+     * Use whatever logger is being used.
+     * @param message The message to log
      */
-    @Override
-    public Object pluginLogger() {
-        return getLogger();
+    public void useLogger(String message) {
+        getLogger().info(message);
     }
 
     /**

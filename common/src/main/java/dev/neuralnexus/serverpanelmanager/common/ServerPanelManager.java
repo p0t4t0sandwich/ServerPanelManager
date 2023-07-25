@@ -28,7 +28,6 @@ public class ServerPanelManager {
      */
     private static final ServerPanelManager instance = new ServerPanelManager();
     private static YamlDocument config;
-    private static Object logger;
     private static String configPath;
     private static boolean STARTED = false;
     private static final ArrayList<Object> hooks = new ArrayList<>();
@@ -62,11 +61,9 @@ public class ServerPanelManager {
     /**
      * Start ServerPanelManager
      * @param configPath The path to the config file
-     * @param logger The logger
      */
-    public static void start(String configPath, Object logger) {
+    public static void start(String configPath) {
         ServerPanelManager.configPath = configPath;
-        ServerPanelManager.logger = logger;
 
         // Config
         try {
@@ -107,7 +104,7 @@ public class ServerPanelManager {
      * Start TaterAPI
      */
     public static void start() {
-        start(configPath, logger);
+        start(configPath);
     }
 
     /**
@@ -143,7 +140,7 @@ public class ServerPanelManager {
         stop();
 
         // Start ServerPanelManager
-        start(configPath, logger);
+        start(configPath);
 
         ServerPanelManagerPlugin.useLogger("ServerPanelManager has been reloaded!");
     }

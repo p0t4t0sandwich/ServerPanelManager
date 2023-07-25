@@ -16,17 +16,20 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The ServerPanelManager Fabric plugin.
  */
 public class FabricSPMPlugin implements DedicatedServerModInitializer, ServerPanelManagerPlugin {
+    Logger logger = LogManager.getLogger("serverpanelmanager");
+
     /**
-     * @inheritDoc
+     * Use whatever logger is being used.
+     * @param message The message to log
      */
-    @Override
-    public Object pluginLogger() {
-        return LogManager.getLogger("serverpanelmanager");
+    public void useLogger(String message) {
+        logger.info("[ServerPanelManager] " + message);
     }
 
     /**
@@ -52,7 +55,7 @@ public class FabricSPMPlugin implements DedicatedServerModInitializer, ServerPan
     public void registerHooks() {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             if (FabricLoader.getInstance().isModLoaded("luckperms")) {
-                useLogger("[ServerPanelManager] LuckPerms detected, enabling LuckPerms hook.");
+                useLogger("LuckPerms detected, enabling LuckPerms hook.");
                 ServerPanelManager.addHook(new LuckPermsHook());
             }
         });

@@ -15,18 +15,21 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.VersionInfo;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The ServerPanelManager Forge plugin.
  */
 @Mod("serverpanelmanager")
 public class ForgeSPMPlugin implements ServerPanelManagerPlugin {
+    Logger logger = LogManager.getLogger("serverpanelmanager");
+
     /**
-     * @inheritDoc
+     * Use whatever logger is being used.
+     * @param message The message to log
      */
-    @Override
-    public Object pluginLogger() {
-        return LogManager.getLogger();
+    public void useLogger(String message) {
+        logger.info("[ServerPanelManager] " + message);
     }
 
     /**
@@ -68,7 +71,7 @@ public class ForgeSPMPlugin implements ServerPanelManagerPlugin {
     public void onServerStarting(ServerStartingEvent event) {
         // Register LuckPerms hook
         if (ModList.get().isLoaded("luckperms")) {
-            useLogger("[ServerPanelManager] LuckPerms detected, enabling LuckPerms hook.");
+            useLogger("LuckPerms detected, enabling LuckPerms hook.");
             ServerPanelManager.addHook(new LuckPermsHook());
         }
     }
