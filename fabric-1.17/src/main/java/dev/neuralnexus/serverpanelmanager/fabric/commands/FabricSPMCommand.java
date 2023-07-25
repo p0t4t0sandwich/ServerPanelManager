@@ -40,7 +40,7 @@ public class FabricSPMCommand {
                         .executes(context -> {
                             runTaskAsync(() -> {
                                 try {
-                                    String[] args = new String[] {context.getArgument("command", String.class)};
+                                    String[] args = context.getArgument("command", String.class).split(" ");
 
                                     // Check if sender is a player
                                     boolean isPlayer = context.getSource().getEntity() instanceof ServerPlayerEntity;
