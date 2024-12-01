@@ -20,7 +20,7 @@ public class BukkitSPMCommand implements CommandExecutor {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        AtomicBoolean success = new AtomicBoolean(false);
+        AtomicBoolean success = new AtomicBoolean(true);
         runTaskAsync(() -> {
             try {
                 // Check if sender is a player
@@ -29,8 +29,6 @@ public class BukkitSPMCommand implements CommandExecutor {
 
                 // Execute command
                 SPMCommand.executeCommand(player, isPlayer, args);
-
-                success.set(true);
             } catch (Exception e) {
                 success.set(false);
                 System.err.println(e);

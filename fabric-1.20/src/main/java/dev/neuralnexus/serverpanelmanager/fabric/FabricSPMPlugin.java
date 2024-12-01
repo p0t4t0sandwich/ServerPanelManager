@@ -68,7 +68,7 @@ public class FabricSPMPlugin implements DedicatedServerModInitializer, ServerPan
     @Override
     public void registerEventListeners() {
         // Register player events
-        FabricPlayerEvents.ADVANCEMENT.register((player, advancement) -> SPMPlayerAdvancementListener.onPlayerAdvancement(new FabricPlayer(player), advancement.getId().toString()));
+        FabricPlayerEvents.ADVANCEMENT_FINISHED.register((player, advancement) -> SPMPlayerAdvancementListener.onPlayerAdvancement(new FabricPlayer(player), advancement.getId().toString()));
         FabricPlayerEvents.DEATH.register((player, source) -> SPMPlayerDeathListener.onPlayerDeath(new FabricPlayer(player), source.getDeathMessage(player).getString()));
         FabricPlayerEvents.MESSAGE.register((player, message, isCancelled) -> SPMPlayerMessageListener.onPlayerMessage(new FabricPlayer(player), message, isCancelled));
 
